@@ -1,0 +1,264 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+
+export async function getStaticPaths() {
+	const events = await getCollection('events');
+	return events.map((event) => ({
+		params: { slug: event.id },
+		props: event,
+	}));
+}
+
+type Props = CollectionEntry<'events'>;
+
+const event = Astro.props;
+const { title, date, endDate, location, description, heroImage } = event.data;
+const { Content } = await render(event);
+
+const dateLabel = date.toLocaleDateString('en-GB', {
+	weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+});
+const timeLabel = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`${title} | Events | 2312 Squadron`} description={description} />
+	</head>
+	<body>
+		<a href="#main-content" class="skip-link">Skip to main content</a>
+		<Header />
+		<main id="main-content">
+			{heroImage ? (
+				<div class="event-hero" role="img" aria-label={title}>
+					<img src={heroImage.src} alt="" class="event-hero-img" width="1400" height="500" loading="eager" />
+					<div class="event-hero-overlay">
+						<div class="event-hero-content page-content" style="padding-top:0;padding-bottom:0;">
+							<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--light">
+								<a href="/">Home</a>
+								<span aria-hidden="true">›</span>
+								<a href="/events">Events</a>
+								<span aria-hidden="true">›</span>
+								<span aria-current="page">{title}</span>
+							</nav>
+							<h1 class="event-hero-title">{title}</h1>
+						</div>
+					</div>
+				</div>
+			) : (
+				<div class="hero-banner">
+					<nav aria-label="Breadcrumb" class="breadcrumb" style="justify-content:center; color:rgba(255,255,255,0.7); margin-bottom:0.5rem;">
+						<a href="/" style="color:rgba(255,255,255,0.8);">Home</a>
+						<span aria-hidden="true" style="margin:0 0.4rem;">›</span>
+						<a href="/events" style="color:rgba(255,255,255,0.8);">Events</a>
+						<span aria-hidden="true" style="margin:0 0.4rem;">›</span>
+						<span aria-current="page">{title}</span>
+					</nav>
+					<h1>{title}</h1>
+				</div>
+			)}
+
+			<div class="page-content event-page-layout">
+				<!-- Sidebar -->
+				<aside class="event-meta-panel" aria-label="Event details">
+					<div class="event-meta-block">
+						<h2 class="event-meta-title">Event Details</h2>
+						<dl class="event-meta-list">
+							<div class="event-meta-item">
+								<dt>
+									<span class="material-icons" aria-hidden="true">event</span>
+									Date
+								</dt>
+								<dd>
+									<time datetime={date.toISOString()}>{dateLabel}</time>
+									{showTime && <span class="event-meta-time">{timeLabel}</span>}
+								</dd>
+							</div>
+
+							{endDate && (
+								<div class="event-meta-item">
+									<dt>
+										<span class="material-icons" aria-hidden="true">event_available</span>
+										Ends
+									</dt>
+									<dd>
+										<time datetime={endDate.toISOString()}>
+											<FormattedDate date={endDate} />
+										</time>
+									</dd>
+								</div>
+							)}
+
+							<div class="event-meta-item">
+								<dt>
+									<span class="material-icons" aria-hidden="true">location_on</span>
+									Location
+								</dt>
+								<dd>{location}</dd>
+							</div>
+						</dl>
+
+						<a href="/contact" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:1rem;">
+							Enquire about this event
+						</a>
+						<a href="/events" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.5rem;">
+							← Back to Events
+						</a>
+					</div>
+				</aside>
+
+				<!-- Main body -->
+				<article class="event-body">
+					<p class="event-description-lede">{description}</p>
+					<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:1.5rem 0;" />
+					<div class="prose-content">
+						<Content />
+					</div>
+				</article>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	/* Hero with image */
+	.event-hero {
+		position: relative;
+		width: 100%;
+		max-height: 420px;
+		overflow: hidden;
+	}
+
+	.event-hero-img {
+		width: 100%;
+		height: 420px;
+		object-fit: cover;
+		object-position: center;
+		display: block;
+	}
+
+	.event-hero-overlay {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+		display: flex;
+		align-items: flex-end;
+		padding-bottom: 2rem;
+	}
+
+	.event-hero-content {
+		color: #fff;
+		width: 100%;
+	}
+
+	.event-hero-title {
+		font-size: clamp(1.75rem, 4vw, 2.75rem);
+		color: #fff;
+		text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+		margin: 0.25rem 0 0;
+	}
+
+	.breadcrumb--light a { color: rgba(255,255,255,0.8); }
+	.breadcrumb--light a:hover { color: #fff; }
+	.breadcrumb--light { color: rgba(255,255,255,0.6); }
+
+	/* Two-column layout */
+	.event-page-layout {
+		display: grid;
+		grid-template-columns: 1fr 300px;
+		gap: 2.5rem;
+		align-items: start;
+		padding-top: 2rem;
+		padding-bottom: 3rem;
+	}
+
+	@media (max-width: 768px) {
+		.event-page-layout {
+			grid-template-columns: 1fr;
+		}
+		.event-meta-panel {
+			order: -1;
+		}
+	}
+
+	/* Meta panel */
+	.event-meta-panel {
+		position: sticky;
+		top: 1rem;
+	}
+
+	.event-meta-block {
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: var(--box-shadow);
+		padding: 1.5rem;
+		border-top: 4px solid var(--rafRed);
+	}
+
+	.event-meta-title {
+		font-size: 1rem;
+		color: var(--rafDarkBlue);
+		margin-bottom: 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		font-size: 0.85rem;
+	}
+
+	.event-meta-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+		margin: 0;
+		padding: 0;
+	}
+
+	.event-meta-item dt {
+		font-size: 0.75rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: rgb(var(--gray));
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-bottom: 0.15rem;
+	}
+
+	.event-meta-item dt .material-icons {
+		font-size: 0.95em;
+		color: var(--rafRed);
+	}
+
+	.event-meta-item dd {
+		margin: 0;
+		font-size: 0.95rem;
+		color: rgb(var(--gray-dark));
+		font-weight: 600;
+	}
+
+	.event-meta-time {
+		display: block;
+		font-weight: 400;
+		color: rgb(var(--gray));
+		font-size: 0.85rem;
+	}
+
+	/* Main article */
+	.event-body {
+		min-width: 0;
+	}
+
+	.event-description-lede {
+		font-size: 1.15rem;
+		color: rgb(var(--gray-dark));
+		line-height: 1.7;
+		font-weight: 400;
+	}
+</style>

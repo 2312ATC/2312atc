@@ -4,17 +4,27 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = SITE_TITLE,
+	description = SITE_DESCRIPTION,
+} = Astro.props;
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={title} description={description} />
 	</head>
 
 	<body>
+		<a href="#main-content" class="skip-link">Skip to main content</a>
 		<Header />
-		<main>
-            <slot />
+		<main id="main-content">
+			<slot />
 		</main>
 		<Footer />
 	</body>

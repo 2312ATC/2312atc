@@ -1,39 +1,265 @@
 ---
-import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import { Image } from 'astro:assets';
+import logo from '../assets/images/whiteLogo.png';
 ---
 
-<header>
-	<nav>
-		<a href="/">
-			<img src="/src/assets/images/logo.jpg" alt="RAFAC Logo" />
+<header class="site-header">
+	<div class="mobile-nav-backdrop" data-nav-backdrop aria-hidden="true"></div>
+	<nav aria-label="Main navigation">
+		<a class="logo-link" href="/" aria-label="2312 Squadron Air Cadets — Home">
+			<Image
+				src={logo}
+				alt="Royal Air Force Air Cadets 2312 Squadron logo"
+				layout="constrained"
+				loading="eager"
+				fetchpriority="high"
+				class="logo-image"
+			/>
 		</a>
-		<div class="internal-links">
-			<HeaderLink href="/joinUs">Join Us!</HeaderLink>
-			<HeaderLink href="/blog">Blog</HeaderLink>
-			<HeaderLink href="/cadets">Cadets</HeaderLink>
+		<button
+			type="button"
+			class="burger"
+			aria-label="Open navigation menu"
+			aria-expanded="false"
+			aria-controls="nav-links"
+		>
+			<span class="material-icons" aria-hidden="true">menu</span>
+		</button>
+		<div id="nav-links" class="internal-links">
+			<HeaderLink href="/about">About</HeaderLink>
+			<HeaderLink href="/events">Events</HeaderLink>
+			<HeaderLink href="/blog">News</HeaderLink>
 			<HeaderLink href="/whatWeDo">What We Do</HeaderLink>
+			<HeaderLink href="/cadets">Cadets</HeaderLink>
+			<HeaderLink href="/joinUs" class="nav-join">Join Us</HeaderLink>
+			<HeaderLink href="/contact">Contact</HeaderLink>
 		</div>
 	</nav>
-	
 </header>
-<style>
 
-	header {
+<style>
+	.site-header {
+		position: relative;
+		z-index: 20;
 		background-color: var(--rafDarkBlue);
+		line-height: 0;
+		--logo-slant: clamp(8px, 4vw, 50px);
+		--stripe-height: clamp(8px, 4vw, 50px);
+	}
+
+	/* RAF red stripe at bottom of header */
+	.site-header::after {
+		content: '';
+		display: block;
+		height: 4px;
+		background: var(--rafRed);
 	}
 
 	nav {
-		display: inline-flex;
-		justify-content: space-around;
+		position: relative;
+		z-index: 1;
+		display: flex;
+		justify-content: space-between;
 		align-items: center;
 		width: 100%;
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 1rem;
+		column-gap: 1rem;
+	}
+
+	.logo-link {
+		display: block;
+		max-width: 260px;
+		min-width: 0;
+		flex-shrink: 1;
+
+		.logo-image {
+			box-sizing: border-box;
+			max-height: 12vh;
+			min-height: 56px;
+			padding: 0.4rem var(--logo-slant);
+			border-radius: 0;
+			background-color: white;
+			clip-path: polygon(var(--logo-slant) 0, 100% 0, calc(100% - var(--logo-slant)) 100%, 0 100%);
+		}
+	}
+
+	.logo-link :global(img) {
+		width: 100%;
+		max-width: 100%;
+		height: auto;
+	}
+
+	.burger {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		margin: 0;
+		padding: 0.4rem;
+		border: 2px solid rgba(255,255,255,0.3);
+		border-radius: 6px;
+		background: transparent;
+		color: #fff;
+		cursor: pointer;
+		flex-shrink: 0;
+	}
+
+	.burger:focus-visible {
+		outline: 3px solid var(--rafRed);
+		outline-offset: 2px;
+	}
+
+	.burger .material-icons {
+		font-size: 1.5rem;
+		line-height: 1;
 	}
 
 	.internal-links {
 		display: inline-flex;
-		justify-content: space-between;
+		justify-content: flex-end;
 		align-items: center;
-		gap: 1.5rem;
+		gap: 0.25rem;
+		line-height: 1.7;
+		flex-wrap: wrap;
+	}
+
+	/* "Join Us" gets a highlighted treatment */
+	.internal-links :global(.nav-join a) {
+		background: var(--rafRed);
+		border-radius: 4px;
+		padding: 0.25rem 0.75rem;
+	}
+
+	.mobile-nav-backdrop {
+		display: none;
+	}
+
+	@media (max-width: 780px) {
+		nav {
+			justify-content: space-between;
+		}
+
+		.burger {
+			display: inline-flex;
+		}
+
+		.mobile-nav-backdrop {
+			display: block;
+			position: fixed;
+			z-index: 0;
+			top: var(--header-height, 4.5rem);
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0, 0, 0, 0.45);
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.3s ease;
+		}
+
+		.mobile-nav-backdrop.open {
+			opacity: 1;
+			pointer-events: auto;
+		}
+
+		.internal-links {
+			display: flex;
+			flex-direction: column;
+			align-items: stretch;
+			position: fixed;
+			z-index: 2;
+			top: var(--header-height, 4.5rem);
+			right: 0;
+			width: max-content;
+			max-width: min(90vw, 22rem);
+			margin: 0;
+			padding: 0;
+			max-height: 0;
+			overflow: hidden;
+			transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+			background-color: var(--rafDarkBlue);
+			box-shadow: -4px 12px 28px rgba(0, 0, 0, 0.3);
+			border-radius: 0 0 0 0.5rem;
+			pointer-events: none;
+		}
+
+		.internal-links.open {
+			max-height: min(80vh, 30rem);
+			pointer-events: auto;
+			padding: 0.5rem 0;
+		}
+
+		.internal-links :global(.nav-join a) {
+			margin: 0;
+			border-radius: 0;
+		}
 	}
 </style>
+
+<script>
+	const headerEl = document.querySelector<HTMLElement>('.site-header');
+	if (!headerEl) throw new Error('Missing .site-header');
+	const navLinks = headerEl.querySelector<HTMLElement>('#nav-links');
+	const burger = headerEl.querySelector<HTMLButtonElement>('.burger');
+	const icon = headerEl.querySelector<HTMLElement>('.material-icons');
+	const backdrop = headerEl.querySelector<HTMLElement>('[data-nav-backdrop]');
+
+	function syncHeaderHeight() {
+		const h = headerEl?.offsetHeight ?? null;
+		if (h != null) {
+			document.documentElement.style.setProperty('--header-height', `${h}px`);
+		}
+	}
+
+	function syncNavInert() {
+		if (!navLinks) return;
+		const mobile = window.matchMedia('(max-width: 780px)').matches;
+		const open = navLinks.classList.contains('open');
+		if (mobile && !open) {
+			navLinks.setAttribute('inert', '');
+		} else {
+			navLinks.removeAttribute('inert');
+		}
+	}
+
+	function setNavOpen(open: boolean) {
+		if (!navLinks || !burger || !icon) return;
+		navLinks.classList.toggle('open', open);
+		syncNavInert();
+		backdrop?.classList.toggle('open', open);
+		if (backdrop) backdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+		burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+		burger.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+		icon.textContent = open ? 'close' : 'menu';
+		document.body.style.overflow = open ? 'hidden' : '';
+	}
+
+	burger?.addEventListener('click', () => {
+		const isOpen = navLinks?.classList.contains('open') ?? false;
+		syncHeaderHeight();
+		setNavOpen(!isOpen);
+	});
+
+	backdrop?.addEventListener('click', () => setNavOpen(false));
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && navLinks?.classList.contains('open')) {
+			setNavOpen(false);
+			burger?.focus();
+		}
+	});
+
+	syncHeaderHeight();
+	syncNavInert();
+	window.addEventListener('resize', () => {
+		syncHeaderHeight();
+		const mobile = window.matchMedia('(max-width: 780px)').matches;
+		if (!mobile && navLinks?.classList.contains('open')) {
+			setNavOpen(false);
+		} else {
+			syncNavInert();
+		}
+	});
+</script>

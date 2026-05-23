@@ -1,0 +1,99 @@
+---
+import { getCollection } from 'astro:content';
+import Page from '../../layouts/Page.astro';
+import EventCard from '../../components/EventCard.astro';
+import EventCalendar from '../../components/EventCalendar.astro';
+
+const allEvents = (await getCollection('events')).sort(
+	(a, b) => a.data.date.valueOf() - b.data.date.valueOf()
+);
+
+const now = new Date();
+const upcomingEvents = allEvents.filter((e) => e.data.date >= now);
+const pastEvents = allEvents.filter((e) => e.data.date < now).reverse();
+
+// Calendar: default to current month
+const calYear = now.getFullYear();
+const calMonth = now.getMonth();
+
+const MONTH_NAMES = [
+	'January','February','March','April','May','June',
+	'July','August','September','October','November','December'
+];
+---
+
+<Page title="Events | 2312 Squadron Air Cadets" description="Upcoming events and activities at 2312 Squadron Air Cadets, Tavistock.">
+	<div class="hero-banner">
+		<h1>Events</h1>
+		<p>Upcoming activities, competitions and adventures for 2312 Squadron</p>
+	</div>
+
+	<div class="page-content">
+		<!-- Calendar -->
+		<section aria-labelledby="calendar-heading" style="margin-bottom: 2.5rem;">
+			<div class="section-header">
+				<h2 id="calendar-heading" class="section-heading">{MONTH_NAMES[calMonth]} {calYear}</h2>
+			</div>
+			<EventCalendar events={allEvents} year={calYear} month={calMonth} />
+			<p style="font-size:0.8rem; color:rgb(var(--gray)); margin-top:0.5rem;">
+				Click an event on the calendar to view full details.
+			</p>
+		</section>
+
+		<!-- Upcoming events list -->
+		<section aria-labelledby="upcoming-heading" style="margin-bottom: 3rem;">
+			<h2 id="upcoming-heading" class="section-heading" style="margin-bottom:1.25rem;">Upcoming Events</h2>
+			{upcomingEvents.length > 0 ? (
+				<div class="events-list-grid">
+					{upcomingEvents.map((event) => (
+						<EventCard event={event} />
+					))}
+				</div>
+			) : (
+				<p class="events-empty">No upcoming events scheduled at the moment. Check back soon!</p>
+			)}
+		</section>
+
+		<!-- Past events -->
+		{pastEvents.length > 0 && (
+			<section aria-labelledby="past-heading">
+				<h2 id="past-heading" class="section-heading" style="margin-bottom:1.25rem;">Past Events</h2>
+				<div class="events-list-grid events-list-grid--past">
+					{pastEvents.map((event) => (
+						<EventCard event={event} />
+					))}
+				</div>
+			</section>
+		)}
+	</div>
+</Page>
+
+<style>
+	.section-header {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.events-list-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.events-list-grid--past {
+		opacity: 0.75;
+	}
+
+	.events-empty {
+		color: rgb(var(--gray));
+		font-style: italic;
+		padding: 1.5rem;
+		background: rgba(229,233,240,0.4);
+		border-radius: 8px;
+		text-align: center;
+	}
+</style>

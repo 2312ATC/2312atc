@@ -1,16 +1,211 @@
 ---
 import Page from '../layouts/Page.astro';
+import { getCollection } from 'astro:content';
+
+const opportunitiesList = (await getCollection('opportunities'))
+	.sort((a, b) => a.data.order - b.data.order);
 ---
 
-<Page>
-    <h1>Cadets</h1>
-    <p>
-        Cadets are the future of the RAF. They are the ones who will serve the country and protect its citizens.
-    </p>
-    <p>
-        Cadets are the ones who will serve the country and protect its citizens.
-    </p>
-    <p>
-        Cadets are the ones who will serve the country and protect its citizens.
-    </p>
+<Page title="For Cadets | 2312 Squadron Air Cadets" description="Resources, training information and useful links for current cadets at 2312 Squadron.">
+	<div class="hero-banner">
+		<h1>For Cadets</h1>
+		<p>Resources, training and information for current members of 2312 Squadron</p>
+	</div>
+
+	<div class="page-content">
+		<nav aria-label="Breadcrumb" class="breadcrumb">
+			<a href="/">Home</a>
+			<span aria-hidden="true">›</span>
+			<span aria-current="page">For Cadets</span>
+		</nav>
+
+		<!-- Training syllabus -->
+		<section aria-labelledby="cadets-training" class="cadets-section">
+			<h2 id="cadets-training" class="section-heading">Training Syllabus</h2>
+			<p style="color:rgb(var(--gray-dark)); margin-bottom:1.5rem;">
+				The Air Cadet training programme is structured into levels from First Class through to Master Cadet. Each stage develops new skills and knowledge across a range of subjects.
+			</p>
+			<div class="training-grid">
+				<div class="training-card">
+					<div class="training-card-badge">Level 1</div>
+					<h3>First Class</h3>
+					<p>Introduction to Air Cadet life: drill, uniform, RAF history, and basic aviation knowledge.</p>
+				</div>
+				<div class="training-card">
+					<div class="training-card-badge">Level 2</div>
+					<h3>Leading Cadet</h3>
+					<p>Expanding knowledge of aviation, navigation, first aid, and leadership fundamentals.</p>
+				</div>
+				<div class="training-card">
+					<div class="training-card-badge">Level 3</div>
+					<h3>Senior Cadet</h3>
+					<p>Advanced aviation theory, meteorology, communications and continued leadership development.</p>
+				</div>
+				<div class="training-card">
+					<div class="training-card-badge">Level 4</div>
+					<h3>Master Cadet</h3>
+					<p>The highest training classification — covering complex aviation topics, expedition leadership and BTEC modules.</p>
+				</div>
+			</div>
+		</section>
+
+		<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:2.5rem 0;" />
+
+		<!-- Opportunities -->
+		<section aria-labelledby="cadets-opportunities" class="cadets-section">
+			<h2 id="cadets-opportunities" class="section-heading">Opportunities</h2>
+			<ul class="opportunities-list">
+				{opportunitiesList.map((opp) => (
+					<li>
+						<span class="material-icons" aria-hidden="true">{opp.data.icon}</span>
+						<div>
+							<strong>{opp.data.title}</strong>
+							<span>{opp.data.description}</span>
+						</div>
+					</li>
+				))}
+			</ul>
+		</section>
+		<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:2.5rem 0;" />
+
+		<!-- Useful links -->
+		<section aria-labelledby="cadets-links" class="cadets-section">
+			<h2 id="cadets-links" class="section-heading">Useful Links</h2>
+			<div class="links-grid">
+				<a href="https://www.raf.mod.uk/aircadets/" target="_blank" rel="noopener noreferrer" class="link-card">
+					<span class="material-icons" aria-hidden="true">open_in_new</span>
+					<span>RAFAC Official Website</span>
+				</a>
+				<a href="https://www.cadetdirect.com/" target="_blank" rel="noopener noreferrer" class="link-card">
+					<span class="material-icons" aria-hidden="true">open_in_new</span>
+					<span>Cadet Direct (Uniform &amp; Kit)</span>
+				</a>
+				<a href="https://www.dofe.org/" target="_blank" rel="noopener noreferrer" class="link-card">
+					<span class="material-icons" aria-hidden="true">open_in_new</span>
+					<span>Duke of Edinburgh Award</span>
+				</a>
+				<a href="/events" class="link-card">
+					<span class="material-icons" aria-hidden="true">event</span>
+					<span>Upcoming Events</span>
+				</a>
+				<a href="/blog" class="link-card">
+					<span class="material-icons" aria-hidden="true">newspaper</span>
+					<span>Squadron News</span>
+				</a>
+				<a href="/contact" class="link-card">
+					<span class="material-icons" aria-hidden="true">mail</span>
+					<span>Contact the Squadron</span>
+				</a>
+			</div>
+		</section>
+	</div>
 </Page>
+
+<style>
+	.cadets-section { margin-bottom: 0.5rem; }
+
+	/* Training cards */
+	.training-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 1rem;
+	}
+
+	.training-card {
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: var(--box-shadow);
+		padding: 1.25rem;
+		border-top: 3px solid var(--rafDarkBlue);
+	}
+
+	.training-card-badge {
+		display: inline-block;
+		background: var(--rafRed);
+		color: #fff;
+		font-size: 0.7rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.07em;
+		padding: 0.15rem 0.5rem;
+		border-radius: 3px;
+		margin-bottom: 0.5rem;
+	}
+
+	.training-card h3 { font-size: 1rem; color: var(--rafDarkBlue); margin-bottom: 0.35rem; }
+	.training-card p { font-size: 0.88rem; color: rgb(var(--gray-dark)); margin: 0; line-height: 1.5; }
+
+	/* Opportunities */
+	.opportunities-list {
+		list-style: none;
+		padding: 0;
+		margin-top: 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+	}
+
+	.opportunities-list li {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		padding: 1rem 1.25rem;
+		background: rgba(229,233,240,0.35);
+		border-radius: 8px;
+	}
+
+	.opportunities-list .material-icons {
+		color: var(--rafRed);
+		font-size: 1.4rem;
+		flex-shrink: 0;
+		margin-top: 1px;
+	}
+
+	.opportunities-list div {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+	}
+
+	.opportunities-list strong {
+		font-size: 0.95rem;
+		color: var(--rafDarkBlue);
+	}
+
+	.opportunities-list span {
+		font-size: 0.88rem;
+		color: rgb(var(--gray-dark));
+	}
+
+	/* Links grid */
+	.links-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+		gap: 1rem;
+		margin-top: 1.25rem;
+	}
+
+	.link-card {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 1rem 1.25rem;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: var(--box-shadow);
+		text-decoration: none;
+		color: var(--rafDarkBlue);
+		font-weight: 600;
+		font-size: 0.92rem;
+		transition: background 0.15s, color 0.15s;
+		border: 2px solid transparent;
+	}
+
+	.link-card:hover {
+		background: var(--rafDarkBlue);
+		color: #fff;
+		border-color: var(--rafDarkBlue);
+	}
+
+	.link-card .material-icons { font-size: 1.1rem; flex-shrink: 0; }
+</style>

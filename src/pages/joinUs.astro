@@ -1,16 +1,313 @@
 ---
 import Page from '../layouts/Page.astro';
+import { getCollection, render } from 'astro:content';
+
+const faqItems = (await getCollection('faq'))
+	.sort((a, b) => a.data.order - b.data.order);
+
+const renderedFaq = await Promise.all(
+	faqItems.map(async (item) => {
+		const { Content } = await render(item);
+		return { item, Content };
+	})
+);
 ---
 
-<Page>
-    <h1>Join Us!</h1>
-    <p>
-        Join us to become a part of the RAFAC family.
-    </p>
-    <p>
-        We are always looking for new members to join our team.
-    </p>
-    <p>
-        If you are interested in joining us, please contact us.
-    </p>
+<Page title="Join Us | 2312 Squadron Air Cadets" description="Find out how to join 2312 Squadron Air Cadets in Tavistock. Open to young people aged 12–20.">
+	<div class="hero-banner">
+		<h1>Join the Air Cadets</h1>
+		<p>Start your adventure with 2312 Squadron today</p>
+	</div>
+
+	<div class="page-content">
+		<nav aria-label="Breadcrumb" class="breadcrumb">
+			<a href="/">Home</a>
+			<span aria-hidden="true">›</span>
+			<span aria-current="page">Join Us</span>
+		</nav>
+
+		<!-- Eligibility -->
+		<section aria-labelledby="join-eligibility" class="join-section">
+			<h2 id="join-eligibility" class="section-heading">Am I Eligible?</h2>
+			<div class="eligibility-grid">
+				<div class="eligibility-card eligibility-card--yes">
+					<span class="material-icons" aria-hidden="true">check_circle</span>
+					<h3>You can join if you are:</h3>
+					<ul>
+						<li>Aged <strong>12 to 17</strong> to join as a cadet</li>
+						<li>Living in or near <strong>Tavistock, Devon</strong></li>
+						<li>Ready to attend parade nights regularly</li>
+						<li>Interested in aviation, adventure or team activities</li>
+					</ul>
+				</div>
+				<div class="eligibility-card eligibility-card--info">
+					<span class="material-icons" aria-hidden="true">info</span>
+					<h3>For adults (18+):</h3>
+					<ul>
+						<li>You can apply to become a <strong>Civilian Instructor (CI)</strong></li>
+						<li>Or a <strong>Cadet Force Adult Volunteer (CFAV)</strong></li>
+						<li>No military background required</li>
+						<li>Full training and DBS checks provided</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:2.5rem 0;" />
+
+		<!-- Parade nights -->
+		<section aria-labelledby="join-parades" class="join-section">
+			<h2 id="join-parades" class="section-heading">Parade Nights</h2>
+			<div class="parade-info">
+				<div class="parade-detail">
+					<span class="material-icons" aria-hidden="true">event</span>
+					<div>
+						<strong>Tuesday &amp; Thursday</strong>
+						<span>1900 – 2130 hrs</span>
+					</div>
+				</div>
+				<div class="parade-detail">
+					<span class="material-icons" aria-hidden="true">location_on</span>
+					<div>
+						<strong>Tavistock, Devon</strong>
+						<span><a href="/contact">Contact us for the exact address →</a></span>
+					</div>
+				</div>
+			</div>
+			<p style="color:rgb(var(--gray-dark)); margin-top:1rem;">
+				We welcome prospective cadets and their parents/guardians to come along and watch a parade night before committing to joining. Just <a href="/contact">get in touch</a> to arrange a visit.
+			</p>
+		</section>
+
+		<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:2.5rem 0;" />
+
+		<!-- What to expect -->
+		<section aria-labelledby="join-expect" class="join-section">
+			<h2 id="join-expect" class="section-heading">What to Expect</h2>
+			<ol class="join-steps">
+				<li class="join-step">
+					<div class="join-step-num" aria-hidden="true">1</div>
+					<div>
+						<h3>Get in touch</h3>
+						<p>Contact us by email or come along to a parade night. We'll answer all your questions and arrange a visit.</p>
+					</div>
+				</li>
+				<li class="join-step">
+					<div class="join-step-num" aria-hidden="true">2</div>
+					<div>
+						<h3>Come for a visit</h3>
+						<p>Watch a parade night in your own clothes — no uniform needed. Meet the cadets and staff and see what we get up to.</p>
+					</div>
+				</li>
+				<li class="join-step">
+					<div class="join-step-num" aria-hidden="true">3</div>
+					<div>
+						<h3>Complete the paperwork</h3>
+						<p>We'll give you the joining forms to complete with your parent or guardian. These include consent forms and a brief medical questionnaire.</p>
+					</div>
+				</li>
+				<li class="join-step">
+					<div class="join-step-num" aria-hidden="true">4</div>
+					<div>
+						<h3>Get your uniform &amp; get started!</h3>
+						<p>Once enrolled, you'll be issued your uniform and begin your cadet training. Welcome to 2312 Squadron!</p>
+					</div>
+				</li>
+			</ol>
+		</section>
+
+		<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:2.5rem 0;" />
+
+		<!-- FAQs -->
+		<section aria-labelledby="join-faq" class="join-section">
+			<h2 id="join-faq" class="section-heading">Frequently Asked Questions</h2>
+			<div class="faq-list">
+				{renderedFaq.map(({ item, Content }) => (
+					<details class="faq-item">
+						<summary>{item.data.question}</summary>
+						<div class="faq-answer faq-prose">
+							<Content />
+						</div>
+					</details>
+				))}
+			</div>
+		</section>
+
+		<!-- CTA -->
+		<div class="join-cta-box">
+			<h2>Ready to join?</h2>
+			<p>Send us a message and we'll get back to you within a few days.</p>
+			<a href="/contact?enquiry=join" class="btn btn-primary" style="font-size:1.05rem;padding:0.7rem 2rem;">Enquire about joining</a>
+		</div>
+	</div>
 </Page>
+
+<style>
+	.join-section { margin-bottom: 0.5rem; }
+
+	.eligibility-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 1.25rem;
+		margin-top: 1.25rem;
+	}
+
+	.eligibility-card {
+		border-radius: 8px;
+		padding: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.eligibility-card--yes {
+		background: #f0fdf4;
+		border-left: 5px solid #22c55e;
+	}
+	.eligibility-card--yes .material-icons { color: #16a34a; font-size: 1.6rem; }
+
+	.eligibility-card--info {
+		background: #eff6ff;
+		border-left: 5px solid #3b82f6;
+	}
+	.eligibility-card--info .material-icons { color: #2563eb; font-size: 1.6rem; }
+
+	.eligibility-card h3 { font-size: 1rem; color: var(--rafDarkBlue); margin: 0; }
+	.eligibility-card ul { margin: 0; padding-left: 1.25rem; }
+	.eligibility-card li { font-size: 0.92rem; margin-bottom: 0.3rem; color: rgb(var(--gray-dark)); }
+
+	/* Parade info */
+	.parade-info {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+		margin-top: 1.25rem;
+	}
+
+	.parade-detail {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		background: rgba(229,233,240,0.4);
+		border-radius: 8px;
+		padding: 1rem 1.25rem;
+		flex: 1;
+		min-width: 220px;
+	}
+
+	.parade-detail .material-icons {
+		color: var(--rafRed);
+		font-size: 1.4rem;
+		flex-shrink: 0;
+	}
+
+	.parade-detail div {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+	}
+
+	.parade-detail strong { color: var(--rafDarkBlue); font-size: 1rem; }
+	.parade-detail span { font-size: 0.9rem; color: rgb(var(--gray-dark)); }
+
+	/* Steps */
+	.join-steps {
+		list-style: none;
+		padding: 0;
+		margin-top: 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.join-step {
+		display: flex;
+		gap: 1.25rem;
+		align-items: flex-start;
+	}
+
+	.join-step-num {
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 50%;
+		background: var(--rafRed);
+		color: #fff;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.1rem;
+		font-weight: 800;
+		flex-shrink: 0;
+	}
+
+	.join-step h3 { font-size: 1rem; color: var(--rafDarkBlue); margin-bottom: 0.25rem; }
+	.join-step p { font-size: 0.92rem; color: rgb(var(--gray-dark)); margin: 0; line-height: 1.5; }
+
+	/* FAQs */
+	.faq-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-top: 1.25rem;
+	}
+
+	.faq-item {
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 6px;
+		overflow: hidden;
+	}
+
+	.faq-item summary {
+		padding: 1rem 1.25rem;
+		font-weight: 600;
+		color: var(--rafDarkBlue);
+		cursor: pointer;
+		list-style: none;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: rgba(229,233,240,0.3);
+	}
+
+	.faq-item summary::-webkit-details-marker { display: none; }
+
+	.faq-item summary::after {
+		content: '+';
+		font-size: 1.2rem;
+		color: var(--rafRed);
+		font-weight: 700;
+		flex-shrink: 0;
+	}
+
+	.faq-item[open] summary::after { content: '−'; }
+
+	.faq-item:focus-within summary {
+		outline: 3px solid var(--rafRed);
+		outline-offset: 2px;
+	}
+
+	.faq-answer {
+		padding: 1rem 1.25rem;
+		border-top: 1px solid rgb(var(--gray-light));
+	}
+
+	.faq-answer p { font-size: 0.92rem; color: rgb(var(--gray-dark)); margin: 0; line-height: 1.6; }
+
+	.faq-prose :global(p) { font-size: 0.92rem; color: rgb(var(--gray-dark)); margin: 0 0 0.5rem; line-height: 1.6; }
+	.faq-prose :global(p:last-child) { margin-bottom: 0; }
+	.faq-prose :global(a) { color: var(--rafDarkBlue); }
+	.faq-prose :global(strong) { color: var(--rafDarkBlue); }
+
+	/* CTA box */
+	.join-cta-box {
+		background: linear-gradient(135deg, var(--rafDarkBlue) 0%, var(--rafLightBlue) 100%);
+		border-radius: 12px;
+		padding: 2.5rem 2rem;
+		text-align: center;
+		color: #fff;
+		margin-top: 3rem;
+	}
+
+	.join-cta-box h2 { color: #fff; font-size: 1.75rem; margin-bottom: 0.5rem; }
+	.join-cta-box p { color: rgba(255,255,255,0.85); margin-bottom: 1.5rem; font-size: 1.05rem; }
+</style>

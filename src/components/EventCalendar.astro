@@ -1,0 +1,210 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	events: CollectionEntry<'events'>[];
+	year: number;
+	month: number; // 0-indexed
+}
+
+const { events, year, month } = Astro.props;
+
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const MONTH_NAMES = [
+	'January','February','March','April','May','June',
+	'July','August','September','October','November','December'
+];
+
+const firstDay = new Date(year, month, 1);
+// Monday-indexed (0=Mon … 6=Sun)
+const startOffset = (firstDay.getDay() + 6) % 7;
+const daysInMonth = new Date(year, month + 1, 0).getDate();
+const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+
+// Build event lookup: key = "YYYY-M-D"
+const eventsByDay: Record<string, CollectionEntry<'events'>[]> = {};
+for (const event of events) {
+	const d = event.data.date;
+	if (d.getFullYear() === year && d.getMonth() === month) {
+		const key = `${year}-${month}-${d.getDate()}`;
+		if (!eventsByDay[key]) eventsByDay[key] = [];
+		eventsByDay[key].push(event);
+	}
+}
+
+const today = new Date();
+const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+
+// Pre-compute cells so no comparisons are needed inside JSX
+interface CalCell {
+	dayNum: number;
+	valid: boolean;
+	isToday: boolean;
+	hasEvents: boolean;
+	ariaLabel: string | undefined;
+	dayEvents: CollectionEntry<'events'>[];
+}
+
+const cells: CalCell[] = Array.from({ length: totalCells }, (_, i) => {
+	const dayNum = i - startOffset + 1;
+	const valid = dayNum >= 1 && dayNum <= daysInMonth;
+	const key = `${year}-${month}-${dayNum}`;
+	const dayEvents = valid ? (eventsByDay[key] ?? []) : [];
+	const isToday = valid && key === todayKey;
+	const hasEvents = dayEvents.length >= 1;
+	const eventWord = dayEvents.length === 1 ? 'event' : 'events';
+	const ariaLabel = valid
+		? `${dayNum} ${MONTH_NAMES[month]}${hasEvents ? `, ${dayEvents.length} ${eventWord}` : ''}`
+		: undefined;
+	return { dayNum, valid, isToday, hasEvents, ariaLabel, dayEvents };
+});
+---
+
+<div class="cal" aria-label={`Calendar for ${MONTH_NAMES[month]} ${year}`} role="grid">
+	<!-- Day headers -->
+	<div class="cal-header" role="row" aria-hidden="true">
+		{DAYS.map(d => <div class="cal-day-name" role="columnheader">{d}</div>)}
+	</div>
+
+	<!-- Cells -->
+	<div class="cal-grid">
+		{cells.map((cell) => (
+			<div
+				class:list={['cal-cell', {
+					'cal-cell--empty': !cell.valid,
+					'cal-cell--today': cell.isToday,
+					'cal-cell--has-events': cell.hasEvents
+				}]}
+				role="gridcell"
+				aria-label={cell.ariaLabel}
+			>
+				{cell.valid && (
+					<>
+						<span class="cal-cell__num">{cell.dayNum}</span>
+						{cell.dayEvents.map(e => (
+							<a
+								href={`/events/${e.id}/`}
+								class="cal-event-pill"
+								title={e.data.title}
+								aria-label={e.data.title}
+							>
+								{e.data.title}
+							</a>
+						))}
+					</>
+				)}
+			</div>
+		))}
+	</div>
+</div>
+
+<style>
+	.cal {
+		width: 100%;
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 8px;
+		overflow: hidden;
+		font-size: 0.88rem;
+	}
+
+	.cal-header {
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		background: var(--rafDarkBlue);
+		color: #fff;
+	}
+
+	.cal-day-name {
+		text-align: center;
+		padding: 0.5rem 0.25rem;
+		font-weight: 700;
+		font-size: 0.78rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	.cal-grid {
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+	}
+
+	.cal-cell {
+		min-height: 5rem;
+		padding: 0.3rem 0.25rem;
+		border-right: 1px solid rgb(var(--gray-light));
+		border-bottom: 1px solid rgb(var(--gray-light));
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		position: relative;
+	}
+
+	.cal-cell:nth-child(7n) {
+		border-right: none;
+	}
+
+	.cal-cell--empty {
+		background: rgba(229,233,240,0.3);
+	}
+
+	.cal-cell--today {
+		background: rgba(207, 20, 43, 0.04);
+	}
+
+	.cal-cell--today .cal-cell__num {
+		background: var(--rafRed);
+		color: #fff;
+		border-radius: 50%;
+		width: 1.4rem;
+		height: 1.4rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.cal-cell__num {
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: rgb(var(--gray));
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		margin-bottom: 0.1rem;
+	}
+
+	.cal-event-pill {
+		display: block;
+		background: var(--rafDarkBlue);
+		color: #fff;
+		border-radius: 3px;
+		padding: 0.1rem 0.3rem;
+		font-size: 0.7rem;
+		font-weight: 600;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		text-decoration: none;
+		line-height: 1.4;
+		transition: background 0.15s;
+	}
+
+	.cal-event-pill:hover {
+		background: var(--rafRed);
+	}
+
+	.cal-event-pill:focus-visible {
+		outline: 2px solid var(--rafRed);
+		outline-offset: 1px;
+	}
+
+	@media (max-width: 560px) {
+		.cal-cell {
+			min-height: 3rem;
+			padding: 0.2rem 0.1rem;
+		}
+		.cal-event-pill {
+			font-size: 0.6rem;
+			padding: 0.05rem 0.2rem;
+		}
+	}
+</style>

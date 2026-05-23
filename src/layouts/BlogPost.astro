@@ -9,78 +9,176 @@ import Header from '../components/Header.astro';
 type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+
+// Approximate reading time
 ---
 
+<!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
+		<BaseHead title={`${title} | 2312 Squadron`} description={description} />
 	</head>
 
 	<body>
+		<a href="#main-content" class="skip-link">Skip to main content</a>
 		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
+		<main id="main-content">
+			{heroImage ? (
+				<div class="blog-hero">
+					<Image
+						src={heroImage}
+						alt=""
+						class="blog-hero-img"
+						width={1400}
+						height={500}
+						loading="eager"
+					/>
+					<div class="blog-hero-overlay">
+						<div class="blog-hero-content">
+							<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--hero">
+								<a href="/">Home</a>
+								<span aria-hidden="true">›</span>
+								<a href="/blog">Blog</a>
+								<span aria-hidden="true">›</span>
+								<span aria-current="page">{title}</span>
+							</nav>
 						</div>
-						<h1>{title}</h1>
-						<hr />
 					</div>
-					<slot />
 				</div>
-			</article>
+			) : (
+				<div class="hero-banner">
+					<nav aria-label="Breadcrumb" class="breadcrumb" style="justify-content:center; color:rgba(255,255,255,0.7); margin-bottom:0.5rem;">
+						<a href="/" style="color:rgba(255,255,255,0.8);">Home</a>
+						<span aria-hidden="true" style="margin:0 0.4rem;">›</span>
+						<a href="/blog" style="color:rgba(255,255,255,0.8);">Blog</a>
+						<span aria-hidden="true" style="margin:0 0.4rem;">›</span>
+						<span aria-current="page">{title}</span>
+					</nav>
+				</div>
+			)}
+
+			<div class="page-content">
+				{!heroImage && (
+					<nav aria-label="Breadcrumb" class="breadcrumb" style="margin-bottom:1.5rem;">
+						<a href="/">Home</a>
+						<span aria-hidden="true">›</span>
+						<a href="/blog">Blog</a>
+						<span aria-hidden="true">›</span>
+						<span aria-current="page">{title}</span>
+					</nav>
+				)}
+
+				<article class="blog-article" aria-label={title}>
+					<header class="blog-header">
+						<div class="blog-meta">
+							<time datetime={pubDate.toISOString()}>
+								<FormattedDate date={pubDate} />
+							</time>
+							{updatedDate && (
+								<span class="blog-updated">
+									· Updated <FormattedDate date={updatedDate} />
+								</span>
+							)}
+						</div>
+						<h1 class="blog-title">{title}</h1>
+						<p class="blog-description">{description}</p>
+					</header>
+
+					<div class="prose-content blog-prose">
+						<slot />
+					</div>
+
+					<footer class="blog-footer">
+						<a href="/blog" class="btn btn-outline">← Back to Blog</a>
+					</footer>
+				</article>
+			</div>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	.blog-hero {
+		position: relative;
+		width: 100%;
+		max-height: 440px;
+		overflow: hidden;
+	}
+
+	.blog-hero-img {
+		width: 100%;
+		height: 440px;
+		object-fit: cover;
+		display: block;
+	}
+
+	.blog-hero-overlay {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%);
+		display: flex;
+		align-items: flex-end;
+		padding-bottom: 1.5rem;
+	}
+
+	.blog-hero-content {
+		width: 100%;
+		max-width: 1100px;
+		margin: 0 auto;
+		padding: 0 1.25rem;
+	}
+
+	.breadcrumb--hero { color: rgba(255,255,255,0.7); }
+	.breadcrumb--hero a { color: rgba(255,255,255,0.85); }
+	.breadcrumb--hero a:hover { color: #fff; }
+
+	/* Article layout */
+	.blog-article {
+		max-width: 760px;
+		margin: 0 auto;
+		padding: 2rem 0 3rem;
+	}
+
+	.blog-header {
+		margin-bottom: 2rem;
+		padding-bottom: 1.5rem;
+		border-bottom: 2px solid rgb(var(--gray-light));
+	}
+
+	.blog-meta {
+		font-size: 0.85rem;
+		color: rgb(var(--gray));
+		margin-bottom: 0.75rem;
+		font-weight: 600;
+	}
+
+	.blog-updated {
+		font-style: italic;
+		font-weight: 400;
+	}
+
+	.blog-title {
+		font-size: clamp(1.6rem, 4vw, 2.4rem);
+		color: var(--rafDarkBlue);
+		margin-bottom: 0.75rem;
+		line-height: 1.2;
+	}
+
+	.blog-description {
+		font-size: 1.1rem;
+		color: rgb(var(--gray));
+		line-height: 1.6;
+		font-style: italic;
+		margin: 0;
+	}
+
+	.blog-prose {
+		margin-bottom: 2.5rem;
+	}
+
+	.blog-footer {
+		padding-top: 1.5rem;
+		border-top: 2px solid rgb(var(--gray-light));
+	}
+</style>

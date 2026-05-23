@@ -1,0 +1,460 @@
+---
+import Page from '../layouts/Page.astro';
+import { SQUADRON_EMAIL, PARADE_NIGHTS, SQUADRON_ADDRESS } from '../consts';
+
+// Pre-templated mailto bodies
+const generalBody = encodeURIComponent(
+`Hello 2312 Squadron,
+
+I am writing to enquire about [YOUR QUESTION HERE].
+
+My name is: 
+My contact number is: 
+
+Many thanks,
+[YOUR NAME]`
+);
+
+const joiningBody = encodeURIComponent(
+`Hello 2312 Squadron,
+
+I am interested in joining the Air Cadets at 2312 Squadron and would like more information.
+
+Name: 
+Age: 
+School / College: 
+Parent/Guardian name (if under 18): 
+Parent/Guardian contact number: 
+Any questions: 
+
+Many thanks,
+[YOUR NAME]`
+);
+
+const parentBody = encodeURIComponent(
+`Hello 2312 Squadron,
+
+I am writing on behalf of my child regarding the Air Cadets at 2312 Squadron.
+
+My name: 
+Child's name: 
+Child's age: 
+My contact number: 
+My query: 
+
+Many thanks,
+[YOUR NAME]`
+);
+
+const generalLink = `mailto:${SQUADRON_EMAIL}?subject=General+Enquiry+%E2%80%93+2312+Squadron&body=${generalBody}`;
+const joiningLink = `mailto:${SQUADRON_EMAIL}?subject=Joining+Enquiry+%E2%80%93+2312+Squadron&body=${joiningBody}`;
+const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian+Enquiry+%E2%80%93+2312+Squadron&body=${parentBody}`;
+---
+
+<Page title="Contact Us | 2312 Squadron Air Cadets" description="Get in touch with 2312 Squadron Air Cadets in Tavistock, Devon. Send us an email or come along to a parade night.">
+	<div class="hero-banner">
+		<h1>Contact Us</h1>
+		<p>We'd love to hear from you — get in touch with 2312 Squadron</p>
+	</div>
+
+	<div class="page-content">
+		<nav aria-label="Breadcrumb" class="breadcrumb">
+			<a href="/">Home</a>
+			<span aria-hidden="true">›</span>
+			<span aria-current="page">Contact</span>
+		</nav>
+
+		<div class="contact-layout">
+			<!-- Email templates -->
+			<main class="contact-main">
+				<h2 class="section-heading" style="margin-bottom:1rem;">Send Us a Message</h2>
+				<p style="color:rgb(var(--gray-dark)); margin-bottom:1.75rem; line-height:1.65;">
+					Click one of the buttons below to open your email client with a pre-filled template. Simply fill in your details and send — we aim to respond within 3 working days.
+				</p>
+
+				<div class="email-templates" role="list">
+
+					<div class="email-card" role="listitem">
+						<div class="email-card-header">
+							<span class="material-icons email-card-icon" aria-hidden="true">help_outline</span>
+							<div>
+								<h3>General Enquiry</h3>
+								<p>Any question not covered below</p>
+							</div>
+						</div>
+						<p class="email-card-desc">
+							Use this template for any general questions about the squadron, our activities, or anything else you'd like to know.
+						</p>
+						<a
+							href={generalLink}
+							class="btn btn-secondary email-btn"
+							aria-label="Send a general enquiry email to 2312 Squadron"
+						>
+							<span class="material-icons" aria-hidden="true">email</span>
+							Open Email Template
+						</a>
+					</div>
+
+					<div class="email-card email-card--highlight" role="listitem">
+						<div class="email-card-header">
+							<span class="material-icons email-card-icon" aria-hidden="true">person_add</span>
+							<div>
+								<h3>Joining Enquiry</h3>
+								<p>For young people interested in joining</p>
+							</div>
+						</div>
+						<p class="email-card-desc">
+							Interested in becoming an Air Cadet? Use this pre-filled template to introduce yourself and ask about joining 2312 Squadron.
+						</p>
+						<a
+							href={joiningLink}
+							class="btn btn-primary email-btn"
+							aria-label="Send a joining enquiry email to 2312 Squadron"
+						>
+							<span class="material-icons" aria-hidden="true">email</span>
+							Open Email Template
+						</a>
+					</div>
+
+					<div class="email-card" role="listitem">
+						<div class="email-card-header">
+							<span class="material-icons email-card-icon" aria-hidden="true">family_restroom</span>
+							<div>
+								<h3>Parent / Guardian Enquiry</h3>
+								<p>For parents or guardians with questions</p>
+							</div>
+						</div>
+						<p class="email-card-desc">
+							Parents and guardians are always welcome to get in touch. Use this template to ask about welfare, activities, joining, or any other concerns.
+						</p>
+						<a
+							href={parentLink}
+							class="btn btn-secondary email-btn"
+							aria-label="Send a parent or guardian enquiry email to 2312 Squadron"
+						>
+							<span class="material-icons" aria-hidden="true">email</span>
+							Open Email Template
+						</a>
+					</div>
+
+				</div>
+
+				<div class="email-note" role="note">
+					<span class="material-icons" aria-hidden="true">info</span>
+					<p>These buttons open your default email application with a pre-filled message. If clicking the button does not open your email app, you can email us directly at <a href={`mailto:${SQUADRON_EMAIL}`}>{SQUADRON_EMAIL}</a>.</p>
+				</div>
+			</main>
+
+			<!-- Info sidebar -->
+			<aside class="contact-sidebar" aria-label="Squadron contact information">
+				<div class="contact-info-card">
+					<h2 class="contact-info-title">Squadron Details</h2>
+
+					<dl class="contact-details">
+						<div class="contact-detail-item">
+							<dt>
+								<span class="material-icons" aria-hidden="true">email</span>
+								Email
+							</dt>
+							<dd><a href={`mailto:${SQUADRON_EMAIL}`}>{SQUADRON_EMAIL}</a></dd>
+						</div>
+
+						<div class="contact-detail-item">
+							<dt>
+								<span class="material-icons" aria-hidden="true">event</span>
+								Parade Nights
+							</dt>
+							<dd>{PARADE_NIGHTS}</dd>
+						</div>
+
+						<div class="contact-detail-item">
+							<dt>
+								<span class="material-icons" aria-hidden="true">location_on</span>
+								Location
+							</dt>
+							<dd>
+								{SQUADRON_ADDRESS}
+								<br />
+								<small style="color:rgb(var(--gray));">Contact us for the exact address</small>
+							</dd>
+						</div>
+					</dl>
+
+					<div class="contact-social">
+						<p style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:rgb(var(--gray));margin-bottom:0.6rem;">Also find us at</p>
+						<a
+							href="https://www.raf.mod.uk/aircadets/"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="social-link"
+						>
+							<span class="material-icons" aria-hidden="true">language</span>
+							RAFAC Website
+						</a>
+					</div>
+				</div>
+
+				<!-- Map embed -->
+				<div class="contact-map" aria-label="Map showing Tavistock, Devon">
+					<iframe
+						src="https://maps.google.com/maps?q=Cadet+Centre,Tavistock,Devon&output=embed"
+						width="100%"
+						height="220"
+						style="border:0;border-radius:0 0 8px 8px;"
+						allowfullscreen
+						loading="lazy"
+						referrerpolicy="no-referrer-when-downgrade"
+						title="Map of Tavistock, Devon — squadron location"
+					></iframe>
+				</div>
+
+				<!-- Visit us -->
+				<div class="contact-visit">
+					<h3>
+						<span class="material-icons" aria-hidden="true">directions_walk</span>
+						Visit a Parade Night
+					</h3>
+					<p>
+						The best way to find out more is to come along in person! Prospective cadets and parents are welcome to watch a parade night. No prior arrangement needed — just turn up on a Tuesday or Thursday at 1900 hrs.
+					</p>
+					<a href="/join" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.75rem;">
+						How to Join →
+					</a>
+				</div>
+			</aside>
+		</div>
+	</div>
+</Page>
+
+<style>
+	/* Page layout */
+	.contact-layout {
+		display: grid;
+		grid-template-columns: 1fr 320px;
+		gap: 2.5rem;
+		align-items: start;
+		padding-bottom: 3rem;
+	}
+
+	@media (max-width: 820px) {
+		.contact-layout {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Email templates */
+	.email-templates {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.email-card {
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: var(--box-shadow);
+		padding: 1.5rem;
+		border-left: 4px solid var(--rafDarkBlue);
+		transition: transform 0.15s ease;
+	}
+
+	.email-card:hover {
+		transform: translateX(3px);
+	}
+
+	.email-card--highlight {
+		border-left-color: var(--rafRed);
+		background: rgba(207, 20, 43, 0.02);
+	}
+
+	.email-card-header {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.email-card-icon {
+		font-size: 1.75rem;
+		color: var(--rafDarkBlue);
+		flex-shrink: 0;
+		margin-top: 2px;
+	}
+
+	.email-card--highlight .email-card-icon { color: var(--rafRed); }
+
+	.email-card-header h3 {
+		font-size: 1.1rem;
+		color: var(--rafDarkBlue);
+		margin-bottom: 0.1rem;
+	}
+
+	.email-card-header p {
+		font-size: 0.82rem;
+		color: rgb(var(--gray));
+		margin: 0;
+	}
+
+	.email-card-desc {
+		font-size: 0.92rem;
+		color: rgb(var(--gray-dark));
+		line-height: 1.55;
+		margin-bottom: 1rem;
+	}
+
+	.email-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.9rem;
+		padding: 0.5rem 1.25rem;
+	}
+
+	/* Note */
+	.email-note {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		background: #eff6ff;
+		border-radius: 8px;
+		padding: 1rem 1.25rem;
+		font-size: 0.88rem;
+		color: #1e40af;
+		border: 1px solid #bfdbfe;
+	}
+
+	.email-note .material-icons {
+		font-size: 1.1rem;
+		flex-shrink: 0;
+		margin-top: 1px;
+	}
+
+	.email-note p { margin: 0; line-height: 1.55; }
+	.email-note a { color: var(--rafDarkBlue); font-weight: 600; }
+
+	/* Sidebar */
+	.contact-sidebar {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		position: sticky;
+		top: 1rem;
+	}
+
+	.contact-info-card {
+		background: #fff;
+		border-radius: 8px 8px 0 0;
+		box-shadow: var(--box-shadow);
+		padding: 1.5rem;
+		border-top: 4px solid var(--rafRed);
+	}
+
+	.contact-info-title {
+		font-size: 1rem;
+		color: var(--rafDarkBlue);
+		margin-bottom: 1.25rem;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		font-size: 0.85rem;
+	}
+
+	.contact-details {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		margin: 0;
+		padding: 0;
+	}
+
+	.contact-detail-item dt {
+		font-size: 0.72rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: rgb(var(--gray));
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-bottom: 0.15rem;
+	}
+
+	.contact-detail-item dt .material-icons {
+		font-size: 0.95em;
+		color: var(--rafRed);
+	}
+
+	.contact-detail-item dd {
+		margin: 0;
+		font-size: 0.95rem;
+		color: var(--rafDarkBlue);
+		font-weight: 600;
+		line-height: 1.4;
+	}
+
+	.contact-detail-item dd a {
+		color: var(--rafDarkBlue);
+	}
+
+	.contact-social {
+		margin-top: 1.25rem;
+		padding-top: 1rem;
+		border-top: 1px solid rgb(var(--gray-light));
+	}
+
+	.social-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.88rem;
+		font-weight: 600;
+		color: var(--rafDarkBlue);
+		text-decoration: none;
+		padding: 0.4rem 0.8rem;
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 4px;
+		transition: background 0.15s;
+	}
+
+	.social-link:hover {
+		background: rgba(229,233,240,0.6);
+	}
+
+	.social-link .material-icons { font-size: 1rem; }
+
+	/* Visit card */
+	.contact-visit {
+		background: rgba(229,233,240,0.4);
+		border-radius: 8px;
+		padding: 1.25rem;
+	}
+
+	.contact-visit h3 {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.95rem;
+		color: var(--rafDarkBlue);
+		margin-bottom: 0.6rem;
+	}
+
+	.contact-visit h3 .material-icons {
+		color: var(--rafRed);
+		font-size: 1.1rem;
+	}
+
+	.contact-visit p {
+		font-size: 0.88rem;
+		color: rgb(var(--gray-dark));
+		line-height: 1.55;
+		margin: 0;
+	}
+
+	/* Map – attach to info card bottom */
+	.contact-map {
+		border-radius: 0 0 8px 8px;
+		overflow: hidden;
+		box-shadow: var(--box-shadow);
+		margin-top: -1.25rem;
+	}
+</style>

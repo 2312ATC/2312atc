@@ -1,0 +1,168 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	event: CollectionEntry<'events'>;
+}
+
+const { event } = Astro.props;
+const { title, date, endDate, location, description, heroImage } = event.data;
+
+const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<article class="event-list-card" aria-label={title}>
+	{heroImage && (
+		<a href={`/events/${event.id}/`} tabindex="-1" aria-hidden="true" class="event-list-card__img-link">
+			<img src={heroImage.src} alt="" class="event-list-card__img" loading="lazy" width="640" height="280" />
+		</a>
+	)}
+	<div class="event-list-card__body">
+		<div class="event-list-card__date-block" aria-label={`Date: ${dateLabel}`}>
+			<span class="event-list-card__day">{date.getDate()}</span>
+			<span class="event-list-card__month-year">
+				{date.toLocaleString('en-GB', { month: 'short' })} {date.getFullYear()}
+			</span>
+		</div>
+		<div class="event-list-card__content">
+			<h3 class="event-list-card__title">
+				<a href={`/events/${event.id}/`}>{title}</a>
+			</h3>
+			<p class="event-list-card__meta">
+				<span class="material-icons" aria-hidden="true">location_on</span>
+				{location}
+				{endDate && (
+					<>
+						&ensp;·&ensp;
+						<span class="material-icons" aria-hidden="true">schedule</span>
+						Until <FormattedDate date={endDate} />
+					</>
+				)}
+			</p>
+			<p class="event-list-card__desc">{description}</p>
+			<a href={`/events/${event.id}/`} class="btn btn-secondary event-list-card__cta">View details</a>
+		</div>
+	</div>
+</article>
+
+<style>
+	.event-list-card {
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: var(--box-shadow);
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+	}
+
+	.event-list-card:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 8px 24px rgba(var(--gray), 40%);
+	}
+
+	.event-list-card__img-link {
+		display: block;
+		overflow: hidden;
+	}
+
+	.event-list-card__img {
+		width: 100%;
+		height: 200px;
+		object-fit: cover;
+		transition: transform 0.3s ease;
+		display: block;
+	}
+
+	.event-list-card:hover .event-list-card__img {
+		transform: scale(1.03);
+	}
+
+	.event-list-card__body {
+		display: flex;
+		gap: 1rem;
+		padding: 1.25rem;
+		flex: 1;
+	}
+
+	.event-list-card__date-block {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		background: var(--rafDarkBlue);
+		color: #fff;
+		border-radius: 6px;
+		padding: 0.5rem 0.65rem;
+		flex-shrink: 0;
+		height: fit-content;
+		min-width: 3.25rem;
+	}
+
+	.event-list-card__day {
+		font-size: 1.75rem;
+		font-weight: 800;
+		line-height: 1;
+	}
+
+	.event-list-card__month-year {
+		font-size: 0.65rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		opacity: 0.85;
+		text-align: center;
+	}
+
+	.event-list-card__content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.event-list-card__title {
+		font-size: 1.1rem;
+		color: var(--rafDarkBlue);
+		margin-bottom: 0.4rem;
+	}
+
+	.event-list-card__title a {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.event-list-card__title a:hover {
+		color: var(--rafRed);
+		text-decoration: underline;
+	}
+
+	.event-list-card__meta {
+		font-size: 0.82rem;
+		color: rgb(var(--gray));
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.2rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.event-list-card__meta .material-icons {
+		font-size: 0.95em;
+		vertical-align: middle;
+	}
+
+	.event-list-card__desc {
+		font-size: 0.92rem;
+		color: rgb(var(--gray-dark));
+		line-height: 1.5;
+		flex: 1;
+		margin-bottom: 1rem;
+	}
+
+	.event-list-card__cta {
+		font-size: 0.85rem;
+		padding: 0.4rem 1rem;
+		align-self: flex-start;
+	}
+</style>

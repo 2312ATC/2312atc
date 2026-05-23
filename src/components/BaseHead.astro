@@ -32,9 +32,10 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta name="generator" content={Astro.generator} />
 
 <!-- Font preloads -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
@@ -57,3 +58,115 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+
+<!-- Preview password gate -->
+<script is:inline>
+(function () {
+  var KEY = '2312-preview-gate';
+  var PASSWORD = 'tavistock2312';
+
+  // Hide the page immediately before first paint to prevent content flash
+  if (localStorage.getItem(KEY) !== 'true') {
+    document.documentElement.style.visibility = 'hidden';
+  }
+
+  function unlock() {
+    localStorage.setItem(KEY, 'true');
+    document.documentElement.style.visibility = '';
+    var gate = document.getElementById('preview-gate');
+    if (gate) gate.remove();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (localStorage.getItem(KEY) === 'true') {
+      document.documentElement.style.visibility = '';
+      return;
+    }
+
+    // Build the overlay
+    var gate = document.createElement('div');
+    gate.id = 'preview-gate';
+    gate.setAttribute('role', 'dialog');
+    gate.setAttribute('aria-modal', 'true');
+    gate.setAttribute('aria-label', 'Preview access');
+    gate.innerHTML = [
+      '<div class="pg-box">',
+        '<div class="pg-logo-wrap">',
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="pg-lock-icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+        '</div>',
+        '<p class="pg-eyebrow">2312 Squadron Air Cadets</p>',
+        '<h1 class="pg-title">Preview Access</h1>',
+        '<p class="pg-desc">This site is currently under construction. Please enter the preview password to continue.</p>',
+        '<form id="pg-form" novalidate>',
+          '<label for="pg-input" class="pg-label">Password</label>',
+          '<div class="pg-input-row">',
+            '<input id="pg-input" type="password" class="pg-input" autocomplete="current-password" placeholder="Enter password" />',
+            '<button type="submit" class="pg-btn">Enter</button>',
+          '</div>',
+          '<p id="pg-error" class="pg-error" aria-live="assertive" hidden>Incorrect password — please try again.</p>',
+        '</form>',
+      '</div>',
+    ].join('');
+
+    // Styles injected inline so they work before any CSS bundle loads
+    var style = document.createElement('style');
+    style.textContent = [
+      '#preview-gate{',
+        'position:fixed;inset:0;z-index:99999;',
+        'background:linear-gradient(135deg,#002e60 0%,#003c71 100%);',
+        'display:flex;align-items:center;justify-content:center;',
+        'padding:1.5rem;',
+        'font-family:"League Spartan",system-ui,sans-serif;',
+      '}',
+      '.pg-box{',
+        'background:#fff;border-radius:12px;',
+        'padding:2.5rem 2rem;width:100%;max-width:420px;',
+        'text-align:center;box-shadow:0 24px 64px rgba(0,0,0,0.4);',
+        'border-top:5px solid #cf142b;',
+      '}',
+      '.pg-logo-wrap{',
+        'width:3.5rem;height:3.5rem;border-radius:50%;',
+        'background:#002e60;display:flex;align-items:center;',
+        'justify-content:center;margin:0 auto 1rem;',
+      '}',
+      '.pg-lock-icon{width:1.5rem;height:1.5rem;color:#fff;stroke:#fff;}',
+      '.pg-eyebrow{font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#cf142b;margin:0 0 0.4rem;}',
+      '.pg-title{font-size:1.6rem;font-weight:800;color:#002e60;margin:0 0 0.75rem;}',
+      '.pg-desc{font-size:0.92rem;color:#4b5563;line-height:1.55;margin:0 0 1.5rem;}',
+      '.pg-label{display:block;text-align:left;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.05em;}',
+      '.pg-input-row{display:flex;gap:0.5rem;}',
+      '.pg-input{',
+        'flex:1;padding:0.65rem 0.9rem;border:2px solid #d1d5db;border-radius:6px;',
+        'font-family:inherit;font-size:1rem;outline:none;transition:border-color 0.15s;',
+      '}',
+      '.pg-input:focus{border-color:#002e60;}',
+      '.pg-btn{',
+        'padding:0.65rem 1.25rem;background:#002e60;color:#fff;border:none;border-radius:6px;',
+        'font-family:inherit;font-weight:700;font-size:1rem;cursor:pointer;',
+        'transition:background 0.15s;white-space:nowrap;',
+      '}',
+      '.pg-btn:hover{background:#cf142b;}',
+      '.pg-btn:focus-visible{outline:3px solid #cf142b;outline-offset:2px;}',
+      '.pg-error{font-size:0.85rem;color:#cf142b;margin:0.6rem 0 0;font-weight:600;}',
+    ].join('');
+    document.head.appendChild(style);
+
+    document.body.appendChild(gate);
+    document.documentElement.style.visibility = '';
+    document.getElementById('pg-input').focus();
+
+    document.getElementById('pg-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var val = document.getElementById('pg-input').value;
+      if (val === PASSWORD) {
+        unlock();
+      } else {
+        var err = document.getElementById('pg-error');
+        err.hidden = false;
+        document.getElementById('pg-input').value = '';
+        document.getElementById('pg-input').focus();
+      }
+    });
+  });
+})();
+</script>

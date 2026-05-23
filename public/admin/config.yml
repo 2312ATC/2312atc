@@ -5,27 +5,116 @@ backend:
   base_url: https://decap.tavistock.air-cadets.org
   auth_endpoint: /auth
 
+media_folder: "src/assets/images"
+public_folder: "../../assets/images"
+
 collections:
-  - name: "blog" # Used in routes, e.g., /admin/collections/blog
-    label: "Blog" # Used in the UI
-    folder: "src/content/blog" # The path to the folder where the documents are stored
-    create: true # Allow users to create new documents in this collection
-    fields: # The fields for each document, usually in frontmatter
+  - name: "blog"
+    label: "Blog Posts"
+    label_singular: "Blog Post"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{slug}}"
+    fields:
       - { label: "Layout", name: "layout", widget: "hidden", default: "blog" }
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Description", name: "description", widget: "string" }
       - { label: "Publish Date", name: "pubDate", widget: "datetime" }
-      - { label: "Featured Image", name: "heroImage", widget: "image" }
+      - { label: "Last Updated", name: "updatedDate", widget: "datetime", required: false }
+      - { label: "Hero Image", name: "heroImage", widget: "image", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
 
+  - name: "events"
+    label: "Events"
+    label_singular: "Event"
+    folder: "src/content/events"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "End Date", name: "endDate", widget: "datetime", required: false }
+      - { label: "Location", name: "location", widget: "string" }
+      - { label: "Description", name: "description", widget: "string", hint: "Short summary shown on the events list." }
+      - { label: "Hero Image", name: "heroImage", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "notifications"
+    label: "Notifications"
+    label_singular: "Notification"
+    folder: "src/content/notifications"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Message", name: "message", widget: "text" }
+      - { label: "Publish Date", name: "pubDate", widget: "datetime" }
+      - label: "Type"
+        name: "type"
+        widget: "select"
+        options:
+          - { label: "Information", value: "info" }
+          - { label: "Warning", value: "warning" }
+          - { label: "Alert / Urgent", value: "alert" }
+        default: "info"
+      - { label: "Active", name: "active", widget: "boolean", default: true, hint: "Uncheck to hide this notification from the website." }
+
   - name: "landingCarousel"
-    label: "Landing Carousel"
+    label: "Home Page Carousel"
+    label_singular: "Carousel Slide"
     folder: "src/content/landingCarousel"
     create: true
     identifier_field: "image"
     fields:
       - { label: "Image", name: "image", widget: "image" }
-      - { label: "Link", name: "link", widget: "string", required: false, hint: "Optional link to the image", pattern: ["\/[a-zA-Z0-9_\/]+", "must start with a slash"] }
+      - { label: "Caption / Alt Text", name: "caption", widget: "string", required: false, hint: "Describe the image for accessibility. Also shown as an overlay caption." }
+      - { label: "Link", name: "link", widget: "string", required: false, hint: "Optional internal link (e.g. /events)", pattern: ['/[a-zA-Z0-9_/-]*', "Must start with a slash"] }
 
-media_folder: "src/assets/images" # Location where files will be stored in the repo
-public_folder: "../../assets/images" # The src attribute for uploaded media
+  - name: "staff"
+    label: "Staff (About page)"
+    label_singular: "Staff Member"
+    folder: "src/content/staff"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - { label: "Role / Rank", name: "role", widget: "string" }
+      - { label: "Bio", name: "bio", widget: "text", required: false, hint: "Optional short biography shown on the About page." }
+      - { label: "Display Order", name: "order", widget: "number", default: 99, hint: "Lower numbers appear first." }
+
+  - name: "activities"
+    label: "Activities (What We Do page)"
+    label_singular: "Activity"
+    folder: "src/content/activities"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, e.g. flight, gps_fixed, terrain" }
+      - { label: "Display Order", name: "order", widget: "number", default: 99 }
+      - { label: "Description", name: "body", widget: "markdown" }
+
+  - name: "opportunities"
+    label: "Opportunities (Cadets page)"
+    label_singular: "Opportunity"
+    folder: "src/content/opportunities"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "string", hint: "Short one-line description." }
+      - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, e.g. flight_takeoff, emoji_events" }
+      - { label: "Display Order", name: "order", widget: "number", default: 99 }
+
+  - name: "faq"
+    label: "FAQs (Join Us page)"
+    label_singular: "FAQ"
+    folder: "src/content/faq"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Question", name: "question", widget: "string" }
+      - { label: "Display Order", name: "order", widget: "number", default: 99 }
+      - { label: "Answer", name: "body", widget: "markdown" }

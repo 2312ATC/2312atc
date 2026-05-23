@@ -12,7 +12,7 @@ export const getStaticPaths = (async ({ paginate }) => {
 	const posts = (await getCollection('blog')).sort(
 		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 	);
-	return paginate(posts, { pageSize: 10 });
+	return paginate(posts, { pageSize: 9 });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
@@ -21,129 +21,180 @@ const { page } = Astro.props;
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			.pagination {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				gap: 1rem;
-				margin: 2rem 0;
-			}
-			.pagination a {
-				padding: 0.5rem 1rem;
-				border: 1px solid rgb(var(--gray-light));
-				border-radius: 6px;
-				text-decoration: none;
-				color: rgb(var(--black));
-				transition: 0.2s ease;
-			}
-			.pagination a:hover {
-				border-color: rgb(var(--accent));
-				color: rgb(var(--accent));
-			}
-			.pagination .page-info {
-				color: rgb(var(--gray));
-				font-size: 0.9rem;
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
+		<BaseHead title={`News & Blog | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
+		<a href="#main-content" class="skip-link">Skip to main content</a>
 		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						page.data.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-				<nav class="pagination">
-					{page.currentPage > 1 && <a href="/blog/page/1">&#8676; Most Recent</a>}
-					{page.url.prev && <a href={page.url.prev}>&larr; Newer</a>}
-					<span class="page-info">Page {page.currentPage} of {page.lastPage}</span>
-					{page.url.next && <a href={page.url.next}>Older &rarr;</a>}
+		<main id="main-content">
+			<div class="hero-banner">
+				<h1>News &amp; Blog</h1>
+				<p>Latest updates, news and stories from 2312 Squadron</p>
+			</div>
+
+			<div class="page-content">
+				<nav aria-label="Breadcrumb" class="breadcrumb">
+					<a href="/">Home</a>
+					<span aria-hidden="true">›</span>
+					<span aria-current="page">Blog</span>
 				</nav>
-			</section>
+
+				{page.data.length > 0 ? (
+					<>
+						<div class="blog-grid">
+							{page.data.map((post, i) => (
+								<article class:list={['card', { 'card--featured': i === 0 && page.currentPage === 1 }]}>
+									{post.data.heroImage && (
+										<a href={`/blog/${post.id}/`} tabindex="-1" aria-hidden="true">
+											<Image
+												src={post.data.heroImage}
+												alt=""
+												class="blog-card-img"
+												width={i === 0 && page.currentPage === 1 ? 1000 : 640}
+												height={i === 0 && page.currentPage === 1 ? 400 : 240}
+												loading={i === 0 ? 'eager' : 'lazy'}
+											/>
+										</a>
+									)}
+									<div class="card-body">
+										<p class="card-meta">
+											<FormattedDate date={post.data.pubDate} />
+										</p>
+										<h2 class="card-title">
+											<a href={`/blog/${post.id}/`}>{post.data.title}</a>
+										</h2>
+										<p class="card-description">{post.data.description}</p>
+									</div>
+									<div class="card-footer">
+										<a href={`/blog/${post.id}/`} class="btn btn-secondary" style="font-size:0.85rem;padding:0.4rem 1rem;">
+											Read more <span aria-hidden="true">→</span>
+										</a>
+									</div>
+								</article>
+							))}
+						</div>
+
+						<nav class="pagination" aria-label="Blog pagination">
+							{page.currentPage > 1 && (
+								<a href="/blog/page/1" class="pagination-btn">⇐ Newest</a>
+							)}
+							{page.url.prev && (
+								<a href={page.url.prev} class="pagination-btn">← Newer</a>
+							)}
+							<span class="pagination-info" aria-current="page">
+								Page {page.currentPage} of {page.lastPage}
+							</span>
+							{page.url.next && (
+								<a href={page.url.next} class="pagination-btn">Older →</a>
+							)}
+						</nav>
+					</>
+				) : (
+					<p class="blog-empty">No posts yet. Check back soon!</p>
+				)}
+			</div>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	.blog-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.5rem;
+		margin-bottom: 2.5rem;
+	}
+
+	/* Featured first post spans full width */
+	.card--featured {
+		grid-column: 1 / -1;
+		flex-direction: row;
+	}
+
+	.card--featured .blog-card-img {
+		width: 55%;
+		height: 320px;
+		flex-shrink: 0;
+	}
+
+	.card--featured .card-body {
+		padding: 2rem;
+	}
+
+	.card--featured .card-title {
+		font-size: 1.5rem;
+	}
+
+	.card--featured .card-description {
+		font-size: 1rem;
+	}
+
+	@media (max-width: 900px) {
+		.blog-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		.card--featured {
+			grid-column: 1 / -1;
+			flex-direction: column;
+		}
+		.card--featured .blog-card-img {
+			width: 100%;
+			height: 220px;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.blog-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.blog-card-img {
+		width: 100%;
+		height: 200px;
+		object-fit: cover;
+		display: block;
+	}
+
+	.blog-empty {
+		color: rgb(var(--gray));
+		font-style: italic;
+		padding: 2rem;
+		background: rgba(229,233,240,0.4);
+		border-radius: 8px;
+		text-align: center;
+	}
+
+	/* Pagination */
+	.pagination {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 2rem 0;
+		flex-wrap: wrap;
+	}
+
+	.pagination-btn {
+		padding: 0.5rem 1.1rem;
+		border: 2px solid var(--rafDarkBlue);
+		border-radius: 4px;
+		text-decoration: none;
+		color: var(--rafDarkBlue);
+		font-weight: 600;
+		font-size: 0.9rem;
+		transition: background 0.15s, color 0.15s;
+	}
+
+	.pagination-btn:hover {
+		background: var(--rafDarkBlue);
+		color: #fff;
+	}
+
+	.pagination-info {
+		color: rgb(var(--gray));
+		font-size: 0.9rem;
+		font-weight: 600;
+	}
+</style>

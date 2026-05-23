@@ -1,63 +1,236 @@
 ---
-import AboutHeroImage from '../assets/images/blog-placeholder-about.jpg';
-import Layout from '../layouts/BlogPost.astro';
+import Page from '../layouts/Page.astro';
+import { Image } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import logo from '../assets/images/logo.jpg';
+
+const staffMembers = (await getCollection('staff'))
+	.sort((a, b) => a.data.order - b.data.order);
 ---
 
-<Layout
-	title="About Me"
-	description="Lorem ipsum dolor sit amet"
-	pubDate={new Date('August 08 2021')}
-	heroImage={AboutHeroImage}
->
-	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-		labore et dolore magna aliqua. Vitae ultricies leo integer malesuada nunc vel risus commodo
-		viverra. Adipiscing enim eu turpis egestas pretium. Euismod elementum nisi quis eleifend quam
-		adipiscing. In hac habitasse platea dictumst vestibulum. Sagittis purus sit amet volutpat. Netus
-		et malesuada fames ac turpis egestas. Eget magna fermentum iaculis eu non diam phasellus
-		vestibulum lorem. Varius sit amet mattis vulputate enim. Habitasse platea dictumst quisque
-		sagittis. Integer quis auctor elit sed vulputate mi. Dictumst quisque sagittis purus sit amet.
-	</p>
+<Page title="About Us | 2312 Squadron Air Cadets" description="Learn about 2312 (Tavistock) Squadron Air Cadets — our history, mission and the team behind the squadron.">
+	<div class="hero-banner">
+		<h1>About 2312 Squadron</h1>
+		<p>Proudly serving Tavistock and the surrounding area since 1944</p>
+	</div>
 
-	<p>
-		Morbi tristique senectus et netus. Id semper risus in hendrerit gravida rutrum quisque non
-		tellus. Habitasse platea dictumst quisque sagittis purus sit amet. Tellus molestie nunc non
-		blandit massa. Cursus vitae congue mauris rhoncus. Accumsan tortor posuere ac ut. Fringilla urna
-		porttitor rhoncus dolor. Elit ullamcorper dignissim cras tincidunt lobortis. In cursus turpis
-		massa tincidunt dui ut ornare lectus. Integer feugiat scelerisque varius morbi enim nunc.
-		Bibendum neque egestas congue quisque egestas diam. Cras ornare arcu dui vivamus arcu felis
-		bibendum. Dignissim suspendisse in est ante in nibh mauris. Sed tempus urna et pharetra pharetra
-		massa massa ultricies mi.
-	</p>
+	<div class="page-content">
+		<nav aria-label="Breadcrumb" class="breadcrumb">
+			<a href="/">Home</a>
+			<span aria-hidden="true">›</span>
+			<span aria-current="page">About</span>
+		</nav>
 
-	<p>
-		Mollis nunc sed id semper risus in. Convallis a cras semper auctor neque. Diam sit amet nisl
-		suscipit. Lacus viverra vitae congue eu consequat ac felis donec. Egestas integer eget aliquet
-		nibh praesent tristique magna sit amet. Eget magna fermentum iaculis eu non diam. In vitae
-		turpis massa sed elementum. Tristique et egestas quis ipsum suspendisse ultrices. Eget lorem
-		dolor sed viverra ipsum. Vel turpis nunc eget lorem dolor sed viverra. Posuere ac ut consequat
-		semper viverra nam. Laoreet suspendisse interdum consectetur libero id faucibus. Diam phasellus
-		vestibulum lorem sed risus ultricies tristique. Rhoncus dolor purus non enim praesent elementum
-		facilisis. Ultrices tincidunt arcu non sodales neque. Tempus egestas sed sed risus pretium quam
-		vulputate. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Fringilla
-		urna porttitor rhoncus dolor purus non. Amet dictum sit amet justo donec enim.
-	</p>
+		<!-- Mission / intro -->
+		<section aria-labelledby="about-mission-heading" class="about-section about-intro">
+			<div class="about-intro-text">
+				<h2 id="about-mission-heading" class="section-heading">Who We Are</h2>
+				<p>
+					2312 (Tavistock) Squadron is a unit of the <strong>Royal Air Force Air Cadets (RAFAC)</strong> — one of the UK's largest and most respected youth organisations, with over 40,000 cadets nationwide. We are part of South West Wing, Air Cadets.
+				</p>
+				<p>
+					Our squadron provides young people aged 12 to 20 with an outstanding range of activities and opportunities that develop character, leadership and teamwork skills in a fun, safe environment with a strong connection to aviation and the RAF.
+				</p>
+				<p>
+					Whether a cadet is interested in flying, shooting, music, sport, community service, or simply making new friends — there is something for everyone at 2312.
+				</p>
+			</div>
+			<div class="about-intro-logo">
+				<Image src={logo} alt="2312 Squadron Royal Air Force Air Cadets badge" width={280} height={280} />
+			</div>
+		</section>
 
-	<p>
-		Mattis ullamcorper velit sed ullamcorper morbi tincidunt. Tortor posuere ac ut consequat semper
-		viverra. Tellus mauris a diam maecenas sed enim ut sem viverra. Venenatis urna cursus eget nunc
-		scelerisque viverra mauris in. Arcu ac tortor dignissim convallis aenean et tortor at. Curabitur
-		gravida arcu ac tortor dignissim convallis aenean et tortor. Egestas tellus rutrum tellus
-		pellentesque eu. Fusce ut placerat orci nulla pellentesque dignissim enim sit amet. Ut enim
-		blandit volutpat maecenas volutpat blandit aliquam etiam. Id donec ultrices tincidunt arcu. Id
-		cursus metus aliquam eleifend mi.
-	</p>
+		<hr class="about-divider" />
 
-	<p>
-		Tempus quam pellentesque nec nam aliquam sem. Risus at ultrices mi tempus imperdiet. Id porta
-		nibh venenatis cras sed felis eget velit. Ipsum a arcu cursus vitae. Facilisis magna etiam
-		tempor orci eu lobortis elementum. Tincidunt dui ut ornare lectus sit. Quisque non tellus orci
-		ac. Blandit libero volutpat sed cras. Nec tincidunt praesent semper feugiat nibh sed pulvinar
-		proin gravida. Egestas integer eget aliquet nibh praesent tristique magna.
-	</p>
-</Layout>
+		<!-- What we offer -->
+		<section aria-labelledby="about-activities-heading" class="about-section">
+			<h2 id="about-activities-heading" class="section-heading">What We Offer</h2>
+			<div class="activities-grid">
+				<div class="activity-card">
+					<span class="material-icons activity-icon" aria-hidden="true">flight</span>
+					<h3>Flying &amp; Gliding</h3>
+					<p>Air experience flights in Grob Tutors and gliding opportunities through the RAFAC Air Experience Flying programme.</p>
+				</div>
+				<div class="activity-card">
+					<span class="material-icons activity-icon" aria-hidden="true">gps_fixed</span>
+					<h3>Shooting</h3>
+					<p>Smallbore and air rifle shooting, with the opportunity to compete at wing, regional and national level.</p>
+				</div>
+				<div class="activity-card">
+					<span class="material-icons activity-icon" aria-hidden="true">terrain</span>
+					<h3>Adventure Training</h3>
+					<p>Hiking, climbing, kayaking and more across Dartmoor and beyond — including Duke of Edinburgh Award expeditions.</p>
+				</div>
+				<div class="activity-card">
+					<span class="material-icons activity-icon" aria-hidden="true">military_tech</span>
+					<h3>Drill &amp; Discipline</h3>
+					<p>Develop self-discipline, teamwork and pride through regular drill practice and ceremonial events.</p>
+				</div>
+				<div class="activity-card">
+					<span class="material-icons activity-icon" aria-hidden="true">school</span>
+					<h3>BTEC Qualifications</h3>
+					<p>Earn nationally recognised qualifications in Aviation Studies and Public Services through the RAFAC BTEC programme.</p>
+				</div>
+				<div class="activity-card">
+					<span class="material-icons activity-icon" aria-hidden="true">groups</span>
+					<h3>Leadership</h3>
+					<p>Progress through the cadet ranks and develop real leadership skills that will serve you for life.</p>
+				</div>
+			</div>
+		</section>
+
+		<hr class="about-divider" />
+
+		<!-- History -->
+		<section aria-labelledby="about-history-heading" class="about-section">
+			<h2 id="about-history-heading" class="section-heading">Our History</h2>
+			<div class="prose-content">
+				<p>
+					2312 Squadron was formed in <strong>1944</strong> during the Second World War as part of the Air Training Corps, which was established to prepare young men and women for service in the RAF and the wider war effort.
+				</p>
+				<p>
+					Over eight decades later, the squadron continues to thrive in Tavistock, serving the young people of the town and the surrounding Devon countryside. The squadron has a proud record of sending cadets on to careers in the RAF and other armed services, as well as aviation, engineering and many other fields.
+				</p>
+				<p>
+					Today we are part of the <strong>Royal Air Force Air Cadets</strong>, which has over 1,000 squadrons across the United Kingdom and is overseen by Air Commodores, with our local unit part of South West Wing.
+				</p>
+			</div>
+		</section>
+
+		<hr class="about-divider" />
+
+		<!-- Staff -->
+		<section aria-labelledby="about-staff-heading" class="about-section">
+			<h2 id="about-staff-heading" class="section-heading">Our Staff</h2>
+			<p style="color:rgb(var(--gray-dark)); margin-bottom:1.5rem;">
+				Our squadron is run by a team of dedicated volunteer Civilian Instructors (CIs) and Cadet Force Adult Volunteers (CFAVs), led by our Commanding Officer.
+			</p>
+			<div class="staff-grid">
+				{staffMembers.map((member) => (
+					<div class="staff-card">
+						<div class="staff-card-rank">{member.data.role}</div>
+						<div class="staff-card-name">{member.data.name}</div>
+						{member.data.bio && <p class="staff-card-bio">{member.data.bio}</p>}
+					</div>
+				))}
+			</div>
+			<p style="margin-top:1.25rem;">
+				<a href="/contact" class="btn btn-primary">Get in touch with the squadron</a>
+			</p>
+		</section>
+	</div>
+</Page>
+
+<style>
+	.about-section {
+		margin-bottom: 0.5rem;
+	}
+
+	.about-divider {
+		border: none;
+		border-top: 2px solid rgb(var(--gray-light));
+		margin: 2.5rem 0;
+	}
+
+	/* Intro with logo */
+	.about-intro {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 2rem;
+		align-items: start;
+	}
+
+	.about-intro-logo img {
+		border-radius: 8px;
+		box-shadow: var(--box-shadow);
+		max-width: 220px;
+	}
+
+	@media (max-width: 640px) {
+		.about-intro {
+			grid-template-columns: 1fr;
+		}
+		.about-intro-logo {
+			text-align: center;
+		}
+	}
+
+	.about-intro-text p {
+		color: rgb(var(--gray-dark));
+		line-height: 1.75;
+		margin-bottom: 1rem;
+	}
+
+	/* Activities grid */
+	.activities-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+		gap: 1.25rem;
+		margin-top: 1.5rem;
+	}
+
+	.activity-card {
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: var(--box-shadow);
+		padding: 1.25rem;
+		text-align: center;
+		border-top: 3px solid var(--rafRed);
+	}
+
+	.activity-icon {
+		font-size: 2rem;
+		color: var(--rafDarkBlue);
+		margin-bottom: 0.5rem;
+		display: block;
+	}
+
+	.activity-card h3 {
+		font-size: 1rem;
+		color: var(--rafDarkBlue);
+		margin-bottom: 0.5rem;
+	}
+
+	.activity-card p {
+		font-size: 0.88rem;
+		color: rgb(var(--gray-dark));
+		line-height: 1.5;
+		margin: 0;
+	}
+
+	/* Staff */
+	.staff-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+		gap: 1rem;
+	}
+
+	.staff-card {
+		background: rgba(229,233,240,0.4);
+		border-radius: 8px;
+		padding: 1rem 1.25rem;
+		border-left: 4px solid var(--rafDarkBlue);
+	}
+
+	.staff-card-rank {
+		font-size: 0.75rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.07em;
+		color: var(--rafRed);
+		margin-bottom: 0.25rem;
+	}
+
+	.staff-card-name {
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--rafDarkBlue);
+	}
+
+	.staff-card-bio {
+		font-size: 0.85rem;
+		color: rgb(var(--gray-dark));
+		line-height: 1.5;
+		margin: 0.4rem 0 0;
+	}
+</style>
