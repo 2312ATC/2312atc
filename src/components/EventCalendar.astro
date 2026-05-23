@@ -1,108 +1,96 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-
-interface Props {
-	events: CollectionEntry<'events'>[];
-	year: number;
-	month: number; // 0-indexed
-}
-
-const { events, year, month } = Astro.props;
-
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const MONTH_NAMES = [
-	'January','February','March','April','May','June',
-	'July','August','September','October','November','December'
-];
 
-const firstDay = new Date(year, month, 1);
-// Monday-indexed (0=Mon … 6=Sun)
-const startOffset = (firstDay.getDay() + 6) % 7;
-const daysInMonth = new Date(year, month + 1, 0).getDate();
-const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
-
-// Build event lookup: key = "YYYY-M-D"
-const eventsByDay: Record<string, CollectionEntry<'events'>[]> = {};
-for (const event of events) {
-	const d = event.data.date;
-	if (d.getFullYear() === year && d.getMonth() === month) {
-		const key = `${year}-${month}-${d.getDate()}`;
-		if (!eventsByDay[key]) eventsByDay[key] = [];
-		eventsByDay[key].push(event);
-	}
-}
-
-const today = new Date();
-const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-
-// Pre-compute cells so no comparisons are needed inside JSX
-interface CalCell {
-	dayNum: number;
-	valid: boolean;
-	isToday: boolean;
-	hasEvents: boolean;
-	ariaLabel: string | undefined;
-	dayEvents: CollectionEntry<'events'>[];
-}
-
-const cells: CalCell[] = Array.from({ length: totalCells }, (_, i) => {
-	const dayNum = i - startOffset + 1;
-	const valid = dayNum >= 1 && dayNum <= daysInMonth;
-	const key = `${year}-${month}-${dayNum}`;
-	const dayEvents = valid ? (eventsByDay[key] ?? []) : [];
-	const isToday = valid && key === todayKey;
-	const hasEvents = dayEvents.length >= 1;
-	const eventWord = dayEvents.length === 1 ? 'event' : 'events';
-	const ariaLabel = valid
-		? `${dayNum} ${MONTH_NAMES[month]}${hasEvents ? `, ${dayEvents.length} ${eventWord}` : ''}`
-		: undefined;
-	return { dayNum, valid, isToday, hasEvents, ariaLabel, dayEvents };
-});
+// Bust CDN/browser caches after each deploy (set in GitHub Actions if desired)
+const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 ---
 
-<div class="cal" aria-label={`Calendar for ${MONTH_NAMES[month]} ${year}`} role="grid">
-	<!-- Day headers -->
-	<div class="cal-header" role="row" aria-hidden="true">
-		{DAYS.map(d => <div class="cal-day-name" role="columnheader">{d}</div>)}
+<div class="cal-wrapper" id="cal-wrapper" data-build-id={buildId}>
+	<!-- Month navigation -->
+	<div class="cal-nav">
+		<button class="cal-nav-btn" id="cal-prev" type="button" aria-label="Previous month">
+			<span class="material-icons" aria-hidden="true">chevron_left</span>
+		</button>
+		<h2 class="cal-month-label" id="cal-heading" aria-live="polite" aria-atomic="true">Loading…</h2>
+		<button class="cal-nav-btn" id="cal-next" type="button" aria-label="Next month">
+			<span class="material-icons" aria-hidden="true">chevron_right</span>
+		</button>
 	</div>
 
-	<!-- Cells -->
-	<div class="cal-grid">
-		{cells.map((cell) => (
-			<div
-				class:list={['cal-cell', {
-					'cal-cell--empty': !cell.valid,
-					'cal-cell--today': cell.isToday,
-					'cal-cell--has-events': cell.hasEvents
-				}]}
-				role="gridcell"
-				aria-label={cell.ariaLabel}
-			>
-				{cell.valid && (
-					<>
-						<span class="cal-cell__num">{cell.dayNum}</span>
-						{cell.dayEvents.map(e => (
-							<a
-								href={`/events/${e.id}/`}
-								class="cal-event-pill"
-								title={e.data.title}
-								aria-label={e.data.title}
-							>
-								{e.data.title}
-							</a>
-						))}
-					</>
-				)}
-			</div>
-		))}
+	<!-- Grid -->
+	<div class="cal" role="grid" aria-labelledby="cal-heading">
+		<div class="cal-header" role="row" aria-hidden="true">
+			{DAYS.map((d) => <div class="cal-day-name" role="columnheader">{d}</div>)}
+		</div>
+		<div class="cal-grid" id="cal-grid" role="rowgroup" aria-busy="true">
+			<!-- populated by script -->
+		</div>
 	</div>
+
+	<!-- Loading / error status (screen-reader only while loading) -->
+	<p id="cal-status" class="cal-status" aria-live="assertive" aria-atomic="true"></p>
+
+	<p class="cal-hint">
+		<span class="material-icons" aria-hidden="true">info</span>
+		Click an event to view details. Use the arrows to browse months.
+	</p>
 </div>
 
 <style>
+	.cal-wrapper {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+
+	/* Nav bar */
+	.cal-nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background: var(--rafDarkBlue);
+		border-radius: 8px 8px 0 0;
+		padding: 0.6rem 0.75rem;
+		gap: 0.5rem;
+	}
+
+	.cal-month-label {
+		font-size: 1rem;
+		font-weight: 700;
+		color: #fff;
+		margin: 0;
+		text-align: center;
+		flex: 1;
+		letter-spacing: 0.03em;
+	}
+
+	.cal-nav-btn {
+		background: rgba(255,255,255,0.1);
+		border: 1px solid rgba(255,255,255,0.25);
+		border-radius: 6px;
+		color: #fff;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		padding: 0;
+		transition: background 0.15s;
+		flex-shrink: 0;
+	}
+
+	.cal-nav-btn:hover { background: var(--rafRed); border-color: var(--rafRed); }
+	.cal-nav-btn:focus-visible { outline: 3px solid var(--rafRed); outline-offset: 2px; }
+	.cal-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+	.cal-nav-btn .material-icons { font-size: 1.2rem; line-height: 1; }
+
+	/* Grid shell */
 	.cal {
 		width: 100%;
 		border: 1px solid rgb(var(--gray-light));
-		border-radius: 8px;
+		border-top: none;
+		border-radius: 0 0 8px 8px;
 		overflow: hidden;
 		font-size: 0.88rem;
 	}
@@ -110,24 +98,58 @@ const cells: CalCell[] = Array.from({ length: totalCells }, (_, i) => {
 	.cal-header {
 		display: grid;
 		grid-template-columns: repeat(7, 1fr);
-		background: var(--rafDarkBlue);
-		color: #fff;
+		background: rgba(0,46,96,0.07);
+		border-bottom: 1px solid rgb(var(--gray-light));
 	}
 
 	.cal-day-name {
 		text-align: center;
-		padding: 0.5rem 0.25rem;
+		padding: 0.4rem 0.25rem;
 		font-weight: 700;
-		font-size: 0.78rem;
-		letter-spacing: 0.04em;
+		font-size: 0.72rem;
+		letter-spacing: 0.05em;
 		text-transform: uppercase;
+		color: var(--rafDarkBlue);
 	}
 
 	.cal-grid {
 		display: grid;
 		grid-template-columns: repeat(7, 1fr);
+		min-height: 10rem;
+		position: relative;
 	}
 
+	/* Loading skeleton overlay */
+	.cal-grid--loading::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: rgba(255,255,255,0.65);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.cal-status {
+		font-size: 0.78rem;
+		color: var(--rafRed);
+		margin: 0.35rem 0 0;
+		min-height: 1.2em;
+	}
+
+	.cal-hint {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.78rem;
+		color: rgb(var(--gray));
+		margin: 0.4rem 0 0;
+	}
+	.cal-hint .material-icons { font-size: 0.9rem; }
+</style>
+
+<!-- Cell styles must be global — cells are created by JS -->
+<style is:global>
 	.cal-cell {
 		min-height: 5rem;
 		padding: 0.3rem 0.25rem;
@@ -136,22 +158,21 @@ const cells: CalCell[] = Array.from({ length: totalCells }, (_, i) => {
 		display: flex;
 		flex-direction: column;
 		gap: 0.15rem;
-		position: relative;
 	}
+	.cal-cell:nth-child(7n) { border-right: none; }
+	.cal-cell--empty { background: rgba(229,233,240,0.25); }
+	.cal-cell--today { background: rgba(207,20,43,0.04); }
 
-	.cal-cell:nth-child(7n) {
-		border-right: none;
+	.cal-cell__num {
+		font-size: 0.78rem;
+		font-weight: 600;
+		color: rgb(var(--gray));
+		text-align: right;
+		line-height: 1.4;
+		display: flex;
+		justify-content: flex-end;
 	}
-
-	.cal-cell--empty {
-		background: rgba(229,233,240,0.3);
-	}
-
-	.cal-cell--today {
-		background: rgba(207, 20, 43, 0.04);
-	}
-
-	.cal-cell--today .cal-cell__num {
+	.cal-cell--today .cal-cell__num span {
 		background: var(--rafRed);
 		color: #fff;
 		border-radius: 50%;
@@ -162,49 +183,186 @@ const cells: CalCell[] = Array.from({ length: totalCells }, (_, i) => {
 		justify-content: center;
 	}
 
-	.cal-cell__num {
-		font-size: 0.8rem;
-		font-weight: 600;
-		color: rgb(var(--gray));
-		display: flex;
-		align-items: center;
-		justify-content: flex-end;
-		margin-bottom: 0.1rem;
-	}
-
 	.cal-event-pill {
 		display: block;
 		background: var(--rafDarkBlue);
 		color: #fff;
 		border-radius: 3px;
 		padding: 0.1rem 0.3rem;
-		font-size: 0.7rem;
+		font-size: 0.68rem;
 		font-weight: 600;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-decoration: none;
-		line-height: 1.4;
+		line-height: 1.5;
 		transition: background 0.15s;
 	}
-
-	.cal-event-pill:hover {
-		background: var(--rafRed);
-	}
-
-	.cal-event-pill:focus-visible {
-		outline: 2px solid var(--rafRed);
-		outline-offset: 1px;
-	}
+	.cal-event-pill:hover { background: var(--rafRed); }
+	.cal-event-pill:focus-visible { outline: 2px solid var(--rafRed); outline-offset: 1px; }
 
 	@media (max-width: 560px) {
-		.cal-cell {
-			min-height: 3rem;
-			padding: 0.2rem 0.1rem;
-		}
-		.cal-event-pill {
-			font-size: 0.6rem;
-			padding: 0.05rem 0.2rem;
-		}
+		.cal-cell { min-height: 3rem; }
+		.cal-event-pill { font-size: 0.58rem; padding: 0.05rem 0.2rem; }
 	}
 </style>
+
+<script>
+	const buildId =
+		document.getElementById('cal-wrapper')?.dataset.buildId ?? '';
+
+	const MONTH_NAMES = [
+		'January','February','March','April','May','June',
+		'July','August','September','October','November','December'
+	];
+
+	interface CalEvent {
+		id: string;
+		title: string;
+		date: string;
+		endDate: string | null;
+		location: string;
+		description: string;
+		url: string;
+	}
+
+	const grid    = document.getElementById('cal-grid')!;
+	const heading = document.getElementById('cal-heading')!;
+	const status  = document.getElementById('cal-status')!;
+	const prevBtn = document.getElementById('cal-prev') as HTMLButtonElement;
+	const nextBtn = document.getElementById('cal-next') as HTMLButtonElement;
+
+	const today = new Date();
+	let viewYear  = today.getFullYear();
+	let viewMonth = today.getMonth(); // 0-indexed
+
+	// In-memory cache: key = "YYYY_M" → CalEvent[]
+	const cache = new Map<string, CalEvent[]>();
+
+	function cacheKey(year: number, month: number) {
+		return `${year}_${month}`;
+	}
+
+	async function fetchMonth(year: number, month: number): Promise<CalEvent[]> {
+		const key = cacheKey(year, month);
+		if (cache.has(key)) return cache.get(key)!;
+
+		const query = buildId ? `?v=${encodeURIComponent(buildId)}` : '';
+		const url = `/api/events/${year}/${month}.json${query}`;
+		const res = await fetch(url, { cache: 'no-store' });
+
+		if (!res.ok) {
+			// Month not pre-generated (outside ±18 range) — treat as empty
+			cache.set(key, []);
+			return [];
+		}
+
+		const data = await res.json();
+		const events: CalEvent[] = data.events ?? [];
+		cache.set(key, events);
+		return events;
+	}
+
+	function renderGrid(year: number, month: number, events: CalEvent[]) {
+		heading.textContent = `${MONTH_NAMES[month]} ${year}`;
+		grid.setAttribute('aria-busy', 'false');
+		grid.classList.remove('cal-grid--loading');
+
+		const firstDay   = new Date(year, month, 1);
+		const startOffset = (firstDay.getDay() + 6) % 7; // Mon = 0
+		const daysInMonth = new Date(year, month + 1, 0).getDate();
+		const totalCells  = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+
+		const todayKey = `${today.getFullYear()}_${today.getMonth()}_${today.getDate()}`;
+
+		grid.innerHTML = '';
+
+		for (let i = 0; i < totalCells; i++) {
+			const dayNum = i - startOffset + 1;
+			const valid  = dayNum >= 1 && dayNum <= daysInMonth;
+
+			const cell = document.createElement('div');
+			cell.setAttribute('role', 'gridcell');
+
+			if (!valid) {
+				cell.className = 'cal-cell cal-cell--empty';
+				grid.appendChild(cell);
+				continue;
+			}
+
+			const isToday = `${year}_${month}_${dayNum}` === todayKey;
+			cell.className = 'cal-cell' + (isToday ? ' cal-cell--today' : '');
+			cell.setAttribute('aria-label', `${dayNum} ${MONTH_NAMES[month]}`);
+
+			// Day number
+			const numEl = document.createElement('div');
+			numEl.className = 'cal-cell__num';
+			const numSpan = document.createElement('span');
+			numSpan.textContent = String(dayNum);
+			numEl.appendChild(numSpan);
+			cell.appendChild(numEl);
+
+			// Event pills for this day
+			events
+				.filter((e) => new Date(e.date).getDate() === dayNum)
+				.forEach((e) => {
+					const pill = document.createElement('a');
+					pill.className = 'cal-event-pill';
+					pill.href = e.url;
+					pill.textContent = e.title;
+					pill.title = e.title;
+					pill.setAttribute('aria-label', e.title);
+					cell.appendChild(pill);
+				});
+
+			grid.appendChild(cell);
+		}
+
+		// Tell the page the month and its events
+		document.dispatchEvent(
+			new CustomEvent('calendar:monthchange', {
+				detail: { year, month, events },
+			})
+		);
+	}
+
+	async function goToMonth(year: number, month: number) {
+		viewYear  = year;
+		viewMonth = month;
+
+		// Disable buttons while loading to prevent double-clicks
+		prevBtn.disabled = true;
+		nextBtn.disabled = true;
+		grid.setAttribute('aria-busy', 'true');
+		grid.classList.add('cal-grid--loading');
+		status.textContent = '';
+
+		try {
+			const events = await fetchMonth(year, month);
+			renderGrid(year, month, events);
+		} catch {
+			status.textContent = 'Could not load events — please try again.';
+			grid.setAttribute('aria-busy', 'false');
+			grid.classList.remove('cal-grid--loading');
+			heading.textContent = `${MONTH_NAMES[month]} ${year}`;
+		} finally {
+			prevBtn.disabled = false;
+			nextBtn.disabled = false;
+		}
+	}
+
+	prevBtn.addEventListener('click', () => {
+		let m = viewMonth - 1, y = viewYear;
+		if (m < 0) { m = 11; y--; }
+		goToMonth(y, m);
+	});
+
+	nextBtn.addEventListener('click', () => {
+		let m = viewMonth + 1, y = viewYear;
+		if (m > 11) { m = 0; y++; }
+		goToMonth(y, m);
+	});
+
+	// Initial load
+	goToMonth(viewYear, viewMonth);
+</script>

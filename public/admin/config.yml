@@ -92,7 +92,7 @@ collections:
     slug: "{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, e.g. flight, gps_fixed, terrain" }
+      - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, see https://fonts.google.com/icons?icon.set=Material+Icons" }
       - { label: "Display Order", name: "order", widget: "number", default: 99 }
       - { label: "Description", name: "body", widget: "markdown" }
 
@@ -105,7 +105,7 @@ collections:
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Description", name: "description", widget: "string", hint: "Short one-line description." }
-      - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, e.g. flight_takeoff, emoji_events" }
+      - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, see https://fonts.google.com/icons?icon.set=Material+Icons" }
       - { label: "Display Order", name: "order", widget: "number", default: 99 }
 
   - name: "faq"

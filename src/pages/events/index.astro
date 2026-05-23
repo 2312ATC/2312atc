@@ -1,25 +1,6 @@
 ---
-import { getCollection } from 'astro:content';
 import Page from '../../layouts/Page.astro';
-import EventCard from '../../components/EventCard.astro';
 import EventCalendar from '../../components/EventCalendar.astro';
-
-const allEvents = (await getCollection('events')).sort(
-	(a, b) => a.data.date.valueOf() - b.data.date.valueOf()
-);
-
-const now = new Date();
-const upcomingEvents = allEvents.filter((e) => e.data.date >= now);
-const pastEvents = allEvents.filter((e) => e.data.date < now).reverse();
-
-// Calendar: default to current month
-const calYear = now.getFullYear();
-const calMonth = now.getMonth();
-
-const MONTH_NAMES = [
-	'January','February','March','April','May','June',
-	'July','August','September','October','November','December'
-];
 ---
 
 <Page title="Events | 2312 Squadron Air Cadets" description="Upcoming events and activities at 2312 Squadron Air Cadets, Tavistock.">
@@ -29,63 +10,39 @@ const MONTH_NAMES = [
 	</div>
 
 	<div class="page-content">
-		<!-- Calendar -->
-		<section aria-labelledby="calendar-heading" style="margin-bottom: 2.5rem;">
-			<div class="section-header">
-				<h2 id="calendar-heading" class="section-heading">{MONTH_NAMES[calMonth]} {calYear}</h2>
+		<!-- Calendar with built-in month navigation and fetch -->
+		<section aria-labelledby="cal-section-label" class="events-cal-section">
+			<h2 id="cal-section-label" class="sr-only">Events Calendar</h2>
+			<EventCalendar />
+		</section>
+
+		<!-- Events list for the selected month — driven by calendar:monthchange -->
+		<section aria-labelledby="month-events-heading" class="month-events-section">
+			<h2 id="month-events-heading" class="section-heading month-events-title">
+				<!-- filled by script -->
+			</h2>
+			<div
+				id="month-events-list"
+				class="events-list-grid"
+				aria-live="polite"
+				aria-atomic="true"
+			>
+				<!-- filled by script -->
 			</div>
-			<EventCalendar events={allEvents} year={calYear} month={calMonth} />
-			<p style="font-size:0.8rem; color:rgb(var(--gray)); margin-top:0.5rem;">
-				Click an event on the calendar to view full details.
-			</p>
 		</section>
-
-		<!-- Upcoming events list -->
-		<section aria-labelledby="upcoming-heading" style="margin-bottom: 3rem;">
-			<h2 id="upcoming-heading" class="section-heading" style="margin-bottom:1.25rem;">Upcoming Events</h2>
-			{upcomingEvents.length > 0 ? (
-				<div class="events-list-grid">
-					{upcomingEvents.map((event) => (
-						<EventCard event={event} />
-					))}
-				</div>
-			) : (
-				<p class="events-empty">No upcoming events scheduled at the moment. Check back soon!</p>
-			)}
-		</section>
-
-		<!-- Past events -->
-		{pastEvents.length > 0 && (
-			<section aria-labelledby="past-heading">
-				<h2 id="past-heading" class="section-heading" style="margin-bottom:1.25rem;">Past Events</h2>
-				<div class="events-list-grid events-list-grid--past">
-					{pastEvents.map((event) => (
-						<EventCard event={event} />
-					))}
-				</div>
-			</section>
-		)}
 	</div>
 </Page>
 
 <style>
-	.section-header {
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		margin-bottom: 1rem;
-	}
+	.events-cal-section  { margin-bottom: 2.5rem; }
+	.month-events-section { padding-bottom: 3rem; }
+	.month-events-title   { margin-bottom: 1.25rem; min-height: 2rem; }
 
 	.events-list-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 		gap: 1.5rem;
-	}
-
-	.events-list-grid--past {
-		opacity: 0.75;
+		min-height: 4rem;
 	}
 
 	.events-empty {
@@ -95,5 +52,157 @@ const MONTH_NAMES = [
 		background: rgba(229,233,240,0.4);
 		border-radius: 8px;
 		text-align: center;
+		grid-column: 1 / -1;
+	}
+
+	/* JS-built event card */
+	.js-event-card {
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: var(--box-shadow);
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+	}
+	.js-event-card:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 8px 24px rgba(96,115,159,0.4);
+	}
+	.js-event-card__body {
+		display: flex;
+		gap: 1rem;
+		padding: 1.25rem;
+		flex: 1;
+	}
+	.js-event-card__date {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		background: var(--rafDarkBlue);
+		color: #fff;
+		border-radius: 6px;
+		padding: 0.5rem 0.65rem;
+		flex-shrink: 0;
+		height: fit-content;
+		min-width: 3.25rem;
+	}
+	.js-event-card__day {
+		font-size: 1.75rem;
+		font-weight: 800;
+		line-height: 1;
+		font-family: 'League Spartan', system-ui, sans-serif;
+	}
+	.js-event-card__mon {
+		font-size: 0.65rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		opacity: 0.85;
+	}
+	.js-event-card__content { flex: 1; display: flex; flex-direction: column; }
+	.js-event-card__title {
+		font-size: 1.05rem;
+		font-weight: 700;
+		color: var(--rafDarkBlue);
+		margin: 0 0 0.3rem;
+		font-family: 'League Spartan', system-ui, sans-serif;
+	}
+	.js-event-card__title a { text-decoration: none; color: inherit; }
+	.js-event-card__title a:hover { color: var(--rafRed); text-decoration: underline; }
+	.js-event-card__meta {
+		font-size: 0.82rem;
+		color: rgb(96,115,159);
+		margin: 0 0 0.4rem;
+		display: flex;
+		align-items: center;
+		gap: 0.2rem;
+	}
+	.js-event-card__meta .material-icons { font-size: 0.95em; vertical-align: middle; }
+	.js-event-card__desc {
+		font-size: 0.9rem;
+		color: rgb(34,41,57);
+		line-height: 1.5;
+		flex: 1;
+		margin: 0 0 1rem;
+	}
+	.js-event-card__footer {
+		padding: 0.75rem 1.25rem;
+		background: rgba(229,233,240,0.4);
+		border-top: 1px solid rgb(229,233,240);
 	}
 </style>
+
+<script>
+	const MONTH_NAMES = [
+		'January','February','March','April','May','June',
+		'July','August','September','October','November','December'
+	];
+
+	interface CalEvent {
+		id: string;
+		title: string;
+		date: string;
+		endDate: string | null;
+		location: string;
+		description: string;
+		url: string;
+	}
+
+	const listEl  = document.getElementById('month-events-list')!;
+	const titleEl = document.querySelector<HTMLElement>('.month-events-title')!;
+
+	function buildCard(e: CalEvent): HTMLElement {
+		const d   = new Date(e.date);
+		const day = d.getDate();
+		const mon = d.toLocaleString('en-GB', { month: 'short' });
+
+		const card = document.createElement('article');
+		card.className = 'js-event-card';
+		card.setAttribute('aria-label', e.title);
+		card.innerHTML = `
+			<div class="js-event-card__body">
+				<div class="js-event-card__date" aria-hidden="true">
+					<span class="js-event-card__day">${day}</span>
+					<span class="js-event-card__mon">${mon}</span>
+				</div>
+				<div class="js-event-card__content">
+					<h3 class="js-event-card__title"><a href="${e.url}">${e.title}</a></h3>
+					<p class="js-event-card__meta">
+						<span class="material-icons" aria-hidden="true">location_on</span>
+						${e.location}
+					</p>
+					<p class="js-event-card__desc">${e.description}</p>
+				</div>
+			</div>
+			<div class="js-event-card__footer">
+				<a href="${e.url}" class="btn btn-secondary" style="font-size:0.85rem;padding:0.4rem 1rem;">View details</a>
+			</div>
+		`;
+		return card;
+	}
+
+	document.addEventListener('calendar:monthchange', (raw: Event) => {
+		const { year, month, events } = (raw as CustomEvent<{
+			year: number;
+			month: number;
+			events: CalEvent[];
+		}>).detail;
+
+		titleEl.textContent = `Events in ${MONTH_NAMES[month]} ${year}`;
+		listEl.innerHTML = '';
+
+		if (events.length === 0) {
+			const empty = document.createElement('p');
+			empty.className = 'events-empty';
+			empty.textContent = `No events scheduled for ${MONTH_NAMES[month]} ${year}.`;
+			listEl.appendChild(empty);
+			return;
+		}
+
+		events
+			.sort((a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf())
+			.forEach((e) => listEl.appendChild(buildCard(e)));
+	});
+</script>
