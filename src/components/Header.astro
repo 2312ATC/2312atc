@@ -1,5 +1,6 @@
 ---
 import HeaderLink from './HeaderLink.astro';
+import NotificationPanel from './NotificationPanel.astro';
 import { Image } from 'astro:assets';
 import logo from '../assets/images/whiteLogo.png';
 ---
@@ -17,15 +18,6 @@ import logo from '../assets/images/whiteLogo.png';
 				class="logo-image"
 			/>
 		</a>
-		<button
-			type="button"
-			class="burger"
-			aria-label="Open navigation menu"
-			aria-expanded="false"
-			aria-controls="nav-links"
-		>
-			<span class="material-icons" aria-hidden="true">menu</span>
-		</button>
 		<div id="nav-links" class="internal-links">
 			<HeaderLink href="/about">About</HeaderLink>
 			<HeaderLink href="/events">Events</HeaderLink>
@@ -34,6 +26,18 @@ import logo from '../assets/images/whiteLogo.png';
 			<HeaderLink href="/cadets">Cadets</HeaderLink>
 			<HeaderLink href="/joinUs" class="nav-join">Join Us</HeaderLink>
 			<HeaderLink href="/contact">Contact</HeaderLink>
+		</div>
+		<div class="nav-end">
+			<button
+				type="button"
+				class="burger"
+				aria-label="Open navigation menu"
+				aria-expanded="false"
+				aria-controls="nav-links"
+			>
+				<span class="material-icons" aria-hidden="true">menu</span>
+			</button>
+			<NotificationPanel />
 		</div>
 	</nav>
 </header>
@@ -44,8 +48,7 @@ import logo from '../assets/images/whiteLogo.png';
 		z-index: 20;
 		background-color: var(--rafDarkBlue);
 		line-height: 0;
-		--logo-slant: clamp(8px, 4vw, 50px);
-		--stripe-height: clamp(8px, 4vw, 50px);
+		--logo-slant: 50px;
 	}
 
 	/* RAF red stripe at bottom of header */
@@ -79,10 +82,11 @@ import logo from '../assets/images/whiteLogo.png';
 			box-sizing: border-box;
 			max-height: 12vh;
 			min-height: 56px;
-			padding: 0.4rem var(--logo-slant);
+			/* top | right | bottom | left */
+			padding: 5px 50px 5px 25px;
 			border-radius: 0;
 			background-color: white;
-			clip-path: polygon(var(--logo-slant) 0, 100% 0, calc(100% - var(--logo-slant)) 100%, 0 100%);
+			clip-path: polygon(50px 0, 100% 0, calc(100% - 50px) 100%, 0 100%);
 		}
 	}
 
@@ -90,6 +94,18 @@ import logo from '../assets/images/whiteLogo.png';
 		width: 100%;
 		max-width: 100%;
 		height: auto;
+	}
+
+	.nav-end {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex-shrink: 0;
+		margin-left: auto;
+	}
+
+	.internal-links {
+		min-width: 0;
 	}
 
 	.burger {
@@ -118,6 +134,7 @@ import logo from '../assets/images/whiteLogo.png';
 
 	.internal-links {
 		display: inline-flex;
+		flex: 1;
 		justify-content: flex-end;
 		align-items: center;
 		gap: 0.25rem;
@@ -203,7 +220,7 @@ import logo from '../assets/images/whiteLogo.png';
 	if (!headerEl) throw new Error('Missing .site-header');
 	const navLinks = headerEl.querySelector<HTMLElement>('#nav-links');
 	const burger = headerEl.querySelector<HTMLButtonElement>('.burger');
-	const icon = headerEl.querySelector<HTMLElement>('.material-icons');
+	const icon = burger?.querySelector<HTMLElement>('.material-icons');
 	const backdrop = headerEl.querySelector<HTMLElement>('[data-nav-backdrop]');
 
 	function syncHeaderHeight() {

@@ -51,6 +51,8 @@ collections:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Message", name: "message", widget: "text" }
       - { label: "Publish Date", name: "pubDate", widget: "datetime" }
+      - { label: "Show from", name: "notBefore", widget: "datetime", hint: "Earliest moment this notification is shown." }
+      - { label: "Hide after", name: "notAfter", widget: "datetime", hint: "When this notification expires and is hidden." }
       - label: "Type"
         name: "type"
         widget: "select"
@@ -59,6 +61,7 @@ collections:
           - { label: "Warning", value: "warning" }
           - { label: "Alert / Urgent", value: "alert" }
         default: "info"
+      - { label: "Icon", name: "icon", widget: "string", required: false, hint: "Optional Material Icons name. Defaults to info/warning/error by type. See https://fonts.google.com/icons?icon.set=Material+Icons" }
       - { label: "Active", name: "active", widget: "boolean", default: true, hint: "Uncheck to hide this notification from the website." }
 
   - name: "landingCarousel"

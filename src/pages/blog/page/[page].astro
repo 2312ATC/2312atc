@@ -42,36 +42,46 @@ const { page } = Astro.props;
 				{page.data.length > 0 ? (
 					<>
 						<div class="blog-grid">
-							{page.data.map((post, i) => (
-								<article class:list={['card', { 'card--featured': i === 0 && page.currentPage === 1 }]}>
-									{post.data.heroImage && (
-										<a href={`/blog/${post.id}/`} tabindex="-1" aria-hidden="true">
-											<Image
-												src={post.data.heroImage}
-												alt=""
-												class="blog-card-img"
-												width={i === 0 && page.currentPage === 1 ? 1000 : 640}
-												height={i === 0 && page.currentPage === 1 ? 400 : 240}
-												loading={i === 0 ? 'eager' : 'lazy'}
-											/>
-										</a>
-									)}
-									<div class="card-body">
-										<p class="card-meta">
-											<FormattedDate date={post.data.pubDate} />
-										</p>
-										<h2 class="card-title">
-											<a href={`/blog/${post.id}/`}>{post.data.title}</a>
-										</h2>
-										<p class="card-description">{post.data.description}</p>
-									</div>
-									<div class="card-footer">
-										<a href={`/blog/${post.id}/`} class="btn btn-secondary" style="font-size:0.85rem;padding:0.4rem 1rem;">
-											Read more <span aria-hidden="true">→</span>
-										</a>
-									</div>
-								</article>
-							))}
+							{page.data.map((post, i) => {
+								const isFeatured = i === 0 && page.currentPage === 1;
+								return (
+									<article class:list={['card', 'blog-card', { 'blog-card--featured': isFeatured }]}>
+										{post.data.heroImage && (
+											<a
+												href={`/blog/${post.id}/`}
+												class="blog-card-media"
+												tabindex="-1"
+												aria-hidden="true"
+											>
+												<Image
+													src={post.data.heroImage}
+													alt=""
+													class="blog-card-img"
+													width={post.data.heroImage.width}
+													height={post.data.heroImage.height}
+													loading={i === 0 ? 'eager' : 'lazy'}
+												/>
+											</a>
+										)}
+										<div class="blog-card-content">
+											<div class="card-body">
+												<p class="card-meta">
+													<FormattedDate date={post.data.pubDate} />
+												</p>
+												<h2 class="card-title">
+													<a href={`/blog/${post.id}/`}>{post.data.title}</a>
+												</h2>
+												<p class="card-description">{post.data.description}</p>
+											</div>
+											<div class="card-footer">
+												<a href={`/blog/${post.id}/`} class="btn btn-secondary blog-card-btn">
+													Read more <span aria-hidden="true">→</span>
+												</a>
+											</div>
+										</div>
+									</article>
+								);
+							})}
 						</div>
 
 						<nav class="pagination" aria-label="Blog pagination">
@@ -106,41 +116,93 @@ const { page } = Astro.props;
 		margin-bottom: 2.5rem;
 	}
 
-	/* Featured first post spans full width */
-	.card--featured {
+	.blog-card {
+		min-width: 0;
+	}
+
+	.blog-card-content {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.blog-card-media {
+		display: block;
+		line-height: 0;
+		overflow: hidden;
+	}
+
+	.blog-card-img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	.blog-card .card-title a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.blog-card .card-title a:hover {
+		text-decoration: underline;
+	}
+
+	.blog-card .card-description {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.blog-card-btn {
+		font-size: 0.85rem;
+		padding: 0.45rem 1.1rem;
+		white-space: nowrap;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	/* Featured first post: image left, content right */
+	.blog-card--featured {
 		grid-column: 1 / -1;
-		flex-direction: row;
+		display: grid;
+		grid-template-columns: minmax(240px, 42%) 1fr;
 	}
 
-	.card--featured .blog-card-img {
-		width: 55%;
-		height: 320px;
-		flex-shrink: 0;
+	.blog-card--featured .blog-card-media {
+		align-self: start;
 	}
 
-	.card--featured .card-body {
-		padding: 2rem;
+	.blog-card--featured .card-body {
+		padding: 2rem 2rem 1rem;
 	}
 
-	.card--featured .card-title {
-		font-size: 1.5rem;
+	.blog-card--featured .card-title {
+		font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+		line-height: 1.25;
 	}
 
-	.card--featured .card-description {
+	.blog-card--featured .card-description {
+		-webkit-line-clamp: 4;
 		font-size: 1rem;
+	}
+
+	.blog-card--featured .card-footer {
+		padding: 0 2rem 2rem;
+		background: transparent;
+		border-top: none;
+		margin-top: auto;
 	}
 
 	@media (max-width: 900px) {
 		.blog-grid {
 			grid-template-columns: repeat(2, 1fr);
 		}
-		.card--featured {
-			grid-column: 1 / -1;
-			flex-direction: column;
-		}
-		.card--featured .blog-card-img {
-			width: 100%;
-			height: 220px;
+
+		.blog-card--featured {
+			grid-template-columns: 1fr;
 		}
 	}
 
@@ -148,13 +210,6 @@ const { page } = Astro.props;
 		.blog-grid {
 			grid-template-columns: 1fr;
 		}
-	}
-
-	.blog-card-img {
-		width: 100%;
-		height: 200px;
-		object-fit: cover;
-		display: block;
 	}
 
 	.blog-empty {

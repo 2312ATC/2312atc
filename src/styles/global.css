@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./notification-cards.css";
 
 :root {
 	--rafLightBlue: #003c71;

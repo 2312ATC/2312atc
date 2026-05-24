@@ -1,20 +1,22 @@
 ---
-title: Shooting Competition
+title: Inter-Squadron Shooting Competition
 date: 2026-06-14T10:00:00.000Z
 location: Tavistock Shooting Range
-description: Annual inter-squadron shooting competition. All qualified marksmen are invited to represent 2312 Squadron.
+description: Annual marksmanship competition — squadron teams compete for the wing shooting trophy.
+heroImage: ../../assets/images/blog-placeholder-3.jpg
 ---
 
-## Shooting Competition
+## Shooting competition
 
-2312 Squadron will be hosting the annual inter-squadron shooting competition at Tavistock Shooting Range. We are looking for our best marksmen to represent the squadron.
+2312 Squadron hosts the **Devon & Cornwall Wing** inter-squadron shooting competition at Tavistock range. We need our best marksmen on the detail.
 
-### Registration
+### How to enter
 
-If you wish to compete, please speak to your Flight Sergeant by the end of May parade night. Places are limited.
+Speak to your Flight Sergeant before the end of May parade night. You must hold a current weapons handling test and have attended at least two range practices this term.
 
-### What to Bring
+### On the day
 
-- Full No. 2 uniform
-- Any personal shooting equipment (ear defenders, etc.)
-- Packed lunch
+- Report in No. 2 uniform at 0930
+- Ear defenders and range glasses provided if needed
+- Packed lunch and water bottle required
+- Spectators welcome from the viewing gallery after 1100

@@ -43,7 +43,10 @@ const notifications = defineCollection({
 		title: z.string(),
 		message: z.string(),
 		pubDate: z.coerce.date(),
+		notBefore: z.coerce.date(),
+		notAfter: z.coerce.date(),
 		type: z.enum(['info', 'warning', 'alert']).default('info'),
+		icon: z.string().optional(),
 		active: z.boolean().default(true),
 	}),
 });

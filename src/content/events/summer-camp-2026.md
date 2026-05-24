@@ -3,23 +3,26 @@ title: Summer Camp 2026
 date: 2026-08-03T09:00:00.000Z
 endDate: 2026-08-10T17:00:00.000Z
 location: RAF Cosford, Shropshire
-description: Annual summer camp at RAF Cosford. Cadets will experience flying, shooting, and adventure training activities. A fantastic week for all participants!
+description: Week-long annual camp with flying, shooting, adventure training, and station activities at RAF Cosford.
+heroImage: ../../assets/images/blog-placeholder-2.jpg
 ---
 
-## About Summer Camp
+## Summer Camp at RAF Cosford
 
-Summer camp is the highlight of the Air Cadet calendar! This year we're heading to RAF Cosford for a week of fantastic activities including:
+Summer camp is the highlight of the cadet year. This August we are based at **RAF Cosford** for a full week of activities.
 
-- Air Experience Flying
-- Shooting on the range
-- Adventure training
-- Station tours
-- Formal dining night
+### Programme highlights
 
-### Who Can Attend?
+- Air Experience Flying in the Grob Tutor
+- Small-bore and full-bore shooting
+- High ropes and team-building challenges
+- Museum and engineering hangar tours
+- Formal dining night and inter-squadron sports
 
-Summer camp is open to all cadets who have completed their first year. Priority is given to senior cadets who have not previously attended.
+### Who can attend?
 
-### What to Bring
+Open to cadets who have completed at least one full year and hold a valid membership. Priority for first-time campers is agreed with flight commanders in June.
 
-A full kit list will be distributed at parade nights in June. Make sure your uniform is in good order before attending.
+### Kit and paperwork
+
+A detailed kit list and consent pack will be issued at parade nights in June. All forms must be returned before travel.

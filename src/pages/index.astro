@@ -30,8 +30,10 @@ const latestPosts = (await getCollection('blog'))
 		<Header />
 
 		<main id="main-content">
-			<NotificationBanner />
-			<LandingCarousel />
+			<div class="home-hero">
+				<LandingCarousel />
+				<NotificationBanner overlay />
+			</div>
 
 			<!-- About intro -->
 			<section class="home-about" aria-labelledby="home-about-heading">
@@ -161,6 +163,10 @@ const latestPosts = (await getCollection('blog'))
 </html>
 
 <style>
+	.home-hero {
+		position: relative;
+	}
+
 	/* About intro */
 	.home-about {
 		background: #fff;

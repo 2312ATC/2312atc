@@ -3,19 +3,21 @@ title: Duke of Edinburgh Bronze Expedition
 date: 2026-07-05T08:00:00.000Z
 endDate: 2026-07-06T17:00:00.000Z
 location: Dartmoor National Park
-description: Bronze Duke of Edinburgh Award qualifying expedition across Dartmoor. Open to cadets enrolled in the DofE programme.
+description: Qualifying Bronze DofE expedition — two days hiking and camping on Dartmoor for enrolled cadets.
 ---
 
-## D of E Bronze Expedition
+## Bronze qualifying expedition
 
-Cadets enrolled in the Bronze Duke of Edinburgh Award will complete their qualifying expedition across Dartmoor National Park over this weekend.
+Cadets enrolled on the **Bronze Duke of Edinburgh Award** will complete their qualifying expedition across Dartmoor over this weekend.
 
-### Requirements
+### Before you attend
 
-- Completed practice expedition
-- All DofE paperwork submitted by 20 June
-- Full kit list issued separately
+- Practice expedition completed and signed off
+- Route card and emergency plan submitted by 20 June
+- Full expedition kit checked at parade (see issued kit list)
 
-### Meeting Point
+### Timings
 
-Meet at the squadron at 0800 on Saturday. Parents/guardians should collect cadets at the end point (coordinates TBC) on Sunday afternoon.
+Meet at squadron HQ at **0800 Saturday**. Coaches return to Tavistock on Sunday afternoon — exact pickup point confirmed on the day via staff radio net.
+
+Parents: please ensure mobile numbers on Westminster are up to date.
