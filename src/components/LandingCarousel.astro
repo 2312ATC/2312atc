@@ -235,10 +235,41 @@ const slides = (await getCollection('landingCarousel'));
 		outline-offset: 2px;
 	}
 
-	@media (max-width: 480px) {
+	@media (max-width: 768px) {
 		.carousel {
-			max-height: 70vh;
+			height: auto;
+			max-height: none;
+			min-height: 0;
+			background: transparent;
 		}
+
+		.carousel-track {
+			height: auto;
+		}
+
+		.carousel-item {
+			position: absolute;
+			inset: auto;
+			top: 0;
+			left: 0;
+			width: 100%;
+		}
+
+		.carousel-item.active {
+			position: relative;
+		}
+
+		.carousel-item a {
+			height: auto;
+		}
+
+		.carousel-img {
+			width: 100%;
+			height: auto;
+			display: block;
+			object-fit: initial;
+		}
+
 		.carousel-btn {
 			width: 2.25rem;
 			height: 2.25rem;

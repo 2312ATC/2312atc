@@ -1,4 +1,5 @@
 ---
+import { SQUADRON_ADDRESS } from '../consts';
 import Page from '../layouts/Page.astro';
 import { getCollection, render } from 'astro:content';
 
@@ -69,8 +70,7 @@ const renderedFaq = await Promise.all(
 				<div class="parade-detail">
 					<span class="material-icons" aria-hidden="true">location_on</span>
 					<div>
-						<strong>Tavistock, Devon</strong>
-						<span><a href="/contact">Contact us for the exact address →</a></span>
+						<strong>{SQUADRON_ADDRESS}</strong>
 					</div>
 				</div>
 			</div>
@@ -137,7 +137,7 @@ const renderedFaq = await Promise.all(
 		<div class="join-cta-box">
 			<h2>Ready to join?</h2>
 			<p>Send us a message and we'll get back to you within a few days.</p>
-			<a href="/contact?enquiry=join" class="btn btn-primary" style="font-size:1.05rem;padding:0.7rem 2rem;">Enquire about joining</a>
+			<a href="/contact" class="btn btn-primary" style="font-size:1.05rem;padding:0.7rem 2rem;">Enquire about joining</a>
 		</div>
 	</div>
 </Page>
