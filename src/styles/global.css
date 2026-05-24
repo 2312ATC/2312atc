@@ -2,7 +2,7 @@
 @import "./notification-cards.css";
 
 :root {
-	--rafLightBlue: #003c71;
+	--rafLightBlue: #85b3cd;
 	--rafDarkBlue: #002e60;
 	--rafRed: #cf142b;
 	--rafRedHover: #a01020;
@@ -276,7 +276,7 @@ img {
 
 /* Hero banner */
 .hero-banner {
-	background: var(--rafDarkBlue);
+	background: linear-gradient(135deg,var(--rafDarkBlue) 0%,var(--rafLightBlue) 100%);
 	color: #fff;
 	padding: 3rem 1.25rem;
 	text-align: center;

@@ -184,18 +184,24 @@ import logo from '../assets/images/whiteLogo.png';
 		.internal-links {
 			display: flex;
 			flex-direction: column;
+			flex-wrap: nowrap;
+			justify-content: flex-start;
 			align-items: stretch;
 			position: fixed;
 			z-index: 2;
 			top: var(--header-height, 4.5rem);
 			right: 0;
-			width: max-content;
-			max-width: min(90vw, 22rem);
 			margin: 0;
-			padding: 0;
+			padding-block: 0.5rem;
+			padding-inline: 0;
 			max-height: 0;
 			overflow: hidden;
-			transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+			opacity: 0;
+			visibility: hidden;
+			transition:
+				max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+				opacity 0.25s ease,
+				visibility 0.35s;
 			background-color: var(--rafDarkBlue);
 			box-shadow: -4px 12px 28px rgba(0, 0, 0, 0.3);
 			border-radius: 0 0 0 0.5rem;
@@ -204,8 +210,9 @@ import logo from '../assets/images/whiteLogo.png';
 
 		.internal-links.open {
 			max-height: min(80vh, 30rem);
+			opacity: 1;
+			visibility: visible;
 			pointer-events: auto;
-			padding: 0.5rem 0;
 		}
 
 		.internal-links :global(.nav-join a) {
