@@ -1,0 +1,72 @@
+---
+import Page from '../layouts/Page.astro';
+
+Astro.response.status = 404;
+---
+
+<Page
+	title="Page Not Found | 2312 Squadron Air Cadets"
+	description="The page you requested could not be found on the 2312 Squadron Air Cadets website."
+>
+	<div class="hero-banner">
+		<h1>Page not found</h1>
+		<p>Sorry — we could not find the page you were looking for.</p>
+	</div>
+
+	<div class="page-content">
+		<section class="not-found" aria-labelledby="not-found-heading">
+			<p class="not-found-code" aria-hidden="true">404</p>
+			<h2 id="not-found-heading" class="section-heading">Lost your bearings?</h2>
+			<p>
+				The link may be outdated, or the address may have been typed incorrectly. Try returning to the
+				homepage or use the menu above to find what you need.
+			</p>
+			<div class="not-found-actions">
+				<a href="/" class="btn btn-primary">
+					<span class="material-icons" aria-hidden="true">home</span>
+					Back to home
+				</a>
+				<a href="/contact" class="btn btn-outline">
+					<span class="material-icons" aria-hidden="true">mail</span>
+					Contact us
+				</a>
+			</div>
+		</section>
+	</div>
+</Page>
+
+<style>
+	.not-found {
+		max-width: 40rem;
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	.not-found-code {
+		font-family: 'League Spartan', system-ui, sans-serif;
+		font-size: clamp(4rem, 12vw, 7rem);
+		font-weight: 700;
+		line-height: 1;
+		color: var(--rafLightBlue);
+		margin: 0 0 1rem;
+	}
+
+	.not-found p {
+		color: rgb(var(--gray-dark));
+		font-size: 1.05rem;
+		line-height: 1.7;
+		margin-bottom: 2rem;
+	}
+
+	.not-found .section-heading {
+		display: block;
+		margin-bottom: 1rem;
+	}
+
+	.not-found-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		justify-content: center;
+	}
+</style>
