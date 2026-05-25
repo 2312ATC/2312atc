@@ -9,7 +9,7 @@ export const GET = (async (context) => {
 	const feed = await rss({
 		title: SITE_TITLE,
 		description: SITE_DESCRIPTION,
-		site: context.site ?? new URL('https://atc2312.org'),
+		site: context.site ?? new URL('https://tavistock.air-cadets.org'),
 		items: posts.map((post) => ({
 			...post.data,
 			link: `/blog/${post.id}/`,

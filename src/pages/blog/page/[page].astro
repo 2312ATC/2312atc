@@ -44,41 +44,59 @@ const { page } = Astro.props;
 						<div class="blog-grid">
 							{page.data.map((post, i) => {
 								const isFeatured = i === 0 && page.currentPage === 1;
+								const hero = post.data.heroImage;
+								const isPortrait = hero && hero.height > hero.width;
+								const media = hero && (
+									<a
+										href={`/blog/${post.id}/`}
+										class="blog-card-media"
+										tabindex="-1"
+										aria-hidden="true"
+									>
+										<Image
+											src={hero}
+											alt=""
+											class:list={[
+												'blog-card-img',
+												{ 'blog-card-img--portrait': isPortrait, 'blog-card-img--landscape': !isPortrait },
+											]}
+											width={hero.width}
+											height={hero.height}
+											loading={i === 0 ? 'eager' : 'lazy'}
+										/>
+									</a>
+								);
+								const content = (
+									<div class="blog-card-content">
+										<div class="card-body">
+											<p class="card-meta">
+												<FormattedDate date={post.data.pubDate} />
+											</p>
+											<h2 class="card-title">
+												<a href={`/blog/${post.id}/`}>{post.data.title}</a>
+											</h2>
+											<p class="card-description">{post.data.description}</p>
+										</div>
+										<div class="card-footer">
+											<a href={`/blog/${post.id}/`} class="btn btn-secondary blog-card-btn">
+												Read more <span aria-hidden="true">→</span>
+											</a>
+										</div>
+									</div>
+								);
 								return (
 									<article class:list={['card', 'blog-card', { 'blog-card--featured': isFeatured }]}>
-										{post.data.heroImage && (
-											<a
-												href={`/blog/${post.id}/`}
-												class="blog-card-media"
-												tabindex="-1"
-												aria-hidden="true"
-											>
-												<Image
-													src={post.data.heroImage}
-													alt=""
-													class="blog-card-img"
-													width={post.data.heroImage.width}
-													height={post.data.heroImage.height}
-													loading={i === 0 ? 'eager' : 'lazy'}
-												/>
-											</a>
+										{isFeatured ? (
+											<>
+												{content}
+												{media}
+											</>
+										) : (
+											<>
+												{media}
+												{content}
+											</>
 										)}
-										<div class="blog-card-content">
-											<div class="card-body">
-												<p class="card-meta">
-													<FormattedDate date={post.data.pubDate} />
-												</p>
-												<h2 class="card-title">
-													<a href={`/blog/${post.id}/`}>{post.data.title}</a>
-												</h2>
-												<p class="card-description">{post.data.description}</p>
-											</div>
-											<div class="card-footer">
-												<a href={`/blog/${post.id}/`} class="btn btn-secondary blog-card-btn">
-													Read more <span aria-hidden="true">→</span>
-												</a>
-											</div>
-										</div>
 									</article>
 								);
 							})}
@@ -131,12 +149,26 @@ const { page } = Astro.props;
 		display: block;
 		line-height: 0;
 		overflow: hidden;
+		background: rgb(var(--gray-light));
+	}
+
+	.blog-card:not(.blog-card--featured) .blog-card-media {
+		aspect-ratio: 16 / 9;
 	}
 
 	.blog-card-img {
 		width: 100%;
-		height: auto;
+		height: 100%;
 		display: block;
+		object-position: center;
+	}
+
+	.blog-card-img--landscape {
+		object-fit: cover;
+	}
+
+	.blog-card-img--portrait {
+		object-fit: contain;
 	}
 
 	.blog-card .card-title a {
@@ -164,15 +196,57 @@ const { page } = Astro.props;
 		gap: 0.35rem;
 	}
 
-	/* Featured first post: image left, content right */
+	/* Featured first post: image left, content right (content first in DOM for row sizing) */
 	.blog-card--featured {
 		grid-column: 1 / -1;
 		display: grid;
 		grid-template-columns: minmax(240px, 42%) 1fr;
+		align-items: stretch;
+		min-height: 0;
 	}
 
 	.blog-card--featured .blog-card-media {
-		align-self: start;
+		grid-column: 1;
+		grid-row: 1;
+		min-height: 0;
+		min-width: 0;
+	}
+
+	.blog-card--featured .blog-card-content {
+		grid-column: 2;
+		grid-row: 1;
+	}
+
+	@media (min-width: 901px) {
+		/*
+		 * Absolute positioning keeps tall images out of grid flow so the content
+		 * column sets the row height (min-height: 0 alone is not enough for <img>).
+		 */
+		.blog-card--featured .blog-card-media {
+			position: relative;
+			height: 100%;
+		}
+
+		.blog-card--featured .blog-card-img {
+			position: absolute;
+			inset: 0;
+			margin: auto;
+			min-height: 0;
+			min-width: 0;
+		}
+
+		.blog-card--featured .blog-card-img--landscape {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+		}
+
+		.blog-card--featured .blog-card-img--portrait {
+			width: auto;
+			height: auto;
+			max-width: 100%;
+			max-height: 100%;
+		}
 	}
 
 	.blog-card--featured .card-body {
@@ -203,6 +277,18 @@ const { page } = Astro.props;
 
 		.blog-card--featured {
 			grid-template-columns: 1fr;
+		}
+
+		.blog-card--featured .blog-card-media {
+			grid-row: 1;
+			grid-column: 1;
+			height: auto;
+			aspect-ratio: 16 / 9;
+		}
+
+		.blog-card--featured .blog-card-content {
+			grid-row: 2;
+			grid-column: 1;
 		}
 	}
 
