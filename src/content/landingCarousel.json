@@ -13,6 +13,9 @@
     },
     {
       "image": "portrait placeholder.png"
+    },
+    {
+      "image": "../../assets/images/ad-placeholder.png"
     }
   ]
 }
