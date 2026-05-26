@@ -78,7 +78,7 @@ export function orderedListLoader<TItem extends ZodType>({
 			watcher?.on('change', async (changedPath) => {
 				if (changedPath === absoluteFilePath) {
 					logger.info(`Reloading data from ${file}`);
-					await sync(filePath);
+					await sync(absoluteFilePath);
 				}
 			});
 		},

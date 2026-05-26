@@ -54,6 +54,7 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
+		height: 100%;
 		transition: transform 0.15s ease, box-shadow 0.15s ease;
 	}
 
@@ -84,6 +85,8 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 		gap: 1rem;
 		padding: 1.25rem;
 		flex: 1;
+		min-height: 0;
+		align-items: stretch;
 	}
 
 	.event-list-card__date-block {
@@ -119,6 +122,7 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 		flex: 1;
 		display: flex;
 		flex-direction: column;
+		min-height: 0;
 	}
 
 	.event-list-card__title {
@@ -156,13 +160,13 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 		font-size: 0.92rem;
 		color: rgb(var(--gray-dark));
 		line-height: 1.5;
-		flex: 1;
-		margin-bottom: 1rem;
+		margin: 0;
 	}
 
 	.event-list-card__cta {
 		font-size: 0.85rem;
 		padding: 0.4rem 1rem;
 		align-self: flex-start;
+		margin-top: auto;
 	}
 </style>

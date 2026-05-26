@@ -43,6 +43,7 @@ import EventCalendar from '../../components/EventCalendar.astro';
 		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 		gap: 1.5rem;
 		min-height: 4rem;
+		align-items: stretch;
 	}
 
 	.events-empty {
@@ -55,27 +56,30 @@ import EventCalendar from '../../components/EventCalendar.astro';
 		grid-column: 1 / -1;
 	}
 
-	/* JS-built event card */
-	.js-event-card {
+	/* :global — cards are built in client script, so scoped attrs are not applied */
+	:global(.js-event-card) {
 		background: #fff;
 		border-radius: 8px;
 		box-shadow: var(--box-shadow);
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
+		height: 100%;
 		transition: transform 0.15s ease, box-shadow 0.15s ease;
 	}
-	.js-event-card:hover {
+	:global(.js-event-card:hover) {
 		transform: translateY(-3px);
 		box-shadow: 0 8px 24px rgba(96,115,159,0.4);
 	}
-	.js-event-card__body {
+	:global(.js-event-card__body) {
 		display: flex;
 		gap: 1rem;
 		padding: 1.25rem;
 		flex: 1;
+		min-height: 0;
+		align-items: stretch;
 	}
-	.js-event-card__date {
+	:global(.js-event-card__date) {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -88,30 +92,35 @@ import EventCalendar from '../../components/EventCalendar.astro';
 		height: fit-content;
 		min-width: 3.25rem;
 	}
-	.js-event-card__day {
+	:global(.js-event-card__day) {
 		font-size: 1.75rem;
 		font-weight: 800;
 		line-height: 1;
 		font-family: 'League Spartan', system-ui, sans-serif;
 	}
-	.js-event-card__mon {
+	:global(.js-event-card__mon) {
 		font-size: 0.65rem;
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		opacity: 0.85;
 	}
-	.js-event-card__content { flex: 1; display: flex; flex-direction: column; }
-	.js-event-card__title {
+	:global(.js-event-card__content) {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+	}
+	:global(.js-event-card__title) {
 		font-size: 1.05rem;
 		font-weight: 700;
 		color: var(--rafDarkBlue);
 		margin: 0 0 0.3rem;
 		font-family: 'League Spartan', system-ui, sans-serif;
 	}
-	.js-event-card__title a { text-decoration: none; color: inherit; }
-	.js-event-card__title a:hover { color: var(--rafRed); text-decoration: underline; }
-	.js-event-card__meta {
+	:global(.js-event-card__title a) { text-decoration: none; color: inherit; }
+	:global(.js-event-card__title a:hover) { color: var(--rafRed); text-decoration: underline; }
+	:global(.js-event-card__meta) {
 		font-size: 0.82rem;
 		color: rgb(96,115,159);
 		margin: 0 0 0.4rem;
@@ -119,15 +128,15 @@ import EventCalendar from '../../components/EventCalendar.astro';
 		align-items: center;
 		gap: 0.2rem;
 	}
-	.js-event-card__meta .material-icons { font-size: 0.95em; vertical-align: middle; }
-	.js-event-card__desc {
+	:global(.js-event-card__meta .material-icons) { font-size: 0.95em; vertical-align: middle; }
+	:global(.js-event-card__desc) {
 		font-size: 0.9rem;
 		color: rgb(34,41,57);
 		line-height: 1.5;
-		flex: 1;
-		margin: 0 0 1rem;
+		margin: 0;
 	}
-	.js-event-card__footer {
+	:global(.js-event-card__footer) {
+		margin-top: auto;
 		padding: 0.75rem 1.25rem;
 		background: rgba(229,233,240,0.4);
 		border-top: 1px solid rgb(229,233,240);
