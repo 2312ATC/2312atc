@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "title": "Air Experience Flying",
+      "description": "Fly in a Grob Tutor aircraft with a qualified pilot — available to all cadets.",
+      "icon": "flight_takeoff"
+    },
+    {
+      "title": "Summer Camps",
+      "description": "Annual week-long camp at an RAF station. One of the highlights of the cadet year.",
+      "icon": "sailing"
+    },
+    {
+      "title": "National Competitions",
+      "description": "Represent 2312 at wing, regional and national competitions in shooting, drill, sports and more.",
+      "icon": "emoji_events"
+    },
+    {
+      "title": "Duke of Edinburgh Award",
+      "description": "Complete your Bronze, Silver or Gold Duke of Edinburgh Award through the squadron.",
+      "icon": "card_membership"
+    },
+    {
+      "title": "BTEC Qualifications",
+      "description": "Gain a nationally recognised BTEC in Aviation Studies or Public Services.",
+      "icon": "workspace_premium"
+    },
+    {
+      "title": "Cadet Ranks",
+      "description": "Progress from Cadet through to Cadet Warrant Officer, developing leadership at every step.",
+      "icon": "military_tech"
+    }
+  ]
+}

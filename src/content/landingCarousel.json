@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "image": "blog-placeholder-1.jpg",
+      "link": "/home"
+    },
+    {
+      "image": "blog-placeholder-2.jpg",
+      "link": "/abcde"
+    },
+    {
+      "image": "blog-placeholder-4.jpg"
+    },
+    {
+      "image": "portrait placeholder.png"
+    }
+  ]
+}

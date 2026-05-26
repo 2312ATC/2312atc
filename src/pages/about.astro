@@ -1,11 +1,11 @@
 ---
 import Page from '../layouts/Page.astro';
 import { Image } from 'astro:assets';
-import { getCollection, render } from 'astro:content';
+import { getEntry } from 'astro:content';
 import logo from '../assets/images/logo.jpg';
 
-const staffMembers = (await getCollection('staff'))
-	.sort((a, b) => a.data.order - b.data.order);
+const staffEntry = await getEntry('staff', 'items');
+const staffMembers = staffEntry?.data.items ?? [];
 ---
 
 <Page title="About Us | 2312 Squadron Air Cadets" description="Learn about 2312 (Tavistock) Squadron Air Cadets — our history, mission and the team behind the squadron.">
@@ -108,9 +108,9 @@ const staffMembers = (await getCollection('staff'))
 			<div class="staff-grid">
 				{staffMembers.map((member) => (
 					<div class="staff-card">
-						<div class="staff-card-rank">{member.data.role}</div>
-						<div class="staff-card-name">{member.data.name}</div>
-						{member.data.bio && <p class="staff-card-bio">{member.data.bio}</p>}
+						<div class="staff-card-rank">{member.role}</div>
+						<div class="staff-card-name">{member.name}</div>
+						{member.bio && <p class="staff-card-bio">{member.bio}</p>}
 					</div>
 				))}
 			</div>

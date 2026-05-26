@@ -1,17 +1,10 @@
 ---
 import { SQUADRON_ADDRESS } from '../consts';
 import Page from '../layouts/Page.astro';
-import { getCollection, render } from 'astro:content';
+import { getEntry } from 'astro:content';
 
-const faqItems = (await getCollection('faq'))
-	.sort((a, b) => a.data.order - b.data.order);
-
-const renderedFaq = await Promise.all(
-	faqItems.map(async (item) => {
-		const { Content } = await render(item);
-		return { item, Content };
-	})
-);
+const faqEntry = await getEntry('faq', 'items');
+const faqItems = faqEntry?.data.items ?? [];
 ---
 
 <Page title="Join Us | 2312 Squadron Air Cadets" description="Find out how to join 2312 Squadron Air Cadets in Tavistock. Open to young people aged 12–20.">
@@ -122,12 +115,10 @@ const renderedFaq = await Promise.all(
 		<section aria-labelledby="join-faq" class="join-section">
 			<h2 id="join-faq" class="section-heading">Frequently Asked Questions</h2>
 			<div class="faq-list">
-				{renderedFaq.map(({ item, Content }) => (
+				{faqItems.map((item) => (
 					<details class="faq-item">
-						<summary>{item.data.question}</summary>
-						<div class="faq-answer faq-prose">
-							<Content />
-						</div>
+						<summary>{item.question}</summary>
+						<div class="faq-answer faq-prose" set:html={item.bodyHtml} />
 					</details>
 				))}
 			</div>

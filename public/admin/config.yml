@@ -66,58 +66,108 @@ collections:
 
   - name: "landingCarousel"
     label: "Home Page Carousel"
-    label_singular: "Carousel Slide"
-    folder: "src/content/landingCarousel"
-    create: true
-    identifier_field: "image"
-    fields:
-      - { label: "Image", name: "image", widget: "image" }
-      - { label: "Caption / Alt Text", name: "caption", widget: "string", required: false, hint: "Describe the image for accessibility. Also shown as an overlay caption." }
-      - { label: "Link", name: "link", widget: "string", required: false, hint: "Optional internal link (e.g. /events)", pattern: ['/[a-zA-Z0-9_/-]*', "Must start with a slash"] }
+    files:
+      - label: "Carousel Slides"
+        name: "landingCarousel"
+        file: "src/content/landingCarousel.json"
+        format: json
+        fields:
+          - label: "Slides"
+            name: items
+            widget: list
+            label_singular: "Slide"
+            summary: "{{fields.image}}"
+            fields:
+              - { label: "Image", name: "image", widget: "image" }
+              - { label: "Caption / Alt Text", name: "caption", widget: "string", required: false, hint: "Describe the image for accessibility. Also shown as an overlay caption." }
+              - { label: "Link", name: "link", widget: "string", required: false, hint: "Optional internal link (e.g. /events)", pattern: ['/[a-zA-Z0-9_/-]*', "Must start with a slash"] }
 
   - name: "staff"
     label: "Staff (About page)"
-    label_singular: "Staff Member"
-    folder: "src/content/staff"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Name", name: "name", widget: "string" }
-      - { label: "Role / Rank", name: "role", widget: "string" }
-      - { label: "Bio", name: "bio", widget: "text", required: false, hint: "Optional short biography shown on the About page." }
-      - { label: "Display Order", name: "order", widget: "number", default: 99, hint: "Lower numbers appear first." }
+    files:
+      - label: "Staff Members"
+        name: "staff"
+        file: "src/content/staff.json"
+        format: json
+        fields:
+          - label: "Staff"
+            name: items
+            widget: list
+            label_singular: "Staff Member"
+            summary: "{{fields.name}} — {{fields.role}}"
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Role / Rank", name: "role", widget: "string" }
+              - { label: "Bio", name: "bio", widget: "text", required: false, hint: "Optional short biography shown on the About page." }
 
   - name: "activities"
     label: "Activities (What We Do page)"
-    label_singular: "Activity"
-    folder: "src/content/activities"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, see https://fonts.google.com/icons?icon.set=Material+Icons" }
-      - { label: "Display Order", name: "order", widget: "number", default: 99 }
-      - { label: "Description", name: "body", widget: "markdown" }
+    files:
+      - label: "Activities"
+        name: "activities"
+        file: "src/content/activities.json"
+        format: json
+        fields:
+          - label: "Activities"
+            name: items
+            widget: list
+            label_singular: "Activity"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, see https://fonts.google.com/icons?icon.set=Material+Icons" }
+              - { label: "Description", name: "body", widget: "markdown" }
 
   - name: "opportunities"
     label: "Opportunities (Cadets page)"
-    label_singular: "Opportunity"
-    folder: "src/content/opportunities"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "string", hint: "Short one-line description." }
-      - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, see https://fonts.google.com/icons?icon.set=Material+Icons" }
-      - { label: "Display Order", name: "order", widget: "number", default: 99 }
+    files:
+      - label: "Opportunities"
+        name: "opportunities"
+        file: "src/content/opportunities.json"
+        format: json
+        fields:
+          - label: "Opportunities"
+            name: items
+            widget: list
+            label_singular: "Opportunity"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "string", hint: "Short one-line description." }
+              - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, see https://fonts.google.com/icons?icon.set=Material+Icons" }
 
   - name: "faq"
     label: "FAQs (Join Us page)"
-    label_singular: "FAQ"
-    folder: "src/content/faq"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Question", name: "question", widget: "string" }
-      - { label: "Display Order", name: "order", widget: "number", default: 99 }
-      - { label: "Answer", name: "body", widget: "markdown" }
+    files:
+      - label: "FAQs"
+        name: "faq"
+        file: "src/content/faq.json"
+        format: json
+        fields:
+          - label: "Questions"
+            name: items
+            widget: list
+            label_singular: "FAQ"
+            summary: "{{fields.question}}"
+            fields:
+              - { label: "Question", name: "question", widget: "string" }
+              - { label: "Answer", name: "body", widget: "markdown" }
+
+  - name: "cadetLinks"
+    label: "Useful Links (Cadets page)"
+    files:
+      - label: "Useful Links"
+        name: "cadetLinks"
+        file: "src/content/cadetLinks.json"
+        format: json
+        fields:
+          - label: "Links"
+            name: items
+            widget: list
+            label_singular: "Link"
+            summary: "{{fields.label}}"
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - { label: "URL", name: "url", widget: "string", hint: "Full URL (https://…) or site path (e.g. /events)" }
+              - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, see https://fonts.google.com/icons?icon.set=Material+Icons" }
+              - { label: "Open in new tab", name: "external", widget: "boolean", default: false, hint: "Enable for external websites." }

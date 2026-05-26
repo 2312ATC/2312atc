@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "title": "Flying & Gliding",
+      "icon": "flight",
+      "body": "Air Cadets is one of the only youth organisations in the world that gives members the opportunity to fly. Through the **Air Experience Flying (AEF)** programme, cadets can take to the skies in a Grob Tutor aircraft. Senior cadets can also undertake powered flying and gliding scholarships, potentially earning a full Private Pilot Licence."
+    },
+    {
+      "title": "Shooting",
+      "icon": "gps_fixed",
+      "body": "Air Cadet shooting is one of the most popular and rewarding activities on offer. We train cadets in **air rifle** and **smallbore .22** shooting, with the opportunity to progress through classification levels and represent the squadron at wing, regional and national competitions. Full training and equipment are provided."
+    },
+    {
+      "title": "Adventure Training",
+      "icon": "terrain",
+      "body": "Based on the edge of Dartmoor National Park, 2312 Squadron is perfectly placed for adventure training. Cadets take part in **hiking, rock climbing, kayaking, camping** and more. The **Duke of Edinburgh Award** (Bronze, Silver and Gold) is also delivered through our squadron, providing internationally recognised qualifications."
+    },
+    {
+      "title": "Drill & Ceremonies",
+      "icon": "military_tech",
+      "body": "Drill and ceremonial parades are a fundamental part of Air Cadet life. Cadets develop **self-discipline, attention to detail, teamwork and pride** through regular drill practice. The squadron participates in Remembrance Sunday parades and other civic events throughout the year."
+    },
+    {
+      "title": "Education & Qualifications",
+      "icon": "school",
+      "body": "Air Cadets provides excellent educational opportunities. Cadets can work towards a **BTEC in Aviation Studies**, **BTEC in Public Services**, and a nationally recognised **Radio Operator's Licence**. First aid qualifications are also available. These credentials are valued by universities and employers."
+    },
+    {
+      "title": "Camps & Visits",
+      "icon": "cabin",
+      "body": "Annual **summer camp** at an RAF station is a highlight of every cadet's year — offering activities, socialising and the chance to experience life on a real air base. We also organise visits to RAF stations, museums and aviation events throughout the year."
+    }
+  ]
+}

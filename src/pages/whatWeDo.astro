@@ -1,17 +1,13 @@
 ---
 import Page from '../layouts/Page.astro';
-import { getCollection, render } from 'astro:content';
+import { getEntry } from 'astro:content';
 
-const activities = (await getCollection('activities'))
-	.sort((a, b) => a.data.order - b.data.order);
-
-// Pre-render all markdown bodies
-const renderedActivities = await Promise.all(
-	activities.map(async (activity, i) => {
-		const { Content } = await render(activity);
-		return { activity, Content, isAlt: i % 2 !== 0 };
-	})
-);
+const activitiesEntry = await getEntry('activities', 'items');
+const activities = activitiesEntry?.data.items ?? [];
+const renderedActivities = activities.map((activity, i) => ({
+	activity,
+	isAlt: i % 2 !== 0,
+}));
 ---
 
 <Page title="What We Do | 2312 Squadron Air Cadets" description="Discover all the activities, training and opportunities available through 2312 Squadron Air Cadets.">
@@ -33,19 +29,17 @@ const renderedActivities = await Promise.all(
 
 		<!-- Activity sections (CMS-driven) -->
 		<div class="wwd-sections">
-			{renderedActivities.map(({ activity, Content, isAlt }) => (
+			{renderedActivities.map(({ activity, isAlt }, i) => (
 				<section
-					aria-labelledby={`wwd-${activity.id}`}
+					aria-labelledby={`wwd-${i}`}
 					class:list={['wwd-block', { 'wwd-block--alt': isAlt }]}
 				>
 					<div class="wwd-block-icon">
-						<span class="material-icons" aria-hidden="true">{activity.data.icon}</span>
+						<span class="material-icons" aria-hidden="true">{activity.icon}</span>
 					</div>
 					<div class="wwd-block-content">
-						<h2 id={`wwd-${activity.id}`} class="wwd-block-title">{activity.data.title}</h2>
-						<div class="wwd-block-prose">
-							<Content />
-						</div>
+						<h2 id={`wwd-${i}`} class="wwd-block-title">{activity.title}</h2>
+						<div class="wwd-block-prose" set:html={activity.bodyHtml} />
 					</div>
 				</section>
 			))}

@@ -1,362 +1,742 @@
 ---
-import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
 
-const slides = (await getCollection('landingCarousel'));
+import { Image } from 'astro:assets';
+
+import { getEntry } from 'astro:content';
+
+import { resolveCmsImage } from '../utils/cmsImages';
+
+
+
+const carouselEntry = await getEntry('landingCarousel', 'items');
+
+const rawSlides = carouselEntry?.data.items ?? [];
+
+
+
+const slides = rawSlides.flatMap((slide) => {
+
+	const image = resolveCmsImage(slide.image);
+
+	if (!image) return [];
+
+	return [{ ...slide, image }];
+
+});
+
 ---
 
+
+
 {slides.length > 0 && (
+
 	<section
+
 		class="carousel"
+
 		aria-label="Squadron photo carousel"
+
 		aria-roledescription="carousel"
+
 	>
+
 		<div class="carousel-track" role="list">
+
 			{slides.map((slide, i) => (
+
 				<div
+
 					class:list={['carousel-item', { active: i === 0 }]}
+
 					role="listitem"
+
 					aria-roledescription="slide"
+
 					aria-label={`Slide ${i + 1} of ${slides.length}`}
+
 					aria-hidden={i !== 0 ? 'true' : undefined}
+
 				>
-					{slide.data.link ? (
-						<a href={slide.data.link} tabindex={i !== 0 ? -1 : 0} aria-label={slide.data.caption ?? `Carousel slide ${i + 1}`}>
+
+					{slide.link ? (
+
+						<a href={slide.link} tabindex={i !== 0 ? -1 : 0} aria-label={slide.caption ?? `Carousel slide ${i + 1}`}>
+
 							<Image
-								src={slide.data.image}
-								alt={slide.data.caption ?? ''}
+
+								src={slide.image}
+
+								alt={slide.caption ?? ''}
+
 								class="carousel-img"
+
 								widths={[640, 1024, 1440]}
+
 								sizes="100vw"
+
 								loading={i === 0 ? 'eager' : 'lazy'}
+
 							/>
+
 						</a>
+
 					) : (
+
 						<Image
-							src={slide.data.image}
-							alt={slide.data.caption ?? ''}
+
+							src={slide.image}
+
+							alt={slide.caption ?? ''}
+
 							class="carousel-img"
+
 							widths={[640, 1024, 1440]}
+
 							sizes="100vw"
+
 							loading={i === 0 ? 'eager' : 'lazy'}
+
 						/>
+
 					)}
-					{slide.data.caption && (
+
+					{slide.caption && (
+
 						<div class="carousel-caption" aria-hidden="true">
-							{slide.data.caption}
+
+							{slide.caption}
+
 						</div>
+
 					)}
+
 				</div>
+
 			))}
+
 		</div>
 
+
+
 		{slides.length > 1 && (
+
 			<>
+
 				<button class="carousel-btn carousel-btn--prev" aria-label="Previous slide" type="button">
+
 					<span class="material-icons" aria-hidden="true">chevron_left</span>
+
 				</button>
+
 				<button class="carousel-btn carousel-btn--next" aria-label="Next slide" type="button">
+
 					<span class="material-icons" aria-hidden="true">chevron_right</span>
+
 				</button>
+
+
 
 				<div class="carousel-dots" role="tablist" aria-label="Carousel slides">
+
 					{slides.map((_, i) => (
+
 						<button
+
 							class:list={['carousel-dot', { active: i === 0 }]}
+
 							role="tab"
+
 							aria-selected={i === 0 ? 'true' : 'false'}
+
 							aria-label={`Go to slide ${i + 1}`}
+
 							data-index={i}
+
 							type="button"
+
 						/>
+
 					))}
+
 				</div>
+
+
 
 				<div class="carousel-pause-wrapper">
+
 					<button class="carousel-pause" aria-label="Pause carousel" type="button" aria-pressed="false">
+
 						<span class="material-icons" aria-hidden="true">pause</span>
+
 					</button>
+
 				</div>
+
 			</>
+
 		)}
+
 	</section>
+
 )}
 
+
+
 <style>
+
 	.carousel {
+
 		position: relative;
+
 		width: 100%;
+
 		height: calc(100vh - var(--header-height, 4.5rem));
+
 		max-height: 80vh;
+
 		min-height: 220px;
+
 		overflow: hidden;
+
 		background: linear-gradient(135deg,var(--rafDarkBlue) 0%,var(--rafRed) 100%)
+
 	}
+
+
 
 	.carousel-track {
+
 		position: relative;
+
 		width: 100%;
+
 		height: 100%;
+
 	}
+
+
 
 	.carousel-item {
+
 		position: absolute;
+
 		inset: 0;
+
 		opacity: 0;
+
 		transition: opacity 0.7s ease-in-out;
+
 		pointer-events: none;
+
 	}
+
+
 
 	.carousel-item.active {
+
 		opacity: 1;
+
 		pointer-events: auto;
+
 	}
+
+
 
 	.carousel-item a {
+
 		display: block;
+
 		width: 100%;
+
 		height: 100%;
+
 	}
+
+
 
 	.carousel-img {
+
 		width: 100%;
+
 		height: 100%;
+
 		object-fit: contain;
+
 		border-radius: 0;
+
 	}
+
+
 
 	.carousel-caption {
+
 		position: absolute;
+
 		bottom: 0;
+
 		left: 0;
+
 		right: 0;
+
 		padding: 1.5rem 1.25rem 3.5rem;
+
 		background: linear-gradient(to top, rgba(0, 0, 0, 0.65) 0%, transparent 100%);
+
 		color: #fff;
+
 		font-size: clamp(0.9rem, 2vw, 1.15rem);
+
 		font-weight: 600;
+
 		text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+
 	}
+
+
 
 	/* Prev / Next buttons */
+
 	.carousel-btn {
+
 		position: absolute;
+
 		top: 50%;
+
 		transform: translateY(-50%);
+
 		z-index: 10;
+
 		background: rgba(0, 46, 96, 0.7);
+
 		color: #fff;
+
 		border: 2px solid rgba(255,255,255,0.3);
+
 		border-radius: 50%;
+
 		width: 2.75rem;
+
 		height: 2.75rem;
+
 		display: flex;
+
 		align-items: center;
+
 		justify-content: center;
+
 		cursor: pointer;
+
 		transition: background 0.2s ease;
+
 		padding: 0;
+
 	}
+
+
 
 	.carousel-btn:hover,
+
 	.carousel-btn:focus-visible {
+
 		background: var(--rafRed);
+
 		border-color: var(--rafRed);
+
 	}
+
+
 
 	.carousel-btn--prev { left: 0.75rem; }
+
 	.carousel-btn--next { right: 0.75rem; }
 
+
+
 	.carousel-btn .material-icons {
+
 		font-size: 1.5rem;
+
 		line-height: 1;
+
 	}
+
+
 
 	/* Dot indicators */
+
 	.carousel-dots {
+
 		position: absolute;
+
 		bottom: 0.75rem;
+
 		left: 50%;
+
 		transform: translateX(-50%);
+
 		z-index: 10;
+
 		display: flex;
+
 		gap: 0.4rem;
+
 		padding: 0.25rem 0.5rem;
+
 	}
+
+
 
 	.carousel-dot {
+
 		width: 0.6rem;
+
 		height: 0.6rem;
+
 		border-radius: 50%;
+
 		background: rgba(255,255,255,0.5);
+
 		border: none;
+
 		cursor: pointer;
+
 		padding: 0;
+
 		transition: background 0.2s ease, transform 0.2s ease;
+
 	}
+
+
 
 	.carousel-dot.active,
+
 	.carousel-dot[aria-selected="true"] {
+
 		background: #fff;
+
 		transform: scale(1.3);
+
 	}
+
+
 
 	.carousel-dot:focus-visible {
+
 		outline: 3px solid var(--rafRed);
+
 		outline-offset: 3px;
+
 	}
+
+
 
 	/* Pause button */
+
 	.carousel-pause-wrapper {
+
 		position: absolute;
+
 		bottom: 0.5rem;
+
 		right: 0.75rem;
+
 		z-index: 10;
+
 	}
+
+
 
 	.carousel-pause {
+
 		background: rgba(0,0,0,0.4);
+
 		color: #fff;
+
 		border: none;
+
 		border-radius: 4px;
+
 		padding: 0.2rem 0.4rem;
+
 		cursor: pointer;
+
 		display: flex;
+
 		align-items: center;
+
 	}
+
+
 
 	.carousel-pause .material-icons {
+
 		font-size: 1rem;
+
 		line-height: 1;
+
 	}
+
+
 
 	.carousel-pause:focus-visible {
+
 		outline: 3px solid var(--rafRed);
+
 		outline-offset: 2px;
+
 	}
+
+
 
 	@media (max-width: 768px) {
+
 		.carousel {
+
 			height: auto;
+
 			max-height: none;
+
 			min-height: 0;
+
 			background: transparent;
+
 		}
+
+
 
 		.carousel-track {
+
 			height: auto;
+
 		}
+
+
 
 		.carousel-item {
+
 			position: absolute;
+
 			inset: auto;
+
 			top: 0;
+
 			left: 0;
+
 			width: 100%;
+
 		}
+
+
 
 		.carousel-item.active {
+
 			position: relative;
+
 		}
+
+
 
 		.carousel-item a {
+
 			height: auto;
+
 		}
+
+
 
 		.carousel-img {
+
 			width: 100%;
+
 			height: auto;
+
 			display: block;
+
 			object-fit: initial;
+
 		}
+
+
 
 		.carousel-btn {
+
 			width: 2.25rem;
+
 			height: 2.25rem;
+
 		}
+
 	}
+
 </style>
 
+
+
 <script>
+
 	const carousel = document.querySelector<HTMLElement>('.carousel');
-	if (!carousel) throw new Error('No carousel');
+
+	if (carousel) {
+
+
 
 	const items = Array.from(carousel.querySelectorAll<HTMLElement>('.carousel-item'));
+
 	const dots = Array.from(carousel.querySelectorAll<HTMLButtonElement>('.carousel-dot'));
+
 	const prevBtn = carousel.querySelector<HTMLButtonElement>('.carousel-btn--prev');
+
 	const nextBtn = carousel.querySelector<HTMLButtonElement>('.carousel-btn--next');
+
 	const pauseBtn = carousel.querySelector<HTMLButtonElement>('.carousel-pause');
+
 	const pauseIcon = pauseBtn?.querySelector<HTMLElement>('.material-icons');
 
+
+
 	if (items.length <= 1) {
+
 		// Single slide – nothing to do
+
 	} else {
+
 		let current = 0;
+
 		let intervalId: ReturnType<typeof setInterval> | null = null;
+
 		const INTERVAL_MS = 4000;
+
 		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+
+
 		function goTo(index: number) {
+
 			items[current].classList.remove('active');
+
 			items[current].setAttribute('aria-hidden', 'true');
+
 			dots[current]?.classList.remove('active');
+
 			dots[current]?.setAttribute('aria-selected', 'false');
+
+
 
 			current = (index + items.length) % items.length;
 
+
+
 			items[current].classList.add('active');
+
 			items[current].removeAttribute('aria-hidden');
+
 			dots[current]?.classList.add('active');
+
 			dots[current]?.setAttribute('aria-selected', 'true');
+
 		}
+
+
 
 		function startAuto() {
+
 			if (reduceMotion) return;
+
 			intervalId = setInterval(() => goTo(current + 1), INTERVAL_MS);
+
 			if (pauseBtn) {
+
 				pauseBtn.setAttribute('aria-pressed', 'false');
+
 				if (pauseIcon) pauseIcon.textContent = 'pause';
+
 				pauseBtn.setAttribute('aria-label', 'Pause carousel');
+
 			}
+
 		}
+
+
 
 		function stopAuto() {
+
 			if (intervalId) {
+
 				clearInterval(intervalId);
+
 				intervalId = null;
+
 			}
+
 			if (pauseBtn) {
+
 				pauseBtn.setAttribute('aria-pressed', 'true');
+
 				if (pauseIcon) pauseIcon.textContent = 'play_arrow';
+
 				pauseBtn.setAttribute('aria-label', 'Play carousel');
+
 			}
+
 		}
 
+
+
 		prevBtn?.addEventListener('click', () => { stopAuto(); goTo(current - 1); });
+
 		nextBtn?.addEventListener('click', () => { stopAuto(); goTo(current + 1); });
 
+
+
 		dots.forEach((dot, i) => {
+
 			dot.addEventListener('click', () => { stopAuto(); goTo(i); });
+
 		});
+
+
 
 		pauseBtn?.addEventListener('click', () => {
+
 			if (intervalId) stopAuto(); else startAuto();
+
 		});
+
+
 
 		// Keyboard navigation
+
 		carousel.addEventListener('keydown', (e: KeyboardEvent) => {
+
 			if (e.key === 'ArrowLeft') { stopAuto(); goTo(current - 1); }
+
 			if (e.key === 'ArrowRight') { stopAuto(); goTo(current + 1); }
+
 		});
+
+
 
 		// Pause on hover/focus
+
 		carousel.addEventListener('mouseenter', stopAuto);
+
 		carousel.addEventListener('focusin', stopAuto);
+
 		carousel.addEventListener('mouseleave', startAuto);
+
 		carousel.addEventListener('focusout', (e: FocusEvent) => {
+
 			if (!carousel.contains(e.relatedTarget as Node)) startAuto();
+
 		});
 
+
+
 		if (!reduceMotion) startAuto();
+
 	}
+
+	}
+
 </script>
+

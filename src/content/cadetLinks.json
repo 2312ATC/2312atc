@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "label": "RAFAC Official Website",
+      "url": "https://www.raf.mod.uk/aircadets/",
+      "icon": "open_in_new",
+      "external": true
+    },
+    {
+      "label": "Cadet Direct (Uniform & Kit)",
+      "url": "https://www.cadetdirect.com/",
+      "icon": "open_in_new",
+      "external": true
+    },
+    {
+      "label": "Duke of Edinburgh Award",
+      "url": "https://www.dofe.org/",
+      "icon": "open_in_new",
+      "external": true
+    },
+    {
+      "label": "Upcoming Events",
+      "url": "/events",
+      "icon": "event",
+      "external": false
+    },
+    {
+      "label": "Squadron News",
+      "url": "/blog/page/1",
+      "icon": "newspaper",
+      "external": false
+    },
+    {
+      "label": "Contact the Squadron",
+      "url": "/contact",
+      "icon": "mail",
+      "external": false
+    }
+  ]
+}

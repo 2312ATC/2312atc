@@ -1,9 +1,12 @@
 ---
 import Page from '../layouts/Page.astro';
-import { getCollection } from 'astro:content';
+import { getEntry } from 'astro:content';
 
-const opportunitiesList = (await getCollection('opportunities'))
-	.sort((a, b) => a.data.order - b.data.order);
+const opportunitiesEntry = await getEntry('opportunities', 'items');
+const opportunitiesList = opportunitiesEntry?.data.items ?? [];
+
+const linksEntry = await getEntry('cadetLinks', 'items');
+const usefulLinks = linksEntry?.data.items ?? [];
 ---
 
 <Page title="For Cadets | 2312 Squadron Air Cadets" description="Resources, training information and useful links for current cadets at 2312 Squadron.">
@@ -57,10 +60,10 @@ const opportunitiesList = (await getCollection('opportunities'))
 			<ul class="opportunities-list">
 				{opportunitiesList.map((opp) => (
 					<li>
-						<span class="material-icons" aria-hidden="true">{opp.data.icon}</span>
+						<span class="material-icons" aria-hidden="true">{opp.icon}</span>
 						<div>
-							<strong>{opp.data.title}</strong>
-							<span>{opp.data.description}</span>
+							<strong>{opp.title}</strong>
+							<span>{opp.description}</span>
 						</div>
 					</li>
 				))}
@@ -72,30 +75,16 @@ const opportunitiesList = (await getCollection('opportunities'))
 		<section aria-labelledby="cadets-links" class="cadets-section">
 			<h2 id="cadets-links" class="section-heading">Useful Links</h2>
 			<div class="links-grid">
-				<a href="https://www.raf.mod.uk/aircadets/" target="_blank" rel="noopener noreferrer" class="link-card">
-					<span class="material-icons" aria-hidden="true">open_in_new</span>
-					<span>RAFAC Official Website</span>
-				</a>
-				<a href="https://www.cadetdirect.com/" target="_blank" rel="noopener noreferrer" class="link-card">
-					<span class="material-icons" aria-hidden="true">open_in_new</span>
-					<span>Cadet Direct (Uniform &amp; Kit)</span>
-				</a>
-				<a href="https://www.dofe.org/" target="_blank" rel="noopener noreferrer" class="link-card">
-					<span class="material-icons" aria-hidden="true">open_in_new</span>
-					<span>Duke of Edinburgh Award</span>
-				</a>
-				<a href="/events" class="link-card">
-					<span class="material-icons" aria-hidden="true">event</span>
-					<span>Upcoming Events</span>
-				</a>
-				<a href="/blog/page/1" class="link-card">
-					<span class="material-icons" aria-hidden="true">newspaper</span>
-					<span>Squadron News</span>
-				</a>
-				<a href="/contact" class="link-card">
-					<span class="material-icons" aria-hidden="true">mail</span>
-					<span>Contact the Squadron</span>
-				</a>
+				{usefulLinks.map((link) => (
+					<a
+						href={link.url}
+						class="link-card"
+						{...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+					>
+						<span class="material-icons" aria-hidden="true">{link.icon}</span>
+						<span>{link.label}</span>
+					</a>
+				))}
 			</div>
 		</section>
 	</div>
