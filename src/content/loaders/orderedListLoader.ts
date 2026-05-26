@@ -32,10 +32,10 @@ export function orderedListLoader<TItem extends ZodType>({
 		async load({ store, renderMarkdown, config, logger, watcher }) {
 			const url = new URL(file, config.root);
 
-			async function sync(filePath: string) {
+			async function sync(absoluteFilePath: string) {
 				let data: { items?: unknown[] };
 				try {
-					data = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+					data = JSON.parse(await fs.readFile(absoluteFilePath, 'utf-8'));
 				} catch (error) {
 					logger.error(`Error reading ${file}`);
 					logger.debug(String(error));
@@ -63,7 +63,7 @@ export function orderedListLoader<TItem extends ZodType>({
 
 				const parsed = listSchema.parse({ items: processed });
 				store.clear();
-				store.set({ id: 'items', data: parsed, filePath });
+				store.set({ id: 'items', data: parsed, filePath: file });
 			}
 
 			if (!existsSync(url)) {
@@ -71,12 +71,12 @@ export function orderedListLoader<TItem extends ZodType>({
 				return;
 			}
 
-			const filePath = fileURLToPath(url);
-			await sync(filePath);
+			const absoluteFilePath = fileURLToPath(url);
+			await sync(absoluteFilePath);
 
-			watcher?.add(filePath);
+			watcher?.add(absoluteFilePath);
 			watcher?.on('change', async (changedPath) => {
-				if (changedPath === filePath) {
+				if (changedPath === absoluteFilePath) {
 					logger.info(`Reloading data from ${file}`);
 					await sync(filePath);
 				}
