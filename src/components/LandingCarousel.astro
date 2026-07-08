@@ -185,21 +185,39 @@ const slides = rawSlides.flatMap((slide) => {
 <style>
 
 	.carousel {
-
 		position: relative;
-
 		width: 100%;
-
 		height: calc(100vh - var(--header-height, 4.5rem));
-
 		max-height: 80vh;
-
 		min-height: 220px;
-
 		overflow: hidden;
 
-		background: linear-gradient(135deg,var(--rafDarkBlue) 0%,var(--rafRed) 100%)
+		/* background: linear-gradient(135deg,var(--rafDarkBlue) 0%,var(--rafRed) 100%, var(--rafDarkBlue) 200%);
+		animation: carousel-bg-shift 10s linear infinite; */
 
+		--d:5000px;
+		--angle:135deg;
+		--w:100%;
+
+	}
+
+	.carousel::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+
+		background: repeating-linear-gradient(var(--angle), var(--rafDarkBlue), var(--rafRed), var(--rafDarkBlue) var(--d));
+		background-size: calc(var(--d)/sin(var(--angle))) 100%;
+		animation: carousel-bg-shift 20s linear infinite reverse;
+	}
+
+	@keyframes carousel-bg-shift {
+		0% {
+			background-position: calc(var(--d)/sin(var(--angle))) 0;
+		}
 	}
 
 
@@ -571,7 +589,6 @@ const slides = rawSlides.flatMap((slide) => {
 </style>
 
 
-
 <script>
 
 	const carousel = document.querySelector<HTMLElement>('.carousel');
@@ -603,6 +620,10 @@ const slides = rawSlides.flatMap((slide) => {
 		let current = 0;
 
 		let intervalId: ReturnType<typeof setInterval> | null = null;
+
+		let userPaused = false;
+
+		let inViewport = true;
 
 		const INTERVAL_MS = 4000;
 
@@ -638,27 +659,7 @@ const slides = rawSlides.flatMap((slide) => {
 
 
 
-		function startAuto() {
-
-			if (reduceMotion) return;
-
-			intervalId = setInterval(() => goTo(current + 1), INTERVAL_MS);
-
-			if (pauseBtn) {
-
-				pauseBtn.setAttribute('aria-pressed', 'false');
-
-				if (pauseIcon) pauseIcon.textContent = 'pause';
-
-				pauseBtn.setAttribute('aria-label', 'Pause carousel');
-
-			}
-
-		}
-
-
-
-		function stopAuto() {
+		function clearAuto() {
 
 			if (intervalId) {
 
@@ -668,15 +669,45 @@ const slides = rawSlides.flatMap((slide) => {
 
 			}
 
-			if (pauseBtn) {
+		}
 
-				pauseBtn.setAttribute('aria-pressed', 'true');
 
-				if (pauseIcon) pauseIcon.textContent = 'play_arrow';
 
-				pauseBtn.setAttribute('aria-label', 'Play carousel');
+		function updatePauseButton(paused: boolean) {
 
-			}
+			if (!pauseBtn) return;
+
+			pauseBtn.setAttribute('aria-pressed', paused ? 'true' : 'false');
+
+			if (pauseIcon) pauseIcon.textContent = paused ? 'play_arrow' : 'pause';
+
+			pauseBtn.setAttribute('aria-label', paused ? 'Play carousel' : 'Pause carousel');
+
+		}
+
+
+
+		function startAuto() {
+
+			if (reduceMotion || userPaused || !inViewport) return;
+
+			clearAuto();
+
+			intervalId = setInterval(() => goTo(current + 1), INTERVAL_MS);
+
+			updatePauseButton(false);
+
+		}
+
+
+
+		function stopAuto() {
+
+			userPaused = true;
+
+			clearAuto();
+
+			updatePauseButton(true);
 
 		}
 
@@ -698,7 +729,17 @@ const slides = rawSlides.flatMap((slide) => {
 
 		pauseBtn?.addEventListener('click', () => {
 
-			if (intervalId) stopAuto(); else startAuto();
+			if (userPaused) {
+
+				userPaused = false;
+
+				startAuto();
+
+			} else {
+
+				stopAuto();
+
+			}
 
 		});
 
@@ -718,9 +759,9 @@ const slides = rawSlides.flatMap((slide) => {
 
 		// Pause on hover/focus
 
-		carousel.addEventListener('mouseenter', stopAuto);
+		carousel.addEventListener('mouseenter', clearAuto);
 
-		carousel.addEventListener('focusin', stopAuto);
+		carousel.addEventListener('focusin', clearAuto);
 
 		carousel.addEventListener('mouseleave', startAuto);
 
@@ -732,6 +773,32 @@ const slides = rawSlides.flatMap((slide) => {
 
 
 
+		const viewportObserver = new IntersectionObserver(
+
+			(entries) => {
+
+				inViewport = entries[0]?.isIntersecting ?? false;
+
+				if (inViewport) {
+
+					startAuto();
+
+				} else {
+
+					clearAuto();
+
+				}
+
+			},
+
+			{ threshold: 0 },
+
+		);
+
+		viewportObserver.observe(carousel);
+
+
+
 		if (!reduceMotion) startAuto();
 
 	}
@@ -739,4 +806,5 @@ const slides = rawSlides.flatMap((slide) => {
 	}
 
 </script>
+
 

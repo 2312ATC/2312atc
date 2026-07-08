@@ -8,12 +8,7 @@ import NotificationBanner from '../components/NotificationBanner.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
-const now = new Date();
-
-const upcomingEvents = (await getCollection('events'))
-	.filter((e) => e.data.date >= now)
-	.sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
-	.slice(0, 3);
+const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 
 const latestPosts = (await getCollection('blog'))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
@@ -70,37 +65,21 @@ const latestPosts = (await getCollection('blog'))
 				</div>
 			</div>
 
-			<!-- Upcoming Events -->
-			{upcomingEvents.length > 0 && (
-				<section class="home-section" aria-labelledby="events-heading">
-					<div class="page-content">
-						<div class="section-header">
-							<h2 id="events-heading" class="section-heading">Upcoming Events</h2>
-							<a href="/events" class="section-view-all">View all events →</a>
-						</div>
-						<div class="event-strip">
-							{upcomingEvents.map((event) => (
-								<article class="event-card" aria-label={event.data.title}>
-									<div class="event-card-date" aria-label={`Date: ${event.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`}>
-										<span class="event-card-day">{event.data.date.getDate()}</span>
-										<span class="event-card-month">{event.data.date.toLocaleString('en-GB', { month: 'short' })}</span>
-									</div>
-									<div class="event-card-info">
-										<h3 class="event-card-title">
-											<a href={`/events/${event.id}/`}>{event.data.title}</a>
-										</h3>
-										<p class="event-card-location">
-											<span class="material-icons" aria-hidden="true" style="font-size:0.9em;vertical-align:middle;">location_on</span>
-											{event.data.location}
-										</p>
-										<p class="event-card-desc">{event.data.description}</p>
-									</div>
-								</article>
-							))}
-						</div>
+			<!-- Upcoming Events (loaded at view time) -->
+			<section class="home-section" aria-labelledby="events-heading" data-build-id={buildId}>
+				<div class="page-content">
+					<div class="section-header">
+						<h2 id="events-heading" class="section-heading">Upcoming Events</h2>
+						<a href="/events" class="section-view-all">View all events →</a>
 					</div>
-				</section>
-			)}
+					<div
+						id="home-events-list"
+						class="event-strip"
+						aria-live="polite"
+						aria-busy="true"
+					></div>
+				</div>
+			</section>
 
 			<!-- Latest News -->
 			{latestPosts.length > 0 && (
@@ -276,7 +255,8 @@ const latestPosts = (await getCollection('blog'))
 		gap: 1rem;
 	}
 
-	.event-card {
+	/* :global — cards are built in client script, so scoped attrs are not applied */
+	:global(.event-card) {
 		display: flex;
 		gap: 1.25rem;
 		align-items: flex-start;
@@ -288,11 +268,11 @@ const latestPosts = (await getCollection('blog'))
 		transition: transform 0.15s ease;
 	}
 
-	.event-card:hover {
+	:global(.event-card:hover) {
 		transform: translateX(3px);
 	}
 
-	.event-card-date {
+	:global(.event-card-date) {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -305,13 +285,13 @@ const latestPosts = (await getCollection('blog'))
 		flex-shrink: 0;
 	}
 
-	.event-card-day {
+	:global(.event-card-day) {
 		font-size: 1.6rem;
 		font-weight: 800;
 		line-height: 1;
 	}
 
-	.event-card-month {
+	:global(.event-card-month) {
 		font-size: 0.7rem;
 		font-weight: 600;
 		text-transform: uppercase;
@@ -319,30 +299,40 @@ const latestPosts = (await getCollection('blog'))
 		opacity: 0.85;
 	}
 
-	.event-card-title {
+	:global(.event-card-title) {
 		font-size: 1.05rem;
 		color: var(--rafDarkBlue);
 		margin-bottom: 0.2rem;
 	}
 
-	.event-card-title a {
+	:global(.event-card-title a) {
 		text-decoration: none;
 		color: inherit;
 	}
 
-	.event-card-title a:hover { color: var(--rafRed); text-decoration: underline; }
+	:global(.event-card-title a:hover) { color: var(--rafRed); text-decoration: underline; }
 
-	.event-card-location {
+	:global(.event-card-location) {
 		font-size: 0.82rem;
 		color: rgb(var(--gray));
 		margin-bottom: 0.3rem;
 	}
 
-	.event-card-desc {
+	:global(.event-card-desc) {
 		font-size: 0.9rem;
 		color: rgb(var(--gray-dark));
 		margin: 0;
 		line-height: 1.5;
+	}
+
+	:global(.home-events-empty) {
+		color: rgb(var(--gray));
+		font-style: italic;
+		padding: 1.5rem;
+		background: rgba(229, 233, 240, 0.4);
+		border-radius: 8px;
+		text-align: center;
+		margin: 0;
 	}
 
 	/* Blog card image */
@@ -359,3 +349,91 @@ const latestPosts = (await getCollection('blog'))
 		overflow: hidden;
 	}
 </style>
+
+<script>
+	interface CalEvent {
+		id: string;
+		title: string;
+		date: string;
+		endDate: string | null;
+		location: string;
+		description: string;
+		url: string;
+	}
+
+	const listEl = document.getElementById('home-events-list')!;
+	const sectionEl = listEl.closest<HTMLElement>('[data-build-id]')!;
+	const buildId = sectionEl.dataset.buildId ?? '';
+
+	function buildCard(e: CalEvent): HTMLElement {
+		const d = new Date(e.date);
+		const day = d.getDate();
+		const mon = d.toLocaleString('en-GB', { month: 'short' });
+		const dateLabel = d.toLocaleDateString('en-GB', {
+			day: 'numeric',
+			month: 'long',
+			year: 'numeric',
+		});
+
+		const card = document.createElement('article');
+		card.className = 'event-card';
+		card.setAttribute('aria-label', e.title);
+		card.innerHTML = `
+			<div class="event-card-date" aria-label="Date: ${dateLabel}">
+				<span class="event-card-day">${day}</span>
+				<span class="event-card-month">${mon}</span>
+			</div>
+			<div class="event-card-info">
+				<h3 class="event-card-title">
+					<a href="${e.url}">${e.title}</a>
+				</h3>
+				<p class="event-card-location">
+					<span class="material-icons" aria-hidden="true" style="font-size:0.9em;vertical-align:middle;">location_on</span>
+					${e.location}
+				</p>
+				<p class="event-card-desc">${e.description}</p>
+			</div>
+		`;
+		return card;
+	}
+
+	function showEmpty() {
+		listEl.innerHTML = '';
+		const empty = document.createElement('p');
+		empty.className = 'home-events-empty';
+		empty.textContent = 'No events to display.';
+		listEl.appendChild(empty);
+	}
+
+	async function loadUpcomingEvents() {
+		try {
+			const query = buildId ? `?v=${encodeURIComponent(buildId)}` : '';
+			const res = await fetch(`/api/events/upcoming.json${query}`, { cache: 'no-store' });
+			if (!res.ok) throw new Error('Failed to load events');
+
+			const { events } = (await res.json()) as { events: CalEvent[] };
+			const now = new Date();
+			now.setHours(0, 0, 0, 0)
+
+			const upcoming = (events ?? [])
+				.filter((e) => new Date(e.date) >= now)
+				.sort((a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf())
+				.slice(0, 3);
+
+			listEl.innerHTML = '';
+
+			if (upcoming.length === 0) {
+				showEmpty();
+				return;
+			}
+
+			upcoming.forEach((e) => listEl.appendChild(buildCard(e)));
+		} catch {
+			showEmpty();
+		} finally {
+			listEl.setAttribute('aria-busy', 'false');
+		}
+	}
+
+	loadUpcomingEvents();
+</script>

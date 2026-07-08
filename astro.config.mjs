@@ -6,6 +6,8 @@ import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
+const ngrokHost = 'star-ghost-terminally.ngrok-free.app'
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://tavistock.air-cadets.org/',
@@ -13,5 +15,12 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      allowedHosts: [ngrokHost],
+      hmr: {
+        clientPort: 443,
+        host: ngrokHost
+      }
+    },
   },
 });
