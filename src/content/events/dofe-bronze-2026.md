@@ -3,7 +3,9 @@ title: Duke of Edinburgh Bronze Expedition
 date: 2026-07-05T08:00:00.000Z
 endDate: 2026-07-06T17:00:00.000Z
 location: Dartmoor National Park
-description: Qualifying Bronze DofE expedition — two days hiking and camping on Dartmoor for enrolled cadets.
+description: Qualifying Bronze DofE expedition — two days hiking and camping on
+  Dartmoor for enrolled cadets.
+heroImage: ../../assets/images/blog-placeholder-about.jpg
 ---
 
 ## Bronze qualifying expedition
