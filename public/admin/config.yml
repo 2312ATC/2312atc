@@ -34,7 +34,6 @@ collections:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Date", name: "date", widget: "datetime" }
       - { label: "End Date", name: "endDate", widget: "datetime", required: false }
-      - { label: "Location", name: "location", widget: "string" }
       - { label: "Description", name: "description", widget: "string", hint: "Short summary shown on the events list." }
       - { label: "Hero Image", name: "heroImage", widget: "image", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
@@ -94,7 +93,7 @@ collections:
             name: items
             widget: list
             label_singular: "Staff Member"
-            summary: "{{fields.name}} — {{fields.role}}"
+            summary: "{{fields.name}} - {{fields.role}}"
             fields:
               - { label: "Name", name: "name", widget: "string" }
               - { label: "Role / Rank", name: "role", widget: "string" }

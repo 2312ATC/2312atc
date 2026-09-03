@@ -19,6 +19,6 @@ Selected cadets will fly in the **Grob Tutor** with a qualified pilot instructor
 
 ### Travel
 
-Coach leaves Tavistock at **0600** — late arrivals cannot be accommodated due to airfield security. Return approximately 1900.
+Coach leaves Tavistock at **0600** - late arrivals cannot be accommodated due to airfield security. Return approximately 1900.
 
 The manifest is published after wing confirms slots in early July.

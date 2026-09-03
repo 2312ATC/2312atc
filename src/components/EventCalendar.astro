@@ -148,7 +148,7 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 	.cal-hint .material-icons { font-size: 0.9rem; }
 </style>
 
-<!-- Cell styles must be global — cells are created by JS -->
+<!-- Cell styles must be global - cells are created by JS -->
 <style is:global>
 	.cal-cell {
 		min-width: 0;
@@ -255,7 +255,7 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 		const res = await fetch(url, { cache: 'no-store' });
 
 		if (!res.ok) {
-			// Month not pre-generated (outside ±18 range) — treat as empty
+			// Month not pre-generated (outside ±18 range) - treat as empty
 			cache.set(key, []);
 			return [];
 		}
@@ -344,7 +344,7 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 			const events = await fetchMonth(year, month);
 			renderGrid(year, month, events);
 		} catch {
-			status.textContent = 'Could not load events — please try again.';
+			status.textContent = 'Could not load events - please try again.';
 			grid.setAttribute('aria-busy', 'false');
 			grid.classList.remove('cal-grid--loading');
 			heading.textContent = `${MONTH_NAMES[month]} ${year}`;

@@ -16,7 +16,7 @@ import EventCalendar from '../../components/EventCalendar.astro';
 			<EventCalendar />
 		</section>
 
-		<!-- Events list for the selected month — driven by calendar:monthchange -->
+		<!-- Events list for the selected month - driven by calendar:monthchange -->
 		<section aria-labelledby="month-events-heading" class="month-events-section">
 			<h2 id="month-events-heading" class="section-heading month-events-title">
 				<!-- filled by script -->
@@ -56,7 +56,7 @@ import EventCalendar from '../../components/EventCalendar.astro';
 		grid-column: 1 / -1;
 	}
 
-	/* :global — cards are built in client script, so scoped attrs are not applied */
+	/* :global - cards are built in client script, so scoped attrs are not applied */
 	:global(.js-event-card) {
 		background: #fff;
 		border-radius: 8px;

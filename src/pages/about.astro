@@ -8,10 +8,10 @@ const staffEntry = await getEntry('staff', 'items');
 const staffMembers = staffEntry?.data.items ?? [];
 ---
 
-<Page title="About Us | 2312 Squadron Air Cadets" description="Learn about 2312 (Tavistock) Squadron Air Cadets — our history, mission and the team behind the squadron.">
+<Page title="About Us | 2312 Squadron Air Cadets" description="Learn about 2312 (Tavistock) Squadron Air Cadets - our history, mission and the team behind the squadron.">
 	<div class="hero-banner">
 		<h1>About 2312 Squadron</h1>
-		<p>Proudly serving Tavistock and the surrounding area since 1944</p>
+		<p>Proudly serving Tavistock and the surrounding area since 1957</p>
 	</div>
 
 	<div class="page-content">
@@ -26,13 +26,13 @@ const staffMembers = staffEntry?.data.items ?? [];
 			<div class="about-intro-text">
 				<h2 id="about-mission-heading" class="section-heading">Who We Are</h2>
 				<p>
-					2312 (Tavistock) Squadron is a unit of the <strong>Royal Air Force Air Cadets (RAFAC)</strong> — one of the UK's largest and most respected youth organisations, with over 40,000 cadets nationwide. We are part of South West Wing, Air Cadets.
+					2312 (Tavistock) Squadron is a unit of the <strong>Royal Air Force Air Cadets (RAFAC)</strong> - one of the UK's largest and most respected youth organisations, with over 40,000 cadets nationwide. We are part of Plymoiuth and Cornwall Wing, Royal Air Force Air Cadets.
 				</p>
 				<p>
-					Our squadron provides young people aged 12 to 20 with an outstanding range of activities and opportunities that develop character, leadership and teamwork skills in a fun, safe environment with a strong connection to aviation and the RAF.
+					Our squadron provides young people aged 12 to 20 with an outstanding range of activities and opportunities that develop self-confidence, leadership, teamwork and, life skills in a fun, safe environment with a strong connection to aviation and the RAF.
 				</p>
 				<p>
-					Whether a cadet is interested in flying, shooting, music, sport, community service, or simply making new friends — there is something for everyone at 2312.
+					Whether a cadet is interested in flying, shooting, music, sport, community service, or simply making new friends - there is something for everyone at 2312 Squadron.
 				</p>
 			</div>
 			<div class="about-intro-logo">
@@ -49,7 +49,7 @@ const staffMembers = staffEntry?.data.items ?? [];
 				<div class="activity-card">
 					<span class="material-icons activity-icon" aria-hidden="true">flight</span>
 					<h3>Flying &amp; Gliding</h3>
-					<p>Air experience flights in Grob Tutors and gliding opportunities through the RAFAC Air Experience Flying programme.</p>
+					<p>Air experience flights and gliding opportunities in Viking gliders through the RAFAC Air Experience Flying programme with oppotunities to gain private pilots wings.</p>
 				</div>
 				<div class="activity-card">
 					<span class="material-icons activity-icon" aria-hidden="true">gps_fixed</span>
@@ -59,17 +59,17 @@ const staffMembers = staffEntry?.data.items ?? [];
 				<div class="activity-card">
 					<span class="material-icons activity-icon" aria-hidden="true">terrain</span>
 					<h3>Adventure Training</h3>
-					<p>Hiking, climbing, kayaking and more across Dartmoor and beyond — including Duke of Edinburgh Award expeditions.</p>
+					<p>Hiking, climbing, kayaking and more across Dartmoor and the UK - including Duke of Edinburgh Award expeditions at all levels.</p>
 				</div>
 				<div class="activity-card">
 					<span class="material-icons activity-icon" aria-hidden="true">military_tech</span>
-					<h3>Drill &amp; Discipline</h3>
-					<p>Develop self-discipline, teamwork and pride through regular drill practice and ceremonial events.</p>
+					<h3>Precision &amp; pride</h3>
+					<p>Develop focus, teamwork and pride through regular drill practice and ceremonial events.</p>
 				</div>
 				<div class="activity-card">
 					<span class="material-icons activity-icon" aria-hidden="true">school</span>
 					<h3>BTEC Qualifications</h3>
-					<p>Earn nationally recognised qualifications in Aviation Studies and Public Services through the RAFAC BTEC programme.</p>
+					<p>Earn nationally recognised qualifications in Space Studies and Public Services through the RAFAC BTEC programme.</p>
 				</div>
 				<div class="activity-card">
 					<span class="material-icons activity-icon" aria-hidden="true">groups</span>
@@ -86,13 +86,13 @@ const staffMembers = staffEntry?.data.items ?? [];
 			<h2 id="about-history-heading" class="section-heading">Our History</h2>
 			<div class="prose-content">
 				<p>
-					2312 Squadron was formed in <strong>1944</strong> during the Second World War as part of the Air Training Corps, which was established to prepare young men and women for service in the RAF and the wider war effort.
+					2312 Squadron was formed in <strong>1957</strong> after the Second World War as part of the Air Training Corps, which was originally established to prepare young men for service in the RAF and other armed services; with women joining in the 1980s.
 				</p>
 				<p>
-					Over eight decades later, the squadron continues to thrive in Tavistock, serving the young people of the town and the surrounding Devon countryside. The squadron has a proud record of sending cadets on to careers in the RAF and other armed services, as well as aviation, engineering and many other fields.
+					Over six decades later, the squadron continues to thrive in Tavistock, serving the young people of the town and the surrounding Devon countryside. The squadron has a proud record of sending cadets on to careers in the RAF and other armed services, as well as aviation, engineering and many other fields.
 				</p>
 				<p>
-					Today we are part of the <strong>Royal Air Force Air Cadets</strong>, which has over 1,000 squadrons across the United Kingdom and is overseen by Air Commodores, with our local unit part of South West Wing.
+					Today we are part of the <strong>Royal Air Force Air Cadets</strong>, which has over 1,000 squadrons across the United Kingdom and international crown dependencies and is overseen by Air Commodore Al Lewis, with our local unit part of the Plymouth and Cornwall Wing.
 				</p>
 			</div>
 		</section>
@@ -103,7 +103,7 @@ const staffMembers = staffEntry?.data.items ?? [];
 		<section aria-labelledby="about-staff-heading" class="about-section">
 			<h2 id="about-staff-heading" class="section-heading">Our Staff</h2>
 			<p style="color:rgb(var(--gray-dark)); margin-bottom:1.5rem;">
-				Our squadron is run by a team of dedicated volunteer Civilian Instructors (CIs) and Cadet Force Adult Volunteers (CFAVs), led by our Commanding Officer.
+				Our squadron is run by a team of dedicated volunteers: Civilian Instructors and uniformed Cadet Force Adult Volunteers.
 			</p>
 			<div class="staff-grid">
 				{staffMembers.map((member) => (

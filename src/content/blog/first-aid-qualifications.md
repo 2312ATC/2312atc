@@ -5,7 +5,7 @@ pubDate: 2026-03-10T18:00:00.000Z
 heroImage: ../../assets/images/blog-placeholder-3.jpg
 ---
 
-Over two parade evenings and a Saturday session, cadets worked through the **St John Ambulance Youth First Aid** syllabus — covering CPR, bleeding control, burns, and casualty handling.
+Over two parade evenings and a Saturday session, cadets worked through the **St John Ambulance Youth First Aid** syllabus - covering CPR, bleeding control, burns, and casualty handling.
 
 All twelve cadets passed the practical assessment. Their certificates will be recorded on Westminster and count toward BTEC and Duke of Edinburgh sections where applicable.
 

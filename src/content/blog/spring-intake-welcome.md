@@ -1,6 +1,6 @@
 ---
 title: Welcome to Our Spring Intake
-description: Forty new cadets joined 2312 Squadron this term — here's how their first weeks have gone.
+description: Forty new cadets joined 2312 Squadron this term - here's how their first weeks have gone.
 pubDate: 2026-05-18T10:00:00.000+01:00
 heroImage: ../../assets/images/blog-placeholder-1.jpg
 ---

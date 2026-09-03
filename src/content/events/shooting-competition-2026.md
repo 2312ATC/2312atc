@@ -2,7 +2,7 @@
 title: Inter-Squadron Shooting Competition
 date: 2026-06-14T10:00:00.000Z
 location: Tavistock Shooting Range
-description: Annual marksmanship competition — squadron teams compete for the wing shooting trophy.
+description: Annual marksmanship competition - squadron teams compete for the wing shooting trophy.
 heroImage: ../../assets/images/blog-placeholder-3.jpg
 ---
 

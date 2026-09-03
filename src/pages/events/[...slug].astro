@@ -95,13 +95,7 @@ const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 								</div>
 							)}
 
-							<div class="event-meta-item">
-								<dt>
-									<span class="material-icons" aria-hidden="true">location_on</span>
-									Location
-								</dt>
-								<dd>{location}</dd>
-							</div>
+							<p class="event-signup-note"><strong>If you want to participate in this event, please sign up via the portal.</strong></p>
 						</dl>
 
 						<a href="/contact" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:1rem;">
@@ -248,6 +242,11 @@ const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 		font-weight: 400;
 		color: rgb(var(--gray));
 		font-size: 0.85rem;
+	}
+
+	.event-signup-note {
+		color: var(--rafDarkBlue);
+		margin: 0.5rem 0 0;
 	}
 
 	/* Main article */

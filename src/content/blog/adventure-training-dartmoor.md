@@ -9,4 +9,4 @@ Thirty-two cadets spent a wet but rewarding weekend on **Dartmoor** for adventur
 
 Staff ran a progressive programme: junior cadets focused on shelter building and stove safety, while seniors completed a timed navigation exercise across open moor.
 
-Kit checks on the Thursday parade night were essential — several cadets learned the hard way that cotton layers are no match for Devon drizzle. The recommended packing list for future camps is on the squadron SharePoint.
+Kit checks on the Thursday parade night were essential - several cadets learned the hard way that cotton layers are no match for Devon drizzle. The recommended packing list for future camps is on the squadron SharePoint.

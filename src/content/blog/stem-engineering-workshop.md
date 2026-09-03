@@ -1,5 +1,5 @@
 ---
-title: STEM Workshop — Build Your Own Glider
+title: STEM Workshop - Build Your Own Glider
 description: Cadets explored aerodynamics with a hands-on glider build led by a visiting RAF engineer.
 pubDate: 2026-05-02T17:00:00.000+01:00
 heroImage: ../../assets/images/blog-placeholder-3.jpg

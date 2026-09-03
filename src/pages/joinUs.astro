@@ -28,7 +28,7 @@ const faqItems = faqEntry?.data.items ?? [];
 					<span class="material-icons" aria-hidden="true">check_circle</span>
 					<h3>You can join if you are:</h3>
 					<ul>
-						<li>Aged <strong>12 to 17</strong> to join as a cadet</li>
+						<li>Aged <strong>12 (year 8) to 17</strong> to join as a cadet</li>
 						<li>Living in or near <strong>Tavistock, Devon</strong></li>
 						<li>Ready to attend parade nights regularly</li>
 						<li>Interested in aviation, adventure or team activities</li>
@@ -38,12 +38,25 @@ const faqItems = faqEntry?.data.items ?? [];
 					<span class="material-icons" aria-hidden="true">info</span>
 					<h3>For adults (18+):</h3>
 					<ul>
-						<li>You can apply to become a <strong>Civilian Instructor (CI)</strong></li>
-						<li>Or a <strong>Cadet Force Adult Volunteer (CFAV)</strong></li>
+						<li>You can apply to become a <strong>Cadet Force Adult Volunteer (CFAV)</strong></li>
+						<li>You can join as a <strong>Civilian Instructor (CI)</strong> or choose to go into uniform</li>
 						<li>No military background required</li>
 						<li>Full training and DBS checks provided</li>
 					</ul>
 				</div>
+			</div>
+			<div class="squadron-finder">
+				<p>Use the RAFAC Squadron Finder and search for "Tavistock".</p>
+				<p>
+					<a
+						href="https://www.raf.mod.uk/aircadets/"
+						class="btn btn-primary"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Visit RAF Air Cadets Squadron Finder
+					</a>
+				</p>
 			</div>
 		</section>
 
@@ -57,7 +70,7 @@ const faqItems = faqEntry?.data.items ?? [];
 					<span class="material-icons" aria-hidden="true">event</span>
 					<div>
 						<strong>Tuesday &amp; Thursday</strong>
-						<span>Tuesday 18:45 -21:30<br>Thursday 19:00 - 21:00</span>
+						<span>Tuesday 18:45 - 21:30<br>Thursday 19:00 - 21:00</span>
 					</div>
 				</div>
 				<div class="parade-detail">
@@ -67,9 +80,6 @@ const faqItems = faqEntry?.data.items ?? [];
 					</div>
 				</div>
 			</div>
-			<p style="color:rgb(var(--gray-dark)); margin-top:1rem;">
-				We welcome prospective cadets and their parents/guardians to come along and watch a parade night before committing to joining. Just <a href="/contact">get in touch</a> to arrange a visit.
-			</p>
 		</section>
 
 		<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:2.5rem 0;" />
@@ -89,7 +99,7 @@ const faqItems = faqEntry?.data.items ?? [];
 					<div class="join-step-num" aria-hidden="true">2</div>
 					<div>
 						<h3>Come for a visit</h3>
-						<p>Watch a parade night in your own clothes — no uniform needed. Meet the cadets and staff and see what we get up to.</p>
+						<p>Watch a parade night in your own clothes - no uniform needed. Meet the cadets and staff and see what we get up to.</p>
 					</div>
 				</li>
 				<li class="join-step">
@@ -103,7 +113,7 @@ const faqItems = faqEntry?.data.items ?? [];
 					<div class="join-step-num" aria-hidden="true">4</div>
 					<div>
 						<h3>Get your uniform &amp; get started!</h3>
-						<p>Once enrolled, you'll be issued your uniform and begin your cadet training. Welcome to 2312 Squadron!</p>
+						<p>Once you join, you'll be issued your uniform and begin your cadet training. Welcome to 2312 Squadron!</p>
 					</div>
 				</li>
 			</ol>
@@ -166,6 +176,20 @@ const faqItems = faqEntry?.data.items ?? [];
 	.eligibility-card h3 { font-size: 1rem; color: var(--rafDarkBlue); margin: 0; }
 	.eligibility-card ul { margin: 0; padding-left: 1.25rem; }
 	.eligibility-card li { font-size: 0.92rem; margin-bottom: 0.3rem; color: rgb(var(--gray-dark)); }
+
+	.squadron-finder {
+		text-align: center;
+		margin-top: 1.5rem;
+	}
+
+	.squadron-finder p {
+		color: rgb(var(--gray-dark));
+		margin: 0;
+	}
+
+	.squadron-finder p + p {
+		margin-top: 1rem;
+	}
 
 	/* Parade info */
 	.parade-info {

@@ -3,12 +3,12 @@ title: Squadron Band Workshop
 date: 2026-06-28T10:00:00.000+01:00
 endDate: 2026-06-28T15:00:00.000+01:00
 location: 2312 Squadron HQ, Tavistock
-description: A Saturday workshop for new and existing band members — instruments provided, no experience needed.
+description: A Saturday workshop for new and existing band members - instruments provided, no experience needed.
 ---
 
 ## Band workshop day
 
-The squadron band is recruiting! This Saturday workshop is open to **all cadets** — whether you have played before or not.
+The squadron band is recruiting! This Saturday workshop is open to **all cadets** - whether you have played before or not.
 
 ### What to expect
 

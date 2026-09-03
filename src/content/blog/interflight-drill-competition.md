@@ -9,4 +9,4 @@ Every flight spent January polishing their drill for the annual inter-flight com
 
 **A Flight** edged out B Flight by two points in the final, with C Flight taking the "most improved" award. The winning flight commander will hold the drill trophy until the autumn competition.
 
-Drill is more than marching in step — it builds discipline and teamwork that carries into every other squadron activity. Well done to everyone who took part.
+Drill is more than marching in step - it builds discipline and teamwork that carries into every other squadron activity. Well done to everyone who took part.
