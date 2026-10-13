@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from './FormattedDate.astro';
 
@@ -15,7 +16,14 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 <article class="event-list-card" aria-label={title}>
 	{heroImage && (
 		<a href={`/events/${event.id}/`} tabindex="-1" aria-hidden="true" class="event-list-card__img-link">
-			<img src={heroImage.src} alt="" class="event-list-card__img" loading="lazy" width="640" height="280" />
+			<Image
+				src={heroImage}
+				alt=""
+				class="event-list-card__img"
+				width={640}
+				height={280}
+				loading="lazy"
+			/>
 		</a>
 	)}
 	<div class="event-list-card__body">

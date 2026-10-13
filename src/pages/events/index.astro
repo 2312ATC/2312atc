@@ -154,7 +154,6 @@ import EventCalendar from '../../components/EventCalendar.astro';
 		title: string;
 		date: string;
 		endDate: string | null;
-		location: string;
 		description: string;
 		url: string;
 	}
@@ -178,10 +177,6 @@ import EventCalendar from '../../components/EventCalendar.astro';
 				</div>
 				<div class="js-event-card__content">
 					<h3 class="js-event-card__title"><a href="${e.url}">${e.title}</a></h3>
-					<p class="js-event-card__meta">
-						<span class="material-icons" aria-hidden="true">location_on</span>
-						${e.location}
-					</p>
 					<p class="js-event-card__desc">${e.description}</p>
 				</div>
 			</div>

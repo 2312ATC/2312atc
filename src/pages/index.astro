@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
@@ -93,14 +94,14 @@ const latestPosts = (await getCollection('blog'))
 							{latestPosts.map((post) => (
 								<article class="card">
 									{post.data.heroImage && (
-										<a href={`/blog/${post.id}/`} tabindex="-1" aria-hidden="true">
-											<img
-												src={post.data.heroImage.src}
-												alt=""
+										<a href={`/blog/${post.id}/`} tabindex="-1">
+											<Image
+												src={post.data.heroImage}
+												alt={post.data.description}
 												class="card-img"
+												width={640}
+												height={300}
 												loading="lazy"
-												width="640"
-												height="300"
 											/>
 										</a>
 									)}

@@ -51,7 +51,7 @@ const { page } = Astro.props;
 										href={`/blog/${post.id}/`}
 										class="blog-card-media"
 										tabindex="-1"
-										aria-hidden="true"
+										aria-label={post.data.title}
 									>
 										<Image
 											src={hero}

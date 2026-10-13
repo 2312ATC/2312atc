@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
@@ -16,7 +17,7 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<'events'>;
 
 const event = Astro.props;
-const { title, date, endDate, location, description, heroImage } = event.data;
+const { title, date, endDate, description, heroImage } = event.data;
 const { Content } = await render(event);
 
 const dateLabel = date.toLocaleDateString('en-GB', {
@@ -37,7 +38,14 @@ const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 		<main id="main-content">
 			{heroImage ? (
 				<div class="event-hero" role="img" aria-label={title}>
-					<img src={heroImage.src} alt="" class="event-hero-img" width="1400" height="500" loading="eager" />
+					<Image
+						src={heroImage}
+						alt=""
+						class="event-hero-img"
+						width={1400}
+						height={500}
+						loading="eager"
+					/>
 					<div class="event-hero-overlay">
 						<div class="event-hero-content page-content" style="padding-top:0;padding-bottom:0;">
 							<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--light">
