@@ -1,21 +1,34 @@
 {
   "items": [
     {
-      "image": "blog-placeholder-1.jpg",
-      "link": "/home"
+      "image": "../../assets/images/20250601_101919607_iOS.jpg"
     },
     {
-      "image": "blog-placeholder-2.jpg",
-      "link": "/abcde"
+      "image": "../../assets/images/20250601_104607840_iOS.jpg"
     },
     {
-      "image": "blog-placeholder-4.jpg"
+      "image": "../../assets/images/20250810_133008055_iOS.jpg"
     },
     {
-      "image": "portrait placeholder.png"
+      "image": "../../assets/images/20250609_173506026_iOS.jpg"
     },
     {
-      "image": "../../assets/images/ad-placeholder.png"
+      "image": "../../assets/images/20250810_132950428_iOS.jpg"
+    },
+    {
+      "image": "../../assets/images/20250814_122412280_iOS.jpg"
+    },
+    {
+      "image": "../../assets/images/20250814_154148460_iOS.jpg"
+    },
+    {
+      "image": "../../assets/images/20250814_155338694_iOS.jpg"
+    },
+    {
+      "image": "../../assets/images/20250814_161843724_iOS.jpg"
+    },
+    {
+      "image": "../../assets/images/20251125_201156021_iOS.jpg"
     }
   ]
 }
