@@ -7,12 +7,6 @@
       "external": true
     },
     {
-      "label": "Cadet Direct (Uniform & Kit)",
-      "url": "https://www.cadetdirect.com/",
-      "icon": "open_in_new",
-      "external": true
-    },
-    {
       "label": "Duke of Edinburgh Award",
       "url": "https://www.dofe.org/",
       "icon": "open_in_new",
@@ -35,6 +29,30 @@
       "url": "/contact",
       "icon": "mail",
       "external": false
+    },
+    {
+      "external": true,
+      "url": "https://www.bader.mod.uk/help/parents.html",
+      "label": "BADER For Parents Explained",
+      "icon": "help_outline"
+    },
+    {
+      "external": true,
+      "label": "BADER for Cadets Explained",
+      "url": "https://www.bader.mod.uk/help/cadets.html",
+      "icon": "help_outline"
+    },
+    {
+      "external": true,
+      "url": "https://cadets.bader.mod.uk/",
+      "label": "BADER Cadet Login",
+      "icon": "password"
+    },
+    {
+      "external": true,
+      "url": "https://www.bader.mod.uk/help/cfav.html",
+      "label": "BADER for Volenteers Explained",
+      "icon": "help"
     }
   ]
 }
