@@ -25,7 +25,6 @@ interface DismissalStore {
 }
 
 const STORAGE_KEY = 'atc2312-notification-dismissals';
-const LEGACY_STORAGE_KEY = 'dismissed-notifications';
 const PRUNE_AGE_MS = 90 * 24 * 60 * 60 * 1000;
 
 const DEFAULT_ICONS: Record<NotificationType, string> = {
@@ -53,31 +52,10 @@ function emptyStore(): DismissalStore {
 	return { version: 1, dismissed: {} };
 }
 
-function migrateLegacyDismissals(): DismissalStore {
-	const store = emptyStore();
-	try {
-		const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
-		if (!raw) return store;
-		const ids = JSON.parse(raw) as unknown;
-		if (!Array.isArray(ids)) return store;
-		const now = new Date().toISOString();
-		for (const id of ids) {
-			if (typeof id === 'string' && id) {
-				store.dismissed[id] = { dismissedAt: now };
-			}
-		}
-		localStorage.removeItem(LEGACY_STORAGE_KEY);
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
-	} catch {
-		/* ignore corrupt legacy data */
-	}
-	return store;
-}
-
 function readStore(): DismissalStore {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY);
-		if (!raw) return migrateLegacyDismissals();
+		if (!raw) return emptyStore();
 		const parsed = JSON.parse(raw) as DismissalStore;
 		if (parsed?.version === 1 && parsed.dismissed && typeof parsed.dismissed === 'object') {
 			return parsed;
@@ -85,7 +63,7 @@ function readStore(): DismissalStore {
 	} catch {
 		/* fall through */
 	}
-	return migrateLegacyDismissals();
+	return emptyStore();
 }
 
 function writeStore(store: DismissalStore): void {
