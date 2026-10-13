@@ -11,7 +11,12 @@ const ngrokHost = 'star-ghost-terminally.ngrok-free.app'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://tavistock.air-cadets.org/',
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) => !new URL(page).pathname.startsWith('/admin'),
+    }),
+  ],
 
   vite: {
     plugins: [tailwindcss()],
