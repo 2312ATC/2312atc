@@ -29,6 +29,21 @@
       "title": "Camps & Visits",
       "icon": "cabin",
       "body": "Annual **summer camp** at an RAF station is a highlight of every cadet's year - offering activities, socialising and the chance to experience life on a real air base. We also organise visits to RAF stations, museums and aviation events throughout the year."
+    },
+    {
+      "title": "Classroom Activities",
+      "icon": "co_present",
+      "body": "Classification training and specialist subject theory"
+    },
+    {
+      "title": "Space and Cyber",
+      "icon": "rocket_launch",
+      "body": "Currently being updated"
+    },
+    {
+      "title": "Radio and Communications",
+      "icon": "satellite_alt",
+      "body": "Currently being updated"
     }
   ]
 }

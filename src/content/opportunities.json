@@ -29,6 +29,11 @@
       "title": "Cadet Ranks",
       "description": "Progress from Cadet through to Cadet Warrant Officer, developing leadership at every step.",
       "icon": "military_tech"
+    },
+    {
+      "title": "Projects",
+      "icon": "architecture",
+      "description": "Content being updated"
     }
   ]
 }
