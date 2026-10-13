@@ -1,16 +1,24 @@
 {
   "items": [
     {
-      "name": "Please contact us for details",
-      "role": "Commanding Officer"
+      "name": "Sophie Forbes",
+      "role": "Officer Commanding 2312 Squadron, Flight Lieutenant RAFAC"
     },
     {
-      "name": "Please contact us for details",
-      "role": "Training Officer"
+      "name": "Tom Hussey",
+      "role": "Sergeant RAFAC"
     },
     {
-      "name": "Responsible for fundraising & administration",
-      "role": "Civilian Committee"
+      "name": "Paul Johnson",
+      "role": "Civilian Instructor"
+    },
+    {
+      "name": "Colin Piper",
+      "role": "Civilian Instructor"
+    },
+    {
+      "name": "Phil Savage",
+      "role": "Civilian Instructor"
     }
   ]
 }
