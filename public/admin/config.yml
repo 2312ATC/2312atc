@@ -99,6 +99,24 @@ collections:
               - { label: "Role / Rank", name: "role", widget: "string" }
               - { label: "Bio", name: "bio", widget: "text", required: false, hint: "Optional short biography shown on the About page." }
 
+  - name: "offers"
+    label: "What We Offer (About page)"
+    files:
+      - label: "Offers"
+        name: "offers"
+        file: "src/content/offers.json"
+        format: json
+        fields:
+          - label: "Offers"
+            name: items
+            widget: list
+            label_singular: "Offer"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Icon", name: "icon", widget: "string", hint: "Material Icons name, see https://fonts.google.com/icons?icon.set=Material+Icons" }
+
   - name: "activities"
     label: "Activities (What We Do page)"
     files:

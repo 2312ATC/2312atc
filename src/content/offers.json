@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "title": "Flying & Gliding",
+      "icon": "flight",
+      "description": "Air experience flights and gliding opportunities in Viking gliders through the RAFAC Air Experience Flying programme with oppotunities to gain private pilots wings."
+    },
+    {
+      "title": "Shooting",
+      "icon": "gps_fixed",
+      "description": "Smallbore and air rifle shooting, with the opportunity to compete at wing, regional and national level."
+    },
+    {
+      "title": "Adventure Training",
+      "icon": "terrain",
+      "description": "Hiking, climbing, kayaking and more across Dartmoor and the UK - including Duke of Edinburgh Award expeditions at all levels."
+    },
+    {
+      "title": "Precision & pride",
+      "icon": "military_tech",
+      "description": "Develop focus, teamwork and pride through regular drill practice and ceremonial events."
+    },
+    {
+      "title": "BTEC Qualifications",
+      "icon": "school",
+      "description": "Earn nationally recognised qualifications in Space Studies and Public Services through the RAFAC BTEC programme."
+    },
+    {
+      "title": "Leadership",
+      "icon": "groups",
+      "description": "Progress through the cadet ranks and develop real leadership skills that will serve you for life."
+    }
+  ]
+}

@@ -6,6 +6,9 @@ import logo from '../assets/images/logo.jpg';
 
 const staffEntry = await getEntry('staff', 'items');
 const staffMembers = staffEntry?.data.items ?? [];
+
+const offersEntry = await getEntry('offers', 'items');
+const offers = offersEntry?.data.items ?? [];
 ---
 
 <Page title="About Us | 2312 Squadron Air Cadets" description="Learn about 2312 (Tavistock) Squadron Air Cadets - our history, mission and the team behind the squadron.">
@@ -46,36 +49,13 @@ const staffMembers = staffEntry?.data.items ?? [];
 		<section aria-labelledby="about-activities-heading" class="about-section">
 			<h2 id="about-activities-heading" class="section-heading">What We Offer</h2>
 			<div class="activities-grid">
-				<div class="activity-card">
-					<span class="material-icons activity-icon" aria-hidden="true">flight</span>
-					<h3>Flying &amp; Gliding</h3>
-					<p>Air experience flights and gliding opportunities in Viking gliders through the RAFAC Air Experience Flying programme with oppotunities to gain private pilots wings.</p>
-				</div>
-				<div class="activity-card">
-					<span class="material-icons activity-icon" aria-hidden="true">gps_fixed</span>
-					<h3>Shooting</h3>
-					<p>Smallbore and air rifle shooting, with the opportunity to compete at wing, regional and national level.</p>
-				</div>
-				<div class="activity-card">
-					<span class="material-icons activity-icon" aria-hidden="true">terrain</span>
-					<h3>Adventure Training</h3>
-					<p>Hiking, climbing, kayaking and more across Dartmoor and the UK - including Duke of Edinburgh Award expeditions at all levels.</p>
-				</div>
-				<div class="activity-card">
-					<span class="material-icons activity-icon" aria-hidden="true">military_tech</span>
-					<h3>Precision &amp; pride</h3>
-					<p>Develop focus, teamwork and pride through regular drill practice and ceremonial events.</p>
-				</div>
-				<div class="activity-card">
-					<span class="material-icons activity-icon" aria-hidden="true">school</span>
-					<h3>BTEC Qualifications</h3>
-					<p>Earn nationally recognised qualifications in Space Studies and Public Services through the RAFAC BTEC programme.</p>
-				</div>
-				<div class="activity-card">
-					<span class="material-icons activity-icon" aria-hidden="true">groups</span>
-					<h3>Leadership</h3>
-					<p>Progress through the cadet ranks and develop real leadership skills that will serve you for life.</p>
-				</div>
+				{offers.map((offer) => (
+					<div class="activity-card">
+						<span class="material-icons activity-icon" aria-hidden="true">{offer.icon}</span>
+						<h3>{offer.title}</h3>
+						<p>{offer.description}</p>
+					</div>
+				))}
 			</div>
 		</section>
 

@@ -66,6 +66,17 @@ const staff = defineCollection({
 	schema: orderedListSchema(staffItem),
 });
 
+const offerItem = z.object({
+	title: z.string(),
+	description: z.string(),
+	icon: z.string(),
+});
+
+const offers = defineCollection({
+	loader: orderedListLoader({ file: 'src/content/offers.json', itemSchema: offerItem }),
+	schema: orderedListSchema(offerItem),
+});
+
 const activityItem = z.object({
 	title: z.string(),
 	icon: z.string(),
@@ -121,6 +132,7 @@ export const collections = {
 	events,
 	notifications,
 	staff,
+	offers,
 	activities,
 	opportunities,
 	faq,
