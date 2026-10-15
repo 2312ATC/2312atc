@@ -5,10 +5,26 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import { blogPostingNode, canonicalUrlFromPath } from '../lib/jsonLd';
 
 type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const siteURL = Astro.site ?? new URL(Astro.url.origin);
+const canonicalURL = canonicalUrlFromPath(Astro.url.pathname, siteURL);
+const imageUrl = heroImage ? new URL(heroImage.src, siteURL).href : undefined;
+const jsonLd = [
+	blogPostingNode({
+		url: canonicalURL.href,
+		headline: title,
+		description,
+		datePublished: pubDate,
+		dateModified: updatedDate,
+		imageUrl,
+		siteOrigin: siteURL.origin,
+	}),
+];
+
 
 // Approximate reading time
 ---
@@ -16,7 +32,18 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`${title} | 2312 Squadron`} description={description} image={heroImage} />
+		<BaseHead
+			title={`${title} | 2312 Squadron`}
+			description={description}
+			image={heroImage}
+			ogType="article"
+			jsonLd={jsonLd}
+			breadcrumbs={[
+				{ name: 'Home', path: '/' },
+				{ name: 'Blog', path: '/blog/page/1' },
+				{ name: title, path: canonicalURL.pathname },
+			]}
+		/>
 	</head>
 
 	<body>
@@ -35,7 +62,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 					/>
 					<div class="blog-hero-overlay">
 						<div class="blog-hero-content">
-							<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--hero">
+							<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--on-dark">
 								<a href="/">Home</a>
 								<span aria-hidden="true">›</span>
 								<a href="/blog/page/1">Blog</a>
@@ -47,11 +74,11 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				</div>
 			) : (
 				<div class="hero-banner">
-					<nav aria-label="Breadcrumb" class="breadcrumb" style="justify-content:center; color:rgba(255,255,255,0.7); margin-bottom:0.5rem;">
-						<a href="/" style="color:rgba(255,255,255,0.8);">Home</a>
-						<span aria-hidden="true" style="margin:0 0.4rem;">›</span>
-						<a href="/blog/page/1" style="color:rgba(255,255,255,0.8);">Blog</a>
-						<span aria-hidden="true" style="margin:0 0.4rem;">›</span>
+					<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--on-dark">
+						<a href="/">Home</a>
+						<span aria-hidden="true">›</span>
+						<a href="/blog/page/1">Blog</a>
+						<span aria-hidden="true">›</span>
 						<span aria-current="page">{title}</span>
 					</nav>
 				</div>
@@ -59,7 +86,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 
 			<div class="page-content">
 				{!heroImage && (
-					<nav aria-label="Breadcrumb" class="breadcrumb" style="margin-bottom:1.5rem;">
+					<nav aria-label="Breadcrumb" class="breadcrumb">
 						<a href="/">Home</a>
 						<span aria-hidden="true">›</span>
 						<a href="/blog/page/1">Blog</a>
@@ -116,7 +143,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 	.blog-hero-overlay {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%);
+		background: var(--gradient-scrim-soft);
 		display: flex;
 		align-items: flex-end;
 		padding-bottom: 1.5rem;
@@ -124,18 +151,14 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 
 	.blog-hero-content {
 		width: 100%;
-		max-width: 1100px;
+		max-width: var(--content-width);
 		margin: 0 auto;
-		padding: 0 1.25rem;
+		padding: 0 var(--space-page-x);
 	}
-
-	.breadcrumb--hero { color: rgba(255,255,255,0.7); }
-	.breadcrumb--hero a { color: rgba(255,255,255,0.85); }
-	.breadcrumb--hero a:hover { color: #fff; }
 
 	/* Article layout */
 	.blog-article {
-		max-width: 760px;
+		max-width: var(--measure-width);
 		margin: 0 auto;
 		padding: 2rem 0 3rem;
 	}
@@ -143,32 +166,32 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 	.blog-header {
 		margin-bottom: 2rem;
 		padding-bottom: 1.5rem;
-		border-bottom: 2px solid rgb(var(--gray-light));
+		border-bottom: 2px solid var(--color-line);
 	}
 
 	.blog-meta {
 		font-size: 0.85rem;
-		color: rgb(var(--gray));
+		color: var(--color-muted);
 		margin-bottom: 0.75rem;
-		font-weight: 600;
+		font-weight: var(--font-weight-semibold);
 	}
 
 	.blog-updated {
 		font-style: italic;
-		font-weight: 400;
+		font-weight: var(--font-weight-normal);
 	}
 
 	.blog-title {
 		font-size: clamp(1.6rem, 4vw, 2.4rem);
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 		margin-bottom: 0.75rem;
-		line-height: 1.2;
+		line-height: var(--leading-heading);
 	}
 
 	.blog-description {
 		font-size: 1.1rem;
-		color: rgb(var(--gray));
-		line-height: 1.6;
+		color: var(--color-muted);
+		line-height: var(--leading-body);
 		font-style: italic;
 		margin: 0;
 	}
@@ -179,6 +202,6 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 
 	.blog-footer {
 		padding-top: 1.5rem;
-		border-top: 2px solid rgb(var(--gray-light));
+		border-top: 2px solid var(--color-line);
 	}
 </style>

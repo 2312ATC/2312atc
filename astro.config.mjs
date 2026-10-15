@@ -7,14 +7,19 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 const ngrokHost = 'star-ghost-terminally.ngrok-free.app'
+const excludePaths = ['/admin', '/blog', '/join'];
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://tavistock.air-cadets.org/',
+  trailingSlash: 'never',
+  build: {
+    format: 'file',
+  },
   integrations: [
     mdx(),
     sitemap({
-      filter: (page) => !new URL(page).pathname.startsWith('/admin'),
+      filter: (page) => !excludePaths.includes(new URL(page).pathname),
     }),
   ],
 

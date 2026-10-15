@@ -3,7 +3,15 @@ import Page from '../../layouts/Page.astro';
 import EventCalendar from '../../components/EventCalendar.astro';
 ---
 
-<Page title="Events | 2312 Squadron Air Cadets" description="Upcoming events and activities at 2312 Squadron Air Cadets, Tavistock.">
+<Page
+	title="Events | 2312 Squadron Air Cadets"
+	description="Upcoming events and activities at 2312 Squadron Air Cadets, Tavistock."
+	pageType="CollectionPage"
+	breadcrumbs={[
+		{ name: 'Home', path: '/' },
+		{ name: 'Events', path: '/events' },
+	]}
+>
 	<div class="hero-banner">
 		<h1>Events</h1>
 		<p>Upcoming activities, competitions and adventures for 2312 Squadron</p>
@@ -46,30 +54,20 @@ import EventCalendar from '../../components/EventCalendar.astro';
 		align-items: stretch;
 	}
 
-	.events-empty {
-		color: rgb(var(--gray));
-		font-style: italic;
-		padding: 1.5rem;
-		background: rgba(229,233,240,0.4);
-		border-radius: 8px;
-		text-align: center;
-		grid-column: 1 / -1;
-	}
-
 	/* :global - cards are built in client script, so scoped attrs are not applied */
 	:global(.js-event-card) {
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: var(--box-shadow);
+		background: var(--color-white);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-card);
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		transition: transform 0.15s ease, box-shadow 0.15s ease;
+		transition: transform var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
 	}
 	:global(.js-event-card:hover) {
-		transform: translateY(-3px);
-		box-shadow: 0 8px 24px rgba(96,115,159,0.4);
+		transform: translateY(var(--lift));
+		box-shadow: var(--shadow-raised);
 	}
 	:global(.js-event-card__body) {
 		display: flex;
@@ -84,9 +82,9 @@ import EventCalendar from '../../components/EventCalendar.astro';
 		flex-direction: column;
 		align-items: center;
 		text-align: center;
-		background: var(--rafDarkBlue);
-		color: #fff;
-		border-radius: 6px;
+		background: var(--color-raf-navy);
+		color: var(--color-white);
+		border-radius: var(--radius-md);
 		padding: 0.5rem 0.65rem;
 		flex-shrink: 0;
 		height: fit-content;
@@ -94,15 +92,15 @@ import EventCalendar from '../../components/EventCalendar.astro';
 	}
 	:global(.js-event-card__day) {
 		font-size: 1.75rem;
-		font-weight: 800;
+		font-weight: var(--font-weight-extrabold);
 		line-height: 1;
-		font-family: 'League Spartan', system-ui, sans-serif;
+		font-family: var(--font-sans);
 	}
 	:global(.js-event-card__mon) {
 		font-size: 0.65rem;
-		font-weight: 600;
+		font-weight: var(--font-weight-semibold);
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
+		letter-spacing: var(--tracking-meta);
 		opacity: 0.85;
 	}
 	:global(.js-event-card__content) {
@@ -113,16 +111,16 @@ import EventCalendar from '../../components/EventCalendar.astro';
 	}
 	:global(.js-event-card__title) {
 		font-size: 1.05rem;
-		font-weight: 700;
-		color: var(--rafDarkBlue);
+		font-weight: var(--font-weight-bold);
+		color: var(--color-raf-navy);
 		margin: 0 0 0.3rem;
-		font-family: 'League Spartan', system-ui, sans-serif;
+		font-family: var(--font-sans);
 	}
 	:global(.js-event-card__title a) { text-decoration: none; color: inherit; }
-	:global(.js-event-card__title a:hover) { color: var(--rafRed); text-decoration: underline; }
+	:global(.js-event-card__title a:hover) { color: var(--color-raf-red); text-decoration: underline; }
 	:global(.js-event-card__meta) {
 		font-size: 0.82rem;
-		color: rgb(96,115,159);
+		color: var(--color-muted);
 		margin: 0 0 0.4rem;
 		display: flex;
 		align-items: center;
@@ -131,15 +129,15 @@ import EventCalendar from '../../components/EventCalendar.astro';
 	:global(.js-event-card__meta .material-icons) { font-size: 0.95em; vertical-align: middle; }
 	:global(.js-event-card__desc) {
 		font-size: 0.9rem;
-		color: rgb(34,41,57);
-		line-height: 1.5;
+		color: var(--color-body);
+		line-height: var(--leading-copy);
 		margin: 0;
 	}
 	:global(.js-event-card__footer) {
 		margin-top: auto;
 		padding: 0.75rem 1.25rem;
-		background: rgba(229,233,240,0.4);
-		border-top: 1px solid rgb(229,233,240);
+		background: var(--color-line-40);
+		border-top: 1px solid var(--color-line);
 	}
 </style>
 
@@ -199,7 +197,7 @@ import EventCalendar from '../../components/EventCalendar.astro';
 
 		if (events.length === 0) {
 			const empty = document.createElement('p');
-			empty.className = 'events-empty';
+			empty.className = 'empty-note empty-note--grid';
 			empty.textContent = `No events scheduled for ${MONTH_NAMES[month]} ${year}.`;
 			listEl.appendChild(empty);
 			return;

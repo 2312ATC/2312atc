@@ -9,14 +9,16 @@ import logo from '../assets/images/whiteLogo.png';
 	<div class="mobile-nav-backdrop" data-nav-backdrop aria-hidden="true"></div>
 	<nav aria-label="Main navigation">
 		<a class="logo-link" href="/" aria-label="2312 Squadron Air Cadets - Home">
-			<Image
-				src={logo}
-				alt="Royal Air Force Air Cadets 2312 Squadron logo"
-				layout="constrained"
-				loading="eager"
-				fetchpriority="high"
-				class="logo-image"
-			/>
+			<span class="logo-shape">
+				<Image
+					src={logo}
+					alt="Royal Air Force Air Cadets 2312 Squadron logo"
+					layout="constrained"
+					loading="eager"
+					fetchpriority="high"
+					class="logo-image"
+				/>
+			</span>
 		</a>
 		<div id="nav-links" class="internal-links">
 			<HeaderLink href="/about">About</HeaderLink>
@@ -30,7 +32,7 @@ import logo from '../assets/images/whiteLogo.png';
 		<div class="nav-end">
 			<button
 				type="button"
-				class="burger"
+				class="burger icon-control"
 				aria-label="Open navigation menu"
 				aria-expanded="false"
 				aria-controls="nav-links"
@@ -46,17 +48,15 @@ import logo from '../assets/images/whiteLogo.png';
 	.site-header {
 		position: relative;
 		z-index: 20;
-		background-color: var(--rafDarkBlue);
+		background-color: var(--color-raf-navy);
 		line-height: 0;
-		--logo-slant: 50px;
 	}
 
-	/* RAF red stripe at bottom of header */
 	.site-header::after {
 		content: '';
 		display: block;
-		height: 4px;
-		background: var(--rafRed);
+		height: var(--accent-bar);
+		background: var(--color-raf-red);
 	}
 
 	nav {
@@ -66,34 +66,63 @@ import logo from '../assets/images/whiteLogo.png';
 		justify-content: space-between;
 		align-items: center;
 		width: 100%;
-		max-width: 1200px;
+		max-width: var(--content-wide);
 		margin: 0 auto;
 		padding: 0 1rem;
 		column-gap: 1rem;
 	}
 
 	.logo-link {
+		/* Unitless rem counts. Dividing lengths is dropped in Firefox, which removes the slant. */
+		--logo-w: 16.25;
+		--logo-slant: 3.125;
+		--logo-pad-y: 0.3125;
+		--logo-img-w: 273;
+		--logo-img-h: 184;
+		--logo-min-h: 3.5rem;
+		--logo-max-h: 12vh;
+		--logo-content-w: calc(var(--logo-w) - var(--logo-slant) * 1.5);
+		--logo-h: calc(var(--logo-content-w) * var(--logo-img-h) / var(--logo-img-w) + var(--logo-pad-y) * 2);
+		--logo-slant-x: calc(var(--logo-slant) / var(--logo-w) * 100%);
+		--logo-slant-x-half: calc(var(--logo-slant) / 2 / var(--logo-w) * 100%);
+		--logo-pad-top: calc(var(--logo-pad-y) / var(--logo-h) * 100%);
+
 		display: block;
-		max-width: 260px;
+		/* Scale the whole parallelogram together. A fixed slant with a shorter
+		   box steepens the shear and lets the artwork cross the clipped edge. */
+		width: clamp(
+			calc(var(--logo-min-h) * var(--logo-w) / var(--logo-h)),
+			calc(var(--logo-max-h) * var(--logo-w) / var(--logo-h)),
+			calc(var(--logo-w) * 1rem)
+		);
+		max-width: 100%;
 		min-width: 0;
 		flex-shrink: 1;
-
-		.logo-image {
-			box-sizing: border-box;
-			max-height: 12vh;
-			min-height: 56px;
-			/* top | right | bottom | left */
-			padding: 5px 50px 5px 25px;
-			border-radius: 0;
-			background-color: white;
-			clip-path: polygon(50px 0, 100% 0, calc(100% - 50px) 100%, 0 100%);
-		}
 	}
 
-	.logo-link :global(img) {
+	.logo-shape {
+		display: block;
+		position: relative;
 		width: 100%;
-		max-width: 100%;
-		height: auto;
+		aspect-ratio: calc(var(--logo-w) / var(--logo-h));
+		background-color: var(--color-white);
+		clip-path: polygon(
+			var(--logo-slant-x) 0,
+			100% 0,
+			calc(100% - var(--logo-slant-x)) 100%,
+			0 100%
+		);
+	}
+
+	.logo-image {
+		position: absolute;
+		top: var(--logo-pad-top);
+		left: var(--logo-slant-x-half);
+		width: calc(100% - var(--logo-slant-x) - var(--logo-slant-x-half));
+		height: calc(100% - var(--logo-pad-top) * 2);
+		max-width: none;
+		max-height: none;
+		object-fit: contain;
 	}
 
 	.nav-end {
@@ -110,26 +139,6 @@ import logo from '../assets/images/whiteLogo.png';
 
 	.burger {
 		display: none;
-		align-items: center;
-		justify-content: center;
-		margin: 0;
-		padding: 0.4rem;
-		border: 2px solid rgba(255,255,255,0.3);
-		border-radius: 6px;
-		background: transparent;
-		color: #fff;
-		cursor: pointer;
-		flex-shrink: 0;
-	}
-
-	.burger:focus-visible {
-		outline: 3px solid var(--rafRed);
-		outline-offset: 2px;
-	}
-
-	.burger .material-icons {
-		font-size: 1.5rem;
-		line-height: 1;
 	}
 
 	.internal-links {
@@ -144,8 +153,8 @@ import logo from '../assets/images/whiteLogo.png';
 
 	/* "Join Us" gets a highlighted treatment */
 	.internal-links :global(.nav-join a) {
-		background: var(--rafRed);
-		border-radius: 4px;
+		background: var(--color-raf-red);
+		border-radius: var(--radius-sm);
 		padding: 0.25rem 0.75rem;
 	}
 
@@ -166,11 +175,11 @@ import logo from '../assets/images/whiteLogo.png';
 			display: block;
 			position: fixed;
 			z-index: 0;
-			top: var(--header-height, 4.5rem);
+			top: var(--header-height, var(--header-offset));
 			left: 0;
 			right: 0;
 			bottom: 0;
-			background: rgba(0, 0, 0, 0.45);
+			background: var(--color-black-45);
 			opacity: 0;
 			pointer-events: none;
 			transition: opacity 0.3s ease;
@@ -189,7 +198,7 @@ import logo from '../assets/images/whiteLogo.png';
 			align-items: stretch;
 			position: fixed;
 			z-index: 2;
-			top: var(--header-height, 4.5rem);
+			top: var(--header-height, var(--header-offset));
 			right: 0;
 			margin: 0;
 			padding-block: 0.5rem;
@@ -202,8 +211,8 @@ import logo from '../assets/images/whiteLogo.png';
 				max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
 				opacity 0.25s ease,
 				visibility 0.35s;
-			background-color: var(--rafDarkBlue);
-			box-shadow: -4px 12px 28px rgba(0, 0, 0, 0.3);
+			background-color: var(--color-raf-navy);
+			box-shadow: var(--shadow-drawer);
 			border-radius: 0 0 0 0.5rem;
 			pointer-events: none;
 		}

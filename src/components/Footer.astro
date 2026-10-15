@@ -66,13 +66,13 @@ import { SITE_TITLE, SQUADRON_EMAIL, PARADE_NIGHTS, SQUADRON_ADDRESS } from '../
 
 <style>
 	.site-footer {
-		background: var(--rafDarkBlue);
-		color: rgba(255,255,255,0.8);
-		border-top: 4px solid var(--rafRed);
+		background: var(--color-raf-navy);
+		color: var(--color-white-80);
+		border-top: var(--accent-bar) solid var(--color-raf-red);
 	}
 
 	.footer-inner {
-		max-width: 1100px;
+		max-width: var(--content-width);
 		margin: 0 auto;
 		padding: 2.5rem 1.25rem 1.5rem;
 		display: grid;
@@ -80,7 +80,7 @@ import { SITE_TITLE, SQUADRON_EMAIL, PARADE_NIGHTS, SQUADRON_ADDRESS } from '../
 		gap: 2.5rem;
 	}
 
-	@media (max-width: 720px) {
+	@media (max-width: var(--prose-width)) {
 		.footer-inner {
 			grid-template-columns: 1fr 1fr;
 		}
@@ -98,15 +98,15 @@ import { SITE_TITLE, SQUADRON_EMAIL, PARADE_NIGHTS, SQUADRON_ADDRESS } from '../
 	/* Brand column */
 	.footer-title {
 		font-size: 1.05rem;
-		font-weight: 800;
-		color: #fff;
+		font-weight: var(--font-weight-extrabold);
+		color: var(--color-white);
 		margin-bottom: 0.4rem;
 	}
 
 	.footer-tagline {
 		font-size: 0.85rem;
-		line-height: 1.5;
-		color: rgba(255,255,255,0.65);
+		line-height: var(--leading-copy);
+		color: var(--color-white-65);
 		margin-bottom: 0.75rem;
 	}
 
@@ -115,22 +115,22 @@ import { SITE_TITLE, SQUADRON_EMAIL, PARADE_NIGHTS, SQUADRON_ADDRESS } from '../
 		align-items: center;
 		gap: 0.4rem;
 		font-size: 0.85rem;
-		color: rgba(255,255,255,0.65);
+		color: var(--color-white-65);
 		margin: 0;
 	}
 
 	.footer-address .material-icons {
 		font-size: 1rem;
-		color: var(--rafRed);
+		color: var(--color-raf-red);
 	}
 
 	/* Columns */
 	.footer-col-heading {
 		font-size: 0.72rem;
-		font-weight: 700;
+		font-weight: var(--font-weight-bold);
 		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--rafRed);
+		letter-spacing: var(--tracking-caps);
+		color: var(--color-raf-red);
 		margin-bottom: 1rem;
 	}
 
@@ -144,14 +144,14 @@ import { SITE_TITLE, SQUADRON_EMAIL, PARADE_NIGHTS, SQUADRON_ADDRESS } from '../
 	}
 
 	.footer-links a {
-		color: rgba(255,255,255,0.75);
+		color: var(--color-white-75);
 		text-decoration: none;
 		font-size: 0.9rem;
-		transition: color 0.15s;
+		transition: color var(--duration-fast);
 	}
 
 	.footer-links a:hover {
-		color: #fff;
+		color: var(--color-white);
 		text-decoration: underline;
 	}
 
@@ -170,23 +170,23 @@ import { SITE_TITLE, SQUADRON_EMAIL, PARADE_NIGHTS, SQUADRON_ADDRESS } from '../
 		align-items: flex-start;
 		gap: 0.5rem;
 		font-size: 0.88rem;
-		color: rgba(255,255,255,0.8);
+		color: var(--color-white-80);
 	}
 
 	.footer-contact-list .material-icons {
 		font-size: 1rem;
-		color: var(--rafRed);
+		color: var(--color-raf-red);
 		flex-shrink: 0;
 		margin-top: 2px;
 	}
 
 	.footer-contact-list a {
-		color: rgba(255,255,255,0.8);
+		color: var(--color-white-80);
 		text-decoration: none;
 	}
 
 	.footer-contact-list a:hover {
-		color: #fff;
+		color: var(--color-white);
 		text-decoration: underline;
 	}
 
@@ -195,32 +195,32 @@ import { SITE_TITLE, SQUADRON_EMAIL, PARADE_NIGHTS, SQUADRON_ADDRESS } from '../
 		align-items: center;
 		gap: 0.35rem;
 		font-size: 0.82rem;
-		color: rgba(255,255,255,0.65);
+		color: var(--color-white-65);
 		text-decoration: none;
-		border: 1px solid rgba(255,255,255,0.2);
-		border-radius: 4px;
+		border: 1px solid var(--color-white-20);
+		border-radius: var(--radius-sm);
 		padding: 0.3rem 0.75rem;
-		transition: border-color 0.15s, color 0.15s;
+		transition: border-color var(--duration-fast), color var(--duration-fast);
 	}
 
 	.footer-external-link:hover {
-		border-color: rgba(255,255,255,0.5);
-		color: #fff;
+		border-color: var(--color-white-50);
+		color: var(--color-white);
 	}
 
 	.footer-external-link .material-icons { font-size: 0.9rem; }
 
 	/* Bottom bar */
 	.footer-bottom {
-		border-top: 1px solid rgba(255,255,255,0.1);
+		border-top: 1px solid var(--color-white-10);
 		padding: 0.85rem 1.25rem;
-		max-width: 1100px;
+		max-width: var(--content-width);
 		margin: 0 auto;
 	}
 
 	.footer-bottom p {
 		font-size: 0.8rem;
-		color: rgba(255,255,255,0.45);
+		color: var(--color-white-45);
 		margin: 0;
 		display: flex;
 		flex-wrap: wrap;
@@ -229,12 +229,12 @@ import { SITE_TITLE, SQUADRON_EMAIL, PARADE_NIGHTS, SQUADRON_ADDRESS } from '../
 	}
 
 	.footer-bottom a {
-		color: rgba(255,255,255,0.55);
+		color: var(--color-white-55);
 		text-decoration: none;
-		transition: color 0.15s;
+		transition: color var(--duration-fast);
 	}
 
-	.footer-bottom a:hover { color: #fff; }
+	.footer-bottom a:hover { color: var(--color-white); }
 
-	.footer-bottom-sep { color: rgba(255,255,255,0.25); }
+	.footer-bottom-sep { color: var(--color-white-25); }
 </style>

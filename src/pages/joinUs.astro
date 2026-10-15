@@ -7,7 +7,14 @@ const faqEntry = await getEntry('faq', 'items');
 const faqItems = faqEntry?.data.items ?? [];
 ---
 
-<Page title="Join Us | 2312 Squadron Air Cadets" description="Find out how to join 2312 Squadron Air Cadets in Tavistock. Open to young people aged 12–20.">
+<Page
+	title="Join Us | 2312 Squadron Air Cadets"
+	description="Find out how to join 2312 Squadron Air Cadets in Tavistock. Open to young people aged 12–20."
+	breadcrumbs={[
+		{ name: 'Home', path: '/' },
+		{ name: 'Join Us', path: '/joinUs' },
+	]}
+>
 	<div class="hero-banner">
 		<h1>Join the Air Cadets</h1>
 		<p>Start your adventure with 2312 Squadron today</p>
@@ -60,7 +67,7 @@ const faqItems = faqEntry?.data.items ?? [];
 			</div>
 		</section>
 
-		<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:2.5rem 0;" />
+		<hr class="rule" />
 
 		<!-- Parade nights -->
 		<section aria-labelledby="join-parades" class="join-section">
@@ -82,7 +89,7 @@ const faqItems = faqEntry?.data.items ?? [];
 			</div>
 		</section>
 
-		<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:2.5rem 0;" />
+		<hr class="rule" />
 
 		<!-- What to expect -->
 		<section aria-labelledby="join-expect" class="join-section">
@@ -119,7 +126,7 @@ const faqItems = faqEntry?.data.items ?? [];
 			</ol>
 		</section>
 
-		<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:2.5rem 0;" />
+		<hr class="rule" />
 
 		<!-- FAQs -->
 		<section aria-labelledby="join-faq" class="join-section">
@@ -135,10 +142,10 @@ const faqItems = faqEntry?.data.items ?? [];
 		</section>
 
 		<!-- CTA -->
-		<div class="join-cta-box">
+		<div class="join-cta-box band band--inset">
 			<h2>Ready to join?</h2>
 			<p>Send us a message and we'll get back to you within a few days.</p>
-			<a href="/contact" class="btn btn-primary" style="font-size:1.05rem;padding:0.7rem 2rem;">Enquire about joining</a>
+			<a href="/contact" class="btn btn-primary btn-lg">Enquire about joining</a>
 		</div>
 	</div>
 </Page>
@@ -154,7 +161,7 @@ const faqItems = faqEntry?.data.items ?? [];
 	}
 
 	.eligibility-card {
-		border-radius: 8px;
+		border-radius: var(--radius-lg);
 		padding: 1.5rem;
 		display: flex;
 		flex-direction: column;
@@ -162,20 +169,20 @@ const faqItems = faqEntry?.data.items ?? [];
 	}
 
 	.eligibility-card--yes {
-		background: #f0fdf4;
-		border-left: 5px solid #22c55e;
+		background: var(--color-success-soft);
+		border-left: 5px solid var(--color-success-accent);
 	}
-	.eligibility-card--yes .material-icons { color: #16a34a; font-size: 1.6rem; }
+	.eligibility-card--yes .material-icons { color: var(--color-success); font-size: 1.6rem; }
 
 	.eligibility-card--info {
-		background: #eff6ff;
-		border-left: 5px solid #3b82f6;
+		background: var(--color-info-soft);
+		border-left: 5px solid var(--color-info-accent);
 	}
-	.eligibility-card--info .material-icons { color: #2563eb; font-size: 1.6rem; }
+	.eligibility-card--info .material-icons { color: var(--color-info); font-size: 1.6rem; }
 
-	.eligibility-card h3 { font-size: 1rem; color: var(--rafDarkBlue); margin: 0; }
+	.eligibility-card h3 { font-size: 1rem; color: var(--color-raf-navy); margin: 0; }
 	.eligibility-card ul { margin: 0; padding-left: 1.25rem; }
-	.eligibility-card li { font-size: 0.92rem; margin-bottom: 0.3rem; color: rgb(var(--gray-dark)); }
+	.eligibility-card li { font-size: 0.92rem; margin-bottom: 0.3rem; color: var(--color-body); }
 
 	.squadron-finder {
 		text-align: center;
@@ -183,7 +190,7 @@ const faqItems = faqEntry?.data.items ?? [];
 	}
 
 	.squadron-finder p {
-		color: rgb(var(--gray-dark));
+		color: var(--color-body);
 		margin: 0;
 	}
 
@@ -203,15 +210,15 @@ const faqItems = faqEntry?.data.items ?? [];
 		display: flex;
 		align-items: flex-start;
 		gap: 0.75rem;
-		background: rgba(229,233,240,0.4);
-		border-radius: 8px;
+		background: var(--color-line-40);
+		border-radius: var(--radius-lg);
 		padding: 1rem 1.25rem;
 		flex: 1;
 		min-width: 220px;
 	}
 
 	.parade-detail .material-icons {
-		color: var(--rafRed);
+		color: var(--color-raf-red);
 		font-size: 1.4rem;
 		flex-shrink: 0;
 	}
@@ -222,8 +229,8 @@ const faqItems = faqEntry?.data.items ?? [];
 		gap: 0.1rem;
 	}
 
-	.parade-detail strong { color: var(--rafDarkBlue); font-size: 1rem; }
-	.parade-detail span { font-size: 0.9rem; color: rgb(var(--gray-dark)); }
+	.parade-detail strong { color: var(--color-raf-navy); font-size: 1rem; }
+	.parade-detail span { font-size: 0.9rem; color: var(--color-body); }
 
 	/* Steps */
 	.join-steps {
@@ -245,18 +252,18 @@ const faqItems = faqEntry?.data.items ?? [];
 		width: 2.5rem;
 		height: 2.5rem;
 		border-radius: 50%;
-		background: var(--rafRed);
-		color: #fff;
+		background: var(--color-raf-red);
+		color: var(--color-white);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		font-size: 1.1rem;
-		font-weight: 800;
+		font-weight: var(--font-weight-extrabold);
 		flex-shrink: 0;
 	}
 
-	.join-step h3 { font-size: 1rem; color: var(--rafDarkBlue); margin-bottom: 0.25rem; }
-	.join-step p { font-size: 0.92rem; color: rgb(var(--gray-dark)); margin: 0; line-height: 1.5; }
+	.join-step h3 { font-size: 1rem; color: var(--color-raf-navy); margin-bottom: 0.25rem; }
+	.join-step p { font-size: 0.92rem; color: var(--color-body); margin: 0; line-height: var(--leading-copy); }
 
 	/* FAQs */
 	.faq-list {
@@ -267,21 +274,21 @@ const faqItems = faqEntry?.data.items ?? [];
 	}
 
 	.faq-item {
-		border: 1px solid rgb(var(--gray-light));
-		border-radius: 6px;
+		border: 1px solid var(--color-line);
+		border-radius: var(--radius-md);
 		overflow: hidden;
 	}
 
 	.faq-item summary {
 		padding: 1rem 1.25rem;
-		font-weight: 600;
-		color: var(--rafDarkBlue);
+		font-weight: var(--font-weight-semibold);
+		color: var(--color-raf-navy);
 		cursor: pointer;
 		list-style: none;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		background: rgba(229,233,240,0.3);
+		background: var(--color-line-30);
 	}
 
 	.faq-item summary::-webkit-details-marker { display: none; }
@@ -289,40 +296,32 @@ const faqItems = faqEntry?.data.items ?? [];
 	.faq-item summary::after {
 		content: '+';
 		font-size: 1.2rem;
-		color: var(--rafRed);
-		font-weight: 700;
+		color: var(--color-raf-red);
+		font-weight: var(--font-weight-bold);
 		flex-shrink: 0;
 	}
 
 	.faq-item[open] summary::after { content: '−'; }
 
 	.faq-item:focus-within summary {
-		outline: 3px solid var(--rafRed);
-		outline-offset: 2px;
+		outline: var(--focus-ring);
+		outline-offset: var(--focus-offset-tight);
 	}
 
 	.faq-answer {
 		padding: 1rem 1.25rem;
-		border-top: 1px solid rgb(var(--gray-light));
+		border-top: 1px solid var(--color-line);
 	}
 
-	.faq-answer p { font-size: 0.92rem; color: rgb(var(--gray-dark)); margin: 0; line-height: 1.6; }
+	.faq-answer p { font-size: 0.92rem; color: var(--color-body); margin: 0; line-height: var(--leading-body); }
 
-	.faq-prose :global(p) { font-size: 0.92rem; color: rgb(var(--gray-dark)); margin: 0 0 0.5rem; line-height: 1.6; }
+	.faq-prose :global(p) { font-size: 0.92rem; color: var(--color-body); margin: 0 0 0.5rem; line-height: var(--leading-body); }
 	.faq-prose :global(p:last-child) { margin-bottom: 0; }
-	.faq-prose :global(a) { color: var(--rafDarkBlue); }
-	.faq-prose :global(strong) { color: var(--rafDarkBlue); }
+	.faq-prose :global(a) { color: var(--color-raf-navy); }
+	.faq-prose :global(strong) { color: var(--color-raf-navy); }
 
 	/* CTA box */
 	.join-cta-box {
-		background: linear-gradient(135deg, var(--rafDarkBlue) 0%, var(--rafLightBlue) 100%);
-		border-radius: 12px;
-		padding: 2.5rem 2rem;
-		text-align: center;
-		color: #fff;
 		margin-top: 3rem;
 	}
-
-	.join-cta-box h2 { color: #fff; font-size: 1.75rem; margin-bottom: 0.5rem; }
-	.join-cta-box p { color: rgba(255,255,255,0.85); margin-bottom: 1.5rem; font-size: 1.05rem; }
 </style>

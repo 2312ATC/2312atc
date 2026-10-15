@@ -44,7 +44,7 @@ export const GET = (async ({ params }) => {
 			date: e.data.date.toISOString(),
 			endDate: e.data.endDate?.toISOString() ?? null,
 			description: e.data.description,
-			url: `/events/${e.id}/`,
+			url: `/events/${e.id}`,
 		}));
 
 	return new Response(JSON.stringify({ year, month, events: monthEvents }), {

@@ -9,7 +9,14 @@ const linksEntry = await getEntry('cadetLinks', 'items');
 const usefulLinks = linksEntry?.data.items ?? [];
 ---
 
-<Page title="For Cadets | 2312 Squadron Air Cadets" description="Resources, training information and useful links for current cadets at 2312 Squadron.">
+<Page
+	title="For Cadets | 2312 Squadron Air Cadets"
+	description="Resources, training information and useful links for current cadets at 2312 Squadron."
+	breadcrumbs={[
+		{ name: 'Home', path: '/' },
+		{ name: 'For Cadets', path: '/cadets' },
+	]}
+>
 	<div class="hero-banner">
 		<h1>For Cadets</h1>
 		<p>Resources, training and information for current members of 2312 Squadron</p>
@@ -25,7 +32,7 @@ const usefulLinks = linksEntry?.data.items ?? [];
 		<!-- Training syllabus -->
 		<section aria-labelledby="cadets-training" class="cadets-section">
 			<h2 id="cadets-training" class="section-heading">Training Syllabus</h2>
-			<p style="color:rgb(var(--gray-dark)); margin-bottom:1.5rem;">
+			<p style="color:var(--color-body); margin-bottom:1.5rem;">
 				The Air Cadet training programme is structured into levels from First Class through to Master Cadet. Each stage develops new skills and knowledge across a range of subjects.
 			</p>
 			<div class="training-grid">
@@ -52,7 +59,7 @@ const usefulLinks = linksEntry?.data.items ?? [];
 			</div>
 		</section>
 
-		<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:2.5rem 0;" />
+		<hr class="rule" />
 
 		<!-- Opportunities -->
 		<section aria-labelledby="cadets-opportunities" class="cadets-section">
@@ -69,7 +76,7 @@ const usefulLinks = linksEntry?.data.items ?? [];
 				))}
 			</ul>
 		</section>
-		<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:2.5rem 0;" />
+		<hr class="rule" />
 
 		<!-- Useful links -->
 		<section aria-labelledby="cadets-links" class="cadets-section">
@@ -101,28 +108,28 @@ const usefulLinks = linksEntry?.data.items ?? [];
 	}
 
 	.training-card {
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: var(--box-shadow);
+		background: var(--color-white);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-card);
 		padding: 1.25rem;
-		border-top: 3px solid var(--rafDarkBlue);
+		border-top: 3px solid var(--color-raf-navy);
 	}
 
 	.training-card-badge {
 		display: inline-block;
-		background: var(--rafRed);
-		color: #fff;
+		background: var(--color-raf-red);
+		color: var(--color-white);
 		font-size: 0.7rem;
-		font-weight: 700;
+		font-weight: var(--font-weight-bold);
 		text-transform: uppercase;
-		letter-spacing: 0.07em;
+		letter-spacing: var(--tracking-label);
 		padding: 0.15rem 0.5rem;
-		border-radius: 3px;
+		border-radius: var(--radius-tight);
 		margin-bottom: 0.5rem;
 	}
 
-	.training-card h3 { font-size: 1rem; color: var(--rafDarkBlue); margin-bottom: 0.35rem; }
-	.training-card p { font-size: 0.88rem; color: rgb(var(--gray-dark)); margin: 0; line-height: 1.5; }
+	.training-card h3 { font-size: 1rem; color: var(--color-raf-navy); margin-bottom: 0.35rem; }
+	.training-card p { font-size: 0.88rem; color: var(--color-body); margin: 0; line-height: var(--leading-copy); }
 
 	/* Opportunities */
 	.opportunities-list {
@@ -139,12 +146,12 @@ const usefulLinks = linksEntry?.data.items ?? [];
 		align-items: flex-start;
 		gap: 1rem;
 		padding: 1rem 1.25rem;
-		background: rgba(229,233,240,0.35);
-		border-radius: 8px;
+		background: var(--color-line-35);
+		border-radius: var(--radius-lg);
 	}
 
 	.opportunities-list .material-icons {
-		color: var(--rafRed);
+		color: var(--color-raf-red);
 		font-size: 1.4rem;
 		flex-shrink: 0;
 		margin-top: 1px;
@@ -158,12 +165,12 @@ const usefulLinks = linksEntry?.data.items ?? [];
 
 	.opportunities-list strong {
 		font-size: 0.95rem;
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 	}
 
 	.opportunities-list span {
 		font-size: 0.88rem;
-		color: rgb(var(--gray-dark));
+		color: var(--color-body);
 	}
 
 	/* Links grid */
@@ -179,21 +186,21 @@ const usefulLinks = linksEntry?.data.items ?? [];
 		align-items: center;
 		gap: 0.75rem;
 		padding: 1rem 1.25rem;
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: var(--box-shadow);
+		background: var(--color-white);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-card);
 		text-decoration: none;
-		color: var(--rafDarkBlue);
-		font-weight: 600;
+		color: var(--color-raf-navy);
+		font-weight: var(--font-weight-semibold);
 		font-size: 0.92rem;
-		transition: background 0.15s, color 0.15s;
+		transition: background var(--duration-fast), color var(--duration-fast);
 		border: 2px solid transparent;
 	}
 
 	.link-card:hover {
-		background: var(--rafDarkBlue);
-		color: #fff;
-		border-color: var(--rafDarkBlue);
+		background: var(--color-raf-navy);
+		color: var(--color-white);
+		border-color: var(--color-raf-navy);
 	}
 
 	.link-card .material-icons { font-size: 1.1rem; flex-shrink: 0; }

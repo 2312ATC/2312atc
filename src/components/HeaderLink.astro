@@ -4,9 +4,27 @@ import type { HTMLAttributes } from 'astro/types';
 type Props = HTMLAttributes<'a'>;
 
 const { href, class: className, ...props } = Astro.props;
-const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
-const subpath = pathname.match(/[^\/]+/g);
-const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
+
+function stripBase(pathname: string) {
+	const base = import.meta.env.BASE_URL || '/';
+	if (base !== '/' && pathname.startsWith(base)) {
+		const rest = pathname.slice(base.length);
+		return rest.startsWith('/') ? rest : `/${rest}`;
+	}
+	return pathname || '/';
+}
+
+function normalize(path: string) {
+	if (!path.startsWith('/') || path.startsWith('//')) return path;
+	let value = path.replace(/\/index\.html$/, '/').replace(/\.html$/, '');
+	if (value.length > 1 && value.endsWith('/')) value = value.slice(0, -1);
+	return value || '/';
+}
+
+const pathname = normalize(stripBase(Astro.url.pathname));
+const link = typeof href === 'string' ? normalize(href) : '';
+const subpath = pathname.match(/[^/]+/g);
+const isActive = link === pathname || link === '/' + (subpath?.[0] || '');
 ---
 
 <a
@@ -20,33 +38,33 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 
 <style>
 	a {
-		color: rgba(255,255,255,0.9);
-		font-weight: 600;
+		color: var(--color-white-90);
+		font-weight: var(--font-weight-semibold);
 		font-size: 0.95rem;
 		display: inline-block;
 		text-decoration: none;
 		padding: 0.5rem 0.6rem;
-		border-radius: 4px;
-		transition: color 0.15s, background 0.15s;
+		border-radius: var(--radius-sm);
+		transition: color var(--duration-fast), background var(--duration-fast);
 		white-space: nowrap;
 	}
 
 	a:hover {
-		color: #fff;
-		background: rgba(255,255,255,0.1);
+		color: var(--color-white);
+		background: var(--color-white-10);
 	}
 
 	a.active,
 	a[aria-current="page"] {
-		color: #fff;
-		font-weight: 700;
-		background: rgba(255,255,255,0.12);
+		color: var(--color-white);
+		font-weight: var(--font-weight-bold);
+		background: var(--color-white-12);
 		text-decoration: underline;
 		text-underline-offset: 3px;
 	}
 
 	a:focus-visible {
-		outline: 3px solid var(--rafRed);
-		outline-offset: 2px;
+		outline: var(--focus-ring);
+		outline-offset: var(--focus-offset-tight);
 	}
 </style>

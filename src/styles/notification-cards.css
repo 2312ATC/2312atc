@@ -9,36 +9,17 @@
 	align-items: flex-start;
 	gap: 0.75rem;
 	padding: 1rem 1.15rem;
-	border-radius: 8px;
+	border-radius: var(--radius-lg);
 	border: 1px solid transparent;
-	border-left-width: 4px;
-	font-size: 0.95rem;
-	line-height: 1.5;
-	box-shadow:
-		0 1px 3px rgba(var(--gray-dark), 0.06),
-		0 4px 12px rgba(var(--gray-dark), 0.05);
+	border-left-width: var(--accent-bar);
+	font-size: var(--size-md);
+	line-height: var(--leading-copy);
+	box-shadow: var(--shadow-soft);
 }
 
-.notification-list .js-notif--info {
-	background: #fff;
-	border-color: #bfdbfe;
-	border-left-color: #3b82f6;
-	color: #1e3a5f;
-}
-
-.notification-list .js-notif--warning {
-	background: #fff;
-	border-color: #fde68a;
-	border-left-color: #f59e0b;
-	color: #78350f;
-}
-
-.notification-list .js-notif--alert {
-	background: #fff;
-	border-color: #fecaca;
-	border-left-color: var(--rafRed);
-	color: #7f1d1d;
-}
+.notification-list .js-notif--info { color: var(--color-info-text); }
+.notification-list .js-notif--warning { color: var(--color-warning-text); }
+.notification-list .js-notif--alert { color: var(--color-alert-text); }
 
 .notification-list .js-notif__main {
 	flex: 1;
@@ -50,7 +31,7 @@
 	align-items: center;
 	gap: 0.65rem;
 	padding-bottom: 0.5rem;
-	border-bottom: 1px solid rgb(var(--gray-light));
+	border-bottom: 1px solid var(--color-line);
 }
 
 .notification-list .js-notif__icon-wrap {
@@ -64,22 +45,22 @@
 }
 
 .notification-list .js-notif--info .js-notif__icon-wrap {
-	background: #eff6ff;
-	color: #2563eb;
+	background: var(--color-info-soft);
+	color: var(--color-info);
 }
 
 .notification-list .js-notif--warning .js-notif__icon-wrap {
-	background: #fffbeb;
-	color: #d97706;
+	background: var(--color-warning-soft);
+	color: var(--color-warning);
 }
 
 .notification-list .js-notif--alert .js-notif__icon-wrap {
-	background: #fef2f2;
-	color: var(--rafRed);
+	background: var(--color-alert-soft);
+	color: var(--color-raf-red);
 }
 
 .notification-list .js-notif__icon {
-	font-size: 1.25rem;
+	font-size: var(--size-xl);
 	line-height: 1;
 }
 
@@ -87,24 +68,16 @@
 	margin: 0;
 	flex: 1;
 	min-width: 0;
-	font-weight: 700;
-	font-size: 1rem;
-	color: var(--rafDarkBlue);
+	font-weight: var(--font-weight-bold);
+	font-size: var(--size-base);
+	color: var(--color-raf-navy);
 	line-height: 1.3;
-}
-
-.notification-list .js-notif--warning .js-notif__title {
-	color: #92400e;
-}
-
-.notification-list .js-notif--alert .js-notif__title {
-	color: #991b1b;
 }
 
 .notification-list .js-notif__message {
 	margin: 0;
 	padding-top: 0.5rem;
-	font-weight: 400;
+	font-weight: var(--font-weight-normal);
 	font-size: 0.92rem;
 	opacity: 0.92;
 }
@@ -121,19 +94,19 @@
 	align-items: center;
 	justify-content: center;
 	flex-shrink: 0;
-	border-radius: 6px;
-	transition: opacity 0.15s, background 0.15s;
+	border-radius: var(--radius-md);
+	transition: opacity var(--duration-fast), background var(--duration-fast);
 }
 
 .notification-list .js-notif__dismiss:hover,
 .notification-list .js-notif__dismiss:focus-visible {
 	opacity: 1;
-	background: rgba(var(--gray-dark), 0.08);
+	background: var(--color-ink-08);
 }
 
 .notification-list .js-notif__dismiss:focus-visible {
-	outline: 2px solid var(--rafDarkBlue);
-	outline-offset: 2px;
+	outline: var(--focus-ring-tight);
+	outline-offset: var(--focus-offset-tight);
 }
 
 .notification-list .js-notif__dismiss .material-icons {
@@ -143,29 +116,11 @@
 /* -- Header modal list -- */
 .notif-list .js-notif {
 	padding: 0.75rem 0.85rem;
-	border-radius: 6px;
+	border-radius: var(--radius-md);
 	border: 1px solid transparent;
-	border-left-width: 4px;
+	border-left-width: var(--accent-bar);
 	font-size: 0.9rem;
 	line-height: 1.4;
-}
-
-.notif-list .js-notif--info {
-	background: #fff;
-	border-color: #bfdbfe;
-	border-left-color: #3b82f6;
-}
-
-.notif-list .js-notif--warning {
-	background: #fff;
-	border-color: #fde68a;
-	border-left-color: #f59e0b;
-}
-
-.notif-list .js-notif--alert {
-	background: #fff;
-	border-color: #fecaca;
-	border-left-color: var(--rafRed);
 }
 
 .notif-list .js-notif__heading {
@@ -173,7 +128,7 @@
 	align-items: center;
 	gap: 0.5rem;
 	padding-bottom: 0.45rem;
-	border-bottom: 1px solid rgb(var(--gray-light));
+	border-bottom: 1px solid var(--color-line);
 }
 
 .notif-list .js-notif__icon-wrap {
@@ -186,17 +141,9 @@
 	background: transparent;
 }
 
-.notif-list .js-notif--info .js-notif__icon {
-	color: #2563eb;
-}
-
-.notif-list .js-notif--warning .js-notif__icon {
-	color: #d97706;
-}
-
-.notif-list .js-notif--alert .js-notif__icon {
-	color: var(--rafRed);
-}
+.notif-list .js-notif--info .js-notif__icon { color: var(--color-info); }
+.notif-list .js-notif--warning .js-notif__icon { color: var(--color-warning); }
+.notif-list .js-notif--alert .js-notif__icon { color: var(--color-raf-red); }
 
 .notif-list .js-notif__icon {
 	font-size: 1.35rem;
@@ -207,25 +154,17 @@
 	margin: 0;
 	flex: 1;
 	min-width: 0;
-	color: var(--rafDarkBlue);
-	font-size: 0.95rem;
-	font-weight: 700;
+	color: var(--color-raf-navy);
+	font-size: var(--size-md);
+	font-weight: var(--font-weight-bold);
 	line-height: 1.3;
-}
-
-.notif-list .js-notif--warning .js-notif__title {
-	color: #92400e;
-}
-
-.notif-list .js-notif--alert .js-notif__title {
-	color: #991b1b;
 }
 
 .notif-list .js-notif__message {
 	margin: 0;
 	padding-top: 0.45rem;
 	font-size: 0.88rem;
-	color: rgb(var(--gray-dark));
+	color: var(--color-body);
 }
 
 @media (max-width: 600px) {
@@ -238,4 +177,36 @@
 		width: 2rem;
 		height: 2rem;
 	}
+}
+
+/* Shared status colours. Listed last so they win over each card shell's border shorthand. */
+.notification-list .js-notif--info,
+.notif-list .js-notif--info {
+	background: var(--color-white);
+	border-color: var(--color-info-border);
+	border-left-color: var(--color-info-accent);
+}
+
+.notification-list .js-notif--warning,
+.notif-list .js-notif--warning {
+	background: var(--color-white);
+	border-color: var(--color-warning-border);
+	border-left-color: var(--color-warning-accent);
+}
+
+.notification-list .js-notif--alert,
+.notif-list .js-notif--alert {
+	background: var(--color-white);
+	border-color: var(--color-alert-border);
+	border-left-color: var(--color-raf-red);
+}
+
+.notification-list .js-notif--warning .js-notif__title,
+.notif-list .js-notif--warning .js-notif__title {
+	color: var(--color-warning-title);
+}
+
+.notification-list .js-notif--alert .js-notif__title,
+.notif-list .js-notif--alert .js-notif__title {
+	color: var(--color-alert-title);
 }

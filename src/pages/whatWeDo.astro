@@ -10,7 +10,14 @@ const renderedActivities = activities.map((activity, i) => ({
 }));
 ---
 
-<Page title="What We Do | 2312 Squadron Air Cadets" description="Discover all the activities, training and opportunities available through 2312 Squadron Air Cadets.">
+<Page
+	title="What We Do | 2312 Squadron Air Cadets"
+	description="Discover all the activities, training and opportunities available through 2312 Squadron Air Cadets."
+	breadcrumbs={[
+		{ name: 'Home', path: '/' },
+		{ name: 'What We Do', path: '/whatWeDo' },
+	]}
+>
 	<div class="hero-banner">
 		<h1>What We Do</h1>
 		<p>Discover the activities and opportunities that make Air Cadets so special</p>
@@ -46,12 +53,12 @@ const renderedActivities = activities.map((activity, i) => ({
 		</div>
 
 		<!-- CTA -->
-		<div class="wwd-cta">
+		<div class="band band--inset">
 			<h2>Want to be part of it?</h2>
 			<p>Join 2312 Squadron and start your adventure today.</p>
-			<div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
-				<a href="/join" class="btn btn-primary" style="font-size:1.05rem;padding:0.7rem 2rem;">How to Join</a>
-				<a href="/contact" class="btn btn-outline" style="font-size:1.05rem;padding:0.7rem 2rem;color:#fff;border-color:rgba(255,255,255,0.6);">Contact Us</a>
+			<div class="cta-actions">
+				<a href="/join" class="btn btn-primary btn-lg">How to Join</a>
+				<a href="/contact" class="btn btn-outline btn-outline--on-dark btn-lg">Contact Us</a>
 			</div>
 		</div>
 	</div>
@@ -60,9 +67,9 @@ const renderedActivities = activities.map((activity, i) => ({
 <style>
 	.wwd-intro {
 		font-size: 1.1rem;
-		color: rgb(var(--gray-dark));
+		color: var(--color-body);
 		line-height: 1.7;
-		max-width: 760px;
+		max-width: var(--measure-width);
 		margin-bottom: 2.5rem;
 	}
 
@@ -70,9 +77,9 @@ const renderedActivities = activities.map((activity, i) => ({
 		display: flex;
 		flex-direction: column;
 		gap: 0;
-		border-radius: 12px;
+		border-radius: var(--radius-xl);
 		overflow: hidden;
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--shadow-card);
 		margin-bottom: 3rem;
 	}
 
@@ -81,18 +88,18 @@ const renderedActivities = activities.map((activity, i) => ({
 		gap: 1.5rem;
 		padding: 2rem;
 		align-items: flex-start;
-		background: #fff;
+		background: var(--color-white);
 	}
 
 	.wwd-block--alt {
-		background: rgba(229,233,240,0.3);
+		background: var(--color-line-30);
 	}
 
 	.wwd-block-icon {
 		width: 3.5rem;
 		height: 3.5rem;
-		background: var(--rafDarkBlue);
-		border-radius: 8px;
+		background: var(--color-raf-navy);
+		border-radius: var(--radius-lg);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -100,13 +107,13 @@ const renderedActivities = activities.map((activity, i) => ({
 	}
 
 	.wwd-block-icon .material-icons {
-		color: #fff;
+		color: var(--color-white);
 		font-size: 1.6rem;
 	}
 
 	.wwd-block-title {
 		font-size: 1.2rem;
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 		margin-bottom: 0.5rem;
 	}
 
@@ -117,13 +124,13 @@ const renderedActivities = activities.map((activity, i) => ({
 
 	.wwd-block-prose :global(p) {
 		font-size: 0.95rem;
-		color: rgb(var(--gray-dark));
+		color: var(--color-body);
 		line-height: 1.65;
 		margin: 0 0 0.5rem;
 	}
 
 	.wwd-block-prose :global(strong) {
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 	}
 
 	.wwd-block-prose :global(p:last-child) {
@@ -141,16 +148,4 @@ const renderedActivities = activities.map((activity, i) => ({
 			height: 2.75rem;
 		}
 	}
-
-	/* CTA */
-	.wwd-cta {
-		background: linear-gradient(135deg, var(--rafDarkBlue) 0%, var(--rafLightBlue) 100%);
-		border-radius: 12px;
-		padding: 2.5rem 2rem;
-		text-align: center;
-		color: #fff;
-	}
-
-	.wwd-cta h2 { color: #fff; font-size: 1.75rem; margin-bottom: 0.5rem; }
-	.wwd-cta p { color: rgba(255,255,255,0.85); margin-bottom: 1.5rem; font-size: 1.05rem; }
 </style>

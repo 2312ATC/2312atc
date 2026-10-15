@@ -5,7 +5,7 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 <div class="notif-panel" data-notif-panel data-build-id={buildId}>
 	<button
 		type="button"
-		class="notif-bell"
+		class="notif-bell icon-control"
 		aria-label="Notifications"
 		aria-expanded="false"
 		aria-controls="notif-modal"
@@ -44,49 +44,26 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 		line-height: 1;
 	}
 
-	.notif-bell {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		margin: 0;
-		padding: 0.4rem;
-		border: 2px solid rgba(255, 255, 255, 0.3);
-		border-radius: 6px;
-		background: transparent;
-		color: #fff;
-		cursor: pointer;
-		flex-shrink: 0;
-	}
-
-	.notif-bell:focus-visible {
-		outline: 3px solid var(--rafRed);
-		outline-offset: 2px;
-	}
-
-	.notif-bell .material-icons {
-		font-size: 1.5rem;
-	}
-
 	.notif-backdrop {
 		position: fixed;
 		z-index: 29;
 		inset: 0;
-		top: var(--header-height, 4.5rem);
-		background: rgba(0, 0, 0, 0.45);
+		top: var(--header-height, var(--header-offset));
+		background: var(--color-black-45);
 	}
 
 	.notif-modal {
 		position: fixed;
 		z-index: 30;
-		top: var(--header-height, 4.5rem);
+		top: var(--header-height, var(--header-offset));
 		right: 0;
 		width: min(100%, 24rem);
-		max-height: calc(100vh - var(--header-height, 4.5rem));
+		max-height: calc(100vh - var(--header-height, var(--header-offset)));
 		display: flex;
 		flex-direction: column;
-		background: #fff;
-		box-shadow: -4px 12px 28px rgba(0, 0, 0, 0.25);
-		color: rgb(var(--gray-dark));
+		background: var(--color-white);
+		box-shadow: var(--shadow-drawer);
+		color: var(--color-body);
 	}
 
 	.notif-modal[hidden],
@@ -100,16 +77,16 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 		justify-content: space-between;
 		gap: 0.5rem;
 		padding: 0.85rem 1rem;
-		border-bottom: 2px solid rgb(var(--gray-light));
-		background: var(--rafDarkBlue);
-		color: #fff;
+		border-bottom: 2px solid var(--color-line);
+		background: var(--color-raf-navy);
+		color: var(--color-white);
 		flex-shrink: 0;
 	}
 
 	.notif-modal-title {
 		margin: 0;
 		font-size: 1.1rem;
-		font-weight: 700;
+		font-weight: var(--font-weight-bold);
 	}
 
 	.notif-modal-close {
@@ -119,15 +96,15 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 		margin: 0;
 		padding: 0.2rem;
 		border: none;
-		border-radius: 4px;
+		border-radius: var(--radius-sm);
 		background: transparent;
 		color: inherit;
 		cursor: pointer;
 	}
 
 	.notif-modal-close:focus-visible {
-		outline: 3px solid var(--rafRed);
-		outline-offset: 2px;
+		outline: var(--focus-ring);
+		outline-offset: var(--focus-offset-tight);
 	}
 
 	.notif-modal-body {
@@ -148,7 +125,7 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 	.notif-empty {
 		margin: 0;
 		font-size: 0.88rem;
-		color: rgb(var(--gray));
+		color: var(--color-muted);
 		font-style: italic;
 	}
 

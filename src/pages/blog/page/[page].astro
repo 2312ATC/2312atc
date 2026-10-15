@@ -21,7 +21,15 @@ const { page } = Astro.props;
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`News & Blog | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<BaseHead
+			title={`News & Blog | ${SITE_TITLE}`}
+			description={SITE_DESCRIPTION}
+			pageType="CollectionPage"
+			breadcrumbs={[
+				{ name: 'Home', path: '/' },
+				{ name: 'Blog', path: '/blog/page/1' },
+			]}
+		/>
 	</head>
 	<body>
 		<a href="#main-content" class="skip-link">Skip to main content</a>
@@ -48,7 +56,7 @@ const { page } = Astro.props;
 								const isPortrait = hero && hero.height > hero.width;
 								const media = hero && (
 									<a
-										href={`/blog/${post.id}/`}
+										href={`/blog/${post.id}`}
 										class="blog-card-media"
 										tabindex="-1"
 										aria-label={post.data.title}
@@ -73,12 +81,12 @@ const { page } = Astro.props;
 												<FormattedDate date={post.data.pubDate} />
 											</p>
 											<h2 class="card-title">
-												<a href={`/blog/${post.id}/`}>{post.data.title}</a>
+												<a href={`/blog/${post.id}`}>{post.data.title}</a>
 											</h2>
 											<p class="card-description">{post.data.description}</p>
 										</div>
 										<div class="card-footer">
-											<a href={`/blog/${post.id}/`} class="btn btn-secondary blog-card-btn">
+											<a href={`/blog/${post.id}`} class="btn btn-secondary blog-card-btn">
 												Read more <span aria-hidden="true">→</span>
 											</a>
 										</div>
@@ -118,7 +126,7 @@ const { page } = Astro.props;
 						</nav>
 					</>
 				) : (
-					<p class="blog-empty">No posts yet. Check back soon!</p>
+					<p class="empty-note">No posts yet. Check back soon!</p>
 				)}
 			</div>
 		</main>
@@ -149,7 +157,7 @@ const { page } = Astro.props;
 		display: block;
 		line-height: 0;
 		overflow: hidden;
-		background: rgb(var(--gray-light));
+		background: var(--color-line);
 	}
 
 	.blog-card:not(.blog-card--featured) .blog-card-media {
@@ -298,15 +306,6 @@ const { page } = Astro.props;
 		}
 	}
 
-	.blog-empty {
-		color: rgb(var(--gray));
-		font-style: italic;
-		padding: 2rem;
-		background: rgba(229,233,240,0.4);
-		border-radius: 8px;
-		text-align: center;
-	}
-
 	/* Pagination */
 	.pagination {
 		display: flex;
@@ -319,23 +318,23 @@ const { page } = Astro.props;
 
 	.pagination-btn {
 		padding: 0.5rem 1.1rem;
-		border: 2px solid var(--rafDarkBlue);
-		border-radius: 4px;
+		border: 2px solid var(--color-raf-navy);
+		border-radius: var(--radius-sm);
 		text-decoration: none;
-		color: var(--rafDarkBlue);
-		font-weight: 600;
+		color: var(--color-raf-navy);
+		font-weight: var(--font-weight-semibold);
 		font-size: 0.9rem;
-		transition: background 0.15s, color 0.15s;
+		transition: background var(--duration-fast), color var(--duration-fast);
 	}
 
 	.pagination-btn:hover {
-		background: var(--rafDarkBlue);
-		color: #fff;
+		background: var(--color-raf-navy);
+		color: var(--color-white);
 	}
 
 	.pagination-info {
-		color: rgb(var(--gray));
+		color: var(--color-muted);
 		font-size: 0.9rem;
-		font-weight: 600;
+		font-weight: var(--font-weight-semibold);
 	}
 </style>

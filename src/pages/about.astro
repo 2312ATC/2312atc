@@ -11,7 +11,15 @@ const offersEntry = await getEntry('offers', 'items');
 const offers = offersEntry?.data.items ?? [];
 ---
 
-<Page title="About Us | 2312 Squadron Air Cadets" description="Learn about 2312 (Tavistock) Squadron Air Cadets - our history, mission and the team behind the squadron.">
+<Page
+	title="About Us | 2312 Squadron Air Cadets"
+	description="Learn about 2312 (Tavistock) Squadron Air Cadets - our history, mission and the team behind the squadron."
+	pageType="AboutPage"
+	breadcrumbs={[
+		{ name: 'Home', path: '/' },
+		{ name: 'About', path: '/about' },
+	]}
+>
 	<div class="hero-banner">
 		<h1>About 2312 Squadron</h1>
 		<p>Proudly serving Tavistock and the surrounding area since 1957</p>
@@ -43,7 +51,7 @@ const offers = offersEntry?.data.items ?? [];
 			</div>
 		</section>
 
-		<hr class="about-divider" />
+		<hr class="rule" />
 
 		<!-- What we offer -->
 		<section aria-labelledby="about-activities-heading" class="about-section">
@@ -59,7 +67,7 @@ const offers = offersEntry?.data.items ?? [];
 			</div>
 		</section>
 
-		<hr class="about-divider" />
+		<hr class="rule" />
 
 		<!-- History -->
 		<section aria-labelledby="about-history-heading" class="about-section">
@@ -77,12 +85,12 @@ const offers = offersEntry?.data.items ?? [];
 			</div>
 		</section>
 
-		<hr class="about-divider" />
+		<hr class="rule" />
 
 		<!-- Staff -->
 		<section aria-labelledby="about-staff-heading" class="about-section">
 			<h2 id="about-staff-heading" class="section-heading">Our Staff</h2>
-			<p style="color:rgb(var(--gray-dark)); margin-bottom:1.5rem;">
+			<p style="color:var(--color-body); margin-bottom:1.5rem;">
 				Our squadron is run by a team of dedicated volunteers: Civilian Instructors and uniformed Cadet Force Adult Volunteers.
 			</p>
 			<div class="staff-grid">
@@ -106,12 +114,6 @@ const offers = offersEntry?.data.items ?? [];
 		margin-bottom: 0.5rem;
 	}
 
-	.about-divider {
-		border: none;
-		border-top: 2px solid rgb(var(--gray-light));
-		margin: 2.5rem 0;
-	}
-
 	/* Intro with logo */
 	.about-intro {
 		display: grid;
@@ -121,10 +123,10 @@ const offers = offersEntry?.data.items ?? [];
 	}
 
 	.about-intro-logo img {
-		border-radius: 8px;
-		box-shadow: var(--box-shadow);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-card);
 		max-width: 220px;
-		background: var(--rafDarkBlue);
+		background: var(--color-raf-navy);
 		padding: 10px;
 	}
 
@@ -138,8 +140,8 @@ const offers = offersEntry?.data.items ?? [];
 	}
 
 	.about-intro-text p {
-		color: rgb(var(--gray-dark));
-		line-height: 1.75;
+		color: var(--color-body);
+		line-height: var(--leading-prose);
 		margin-bottom: 1rem;
 	}
 
@@ -152,31 +154,31 @@ const offers = offersEntry?.data.items ?? [];
 	}
 
 	.activity-card {
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: var(--box-shadow);
+		background: var(--color-white);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-card);
 		padding: 1.25rem;
 		text-align: center;
-		border-top: 3px solid var(--rafRed);
+		border-top: 3px solid var(--color-raf-red);
 	}
 
 	.activity-icon {
 		font-size: 2rem;
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 		margin-bottom: 0.5rem;
 		display: block;
 	}
 
 	.activity-card h3 {
 		font-size: 1rem;
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 		margin-bottom: 0.5rem;
 	}
 
 	.activity-card p {
 		font-size: 0.88rem;
-		color: rgb(var(--gray-dark));
-		line-height: 1.5;
+		color: var(--color-body);
+		line-height: var(--leading-copy);
 		margin: 0;
 	}
 
@@ -188,31 +190,31 @@ const offers = offersEntry?.data.items ?? [];
 	}
 
 	.staff-card {
-		background: rgba(229,233,240,0.4);
-		border-radius: 8px;
+		background: var(--color-line-40);
+		border-radius: var(--radius-lg);
 		padding: 1rem 1.25rem;
-		border-left: 4px solid var(--rafDarkBlue);
+		border-left: 4px solid var(--color-raf-navy);
 	}
 
 	.staff-card-rank {
 		font-size: 0.75rem;
-		font-weight: 700;
+		font-weight: var(--font-weight-bold);
 		text-transform: uppercase;
-		letter-spacing: 0.07em;
-		color: var(--rafRed);
+		letter-spacing: var(--tracking-label);
+		color: var(--color-raf-red);
 		margin-bottom: 0.25rem;
 	}
 
 	.staff-card-name {
 		font-size: 1rem;
-		font-weight: 600;
-		color: var(--rafDarkBlue);
+		font-weight: var(--font-weight-semibold);
+		color: var(--color-raf-navy);
 	}
 
 	.staff-card-bio {
 		font-size: 0.85rem;
-		color: rgb(var(--gray-dark));
-		line-height: 1.5;
+		color: var(--color-body);
+		line-height: var(--leading-copy);
 		margin: 0.4rem 0 0;
 	}
 </style>

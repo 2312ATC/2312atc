@@ -51,7 +51,15 @@ const joiningLink = `mailto:${SQUADRON_EMAIL}?subject=Joining%20Enquiry%20%E2%80
 const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquiry%20%E2%80%93%202312%20Squadron&body=${parentBody}`;
 ---
 
-<Page title="Contact Us | 2312 Squadron Air Cadets" description="Get in touch with 2312 Squadron Air Cadets in Tavistock, Devon. Send us an email or come along to a parade night.">
+<Page
+	title="Contact Us | 2312 Squadron Air Cadets"
+	description="Get in touch with 2312 Squadron Air Cadets in Tavistock, Devon. Send us an email or come along to a parade night."
+	pageType="ContactPage"
+	breadcrumbs={[
+		{ name: 'Home', path: '/' },
+		{ name: 'Contact', path: '/contact' },
+	]}
+>
 	<div class="hero-banner">
 		<h1>Contact Us</h1>
 		<p>We'd love to hear from you - get in touch with 2312 Squadron</p>
@@ -68,7 +76,7 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 			<!-- Email templates -->
 			<main class="contact-main">
 				<h2 class="section-heading" style="margin-bottom:1rem;">Send Us a Message</h2>
-				<p style="color:rgb(var(--gray-dark)); margin-bottom:1.75rem; line-height:1.65;">
+				<p style="color:var(--color-body); margin-bottom:1.75rem; line-height:1.65;">
 					Click one of the buttons below to open your email with a pre-filled template. Simply fill in your details and send - we aim to respond as soon as possible.
 				</p>
 
@@ -175,13 +183,13 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 							<dd>
 								{SQUADRON_ADDRESS}
 								<br />
-								<small style="color:rgb(var(--gray));">Approach from Pixon Lane</small>
+								<small style="color:var(--color-muted);">Approach from Pixon Lane</small>
 							</dd>
 						</div>
 					</dl>
 
 					<div class="contact-social">
-						<p style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:rgb(var(--gray));margin-bottom:0.6rem;">Also find us at</p>
+						<p style="font-size:0.8rem;font-weight: var(--font-weight-bold);text-transform:uppercase;letter-spacing: var(--tracking-label);color:var(--color-muted);margin-bottom:0.6rem;">Also find us at</p>
 						<a
 							href="https://www.raf.mod.uk/aircadets/"
 							target="_blank"
@@ -200,7 +208,6 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 						src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCpHJQqSQ0V6hI8gCENNC7c5ExMC4Q-l2k&q=50.54323501290726,-4.14609011135886&zoom=14"
 						width="100%"
 						height="220"
-						style="border:0;border-radius:0 0 8px 8px;"
 						allowfullscreen
 						loading="lazy"
 						referrerpolicy="no-referrer-when-downgrade"
@@ -251,21 +258,21 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 	}
 
 	.email-card {
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: var(--box-shadow);
+		background: var(--color-white);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-card);
 		padding: 1.5rem;
-		border-left: 4px solid var(--rafDarkBlue);
-		transition: transform 0.15s ease;
+		border-left: 4px solid var(--color-raf-navy);
+		transition: transform var(--duration-fast) ease;
 	}
 
 	.email-card:hover {
-		transform: translateX(3px);
+		transform: translateX(var(--nudge));
 	}
 
 	.email-card--highlight {
-		border-left-color: var(--rafRed);
-		background: rgba(207, 20, 43, 0.02);
+		border-left-color: var(--color-raf-red);
+		background: var(--color-red-02);
 	}
 
 	.email-card-header {
@@ -277,28 +284,28 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 
 	.email-card-icon {
 		font-size: 1.75rem;
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 		flex-shrink: 0;
 		margin-top: 2px;
 	}
 
-	.email-card--highlight .email-card-icon { color: var(--rafRed); }
+	.email-card--highlight .email-card-icon { color: var(--color-raf-red); }
 
 	.email-card-header h3 {
 		font-size: 1.1rem;
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 		margin-bottom: 0.1rem;
 	}
 
 	.email-card-header p {
 		font-size: 0.82rem;
-		color: rgb(var(--gray));
+		color: var(--color-muted);
 		margin: 0;
 	}
 
 	.email-card-desc {
 		font-size: 0.92rem;
-		color: rgb(var(--gray-dark));
+		color: var(--color-body);
 		line-height: 1.55;
 		margin-bottom: 1rem;
 	}
@@ -316,12 +323,12 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 		display: flex;
 		align-items: flex-start;
 		gap: 0.75rem;
-		background: #eff6ff;
-		border-radius: 8px;
+		background: var(--color-info-soft);
+		border-radius: var(--radius-lg);
 		padding: 1rem 1.25rem;
 		font-size: 0.88rem;
-		color: #1e40af;
-		border: 1px solid #bfdbfe;
+		color: var(--color-info-strong);
+		border: 1px solid var(--color-info-border);
 	}
 
 	.email-note .material-icons {
@@ -331,7 +338,7 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 	}
 
 	.email-note p { margin: 0; line-height: 1.55; }
-	.email-note a { color: var(--rafDarkBlue); font-weight: 600; }
+	.email-note a { color: var(--color-raf-navy); font-weight: var(--font-weight-semibold); }
 
 	/* Sidebar */
 	.contact-sidebar {
@@ -343,19 +350,19 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 	}
 
 	.contact-info-card {
-		background: #fff;
-		border-radius: 8px 8px 0 0;
-		box-shadow: var(--box-shadow);
+		background: var(--color-white);
+		border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+		box-shadow: var(--shadow-card);
 		padding: 1.5rem;
-		border-top: 4px solid var(--rafRed);
+		border-top: 4px solid var(--color-raf-red);
 	}
 
 	.contact-info-title {
 		font-size: 1rem;
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 		margin-bottom: 1.25rem;
 		text-transform: uppercase;
-		letter-spacing: 0.06em;
+		letter-spacing: var(--tracking-label);
 		font-size: 0.85rem;
 	}
 
@@ -369,10 +376,10 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 
 	.contact-detail-item dt {
 		font-size: 0.72rem;
-		font-weight: 700;
+		font-weight: var(--font-weight-bold);
 		text-transform: uppercase;
-		letter-spacing: 0.06em;
-		color: rgb(var(--gray));
+		letter-spacing: var(--tracking-label);
+		color: var(--color-muted);
 		display: flex;
 		align-items: center;
 		gap: 0.3rem;
@@ -381,25 +388,25 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 
 	.contact-detail-item dt .material-icons {
 		font-size: 0.95em;
-		color: var(--rafRed);
+		color: var(--color-raf-red);
 	}
 
 	.contact-detail-item dd {
 		margin: 0;
 		font-size: 0.95rem;
-		color: var(--rafDarkBlue);
-		font-weight: 600;
+		color: var(--color-raf-navy);
+		font-weight: var(--font-weight-semibold);
 		line-height: 1.4;
 	}
 
 	.contact-detail-item dd a {
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 	}
 
 	.contact-social {
 		margin-top: 1.25rem;
 		padding-top: 1rem;
-		border-top: 1px solid rgb(var(--gray-light));
+		border-top: 1px solid var(--color-line);
 	}
 
 	.social-link {
@@ -407,25 +414,25 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 		align-items: center;
 		gap: 0.4rem;
 		font-size: 0.88rem;
-		font-weight: 600;
-		color: var(--rafDarkBlue);
+		font-weight: var(--font-weight-semibold);
+		color: var(--color-raf-navy);
 		text-decoration: none;
 		padding: 0.4rem 0.8rem;
-		border: 1px solid rgb(var(--gray-light));
-		border-radius: 4px;
-		transition: background 0.15s;
+		border: 1px solid var(--color-line);
+		border-radius: var(--radius-sm);
+		transition: background var(--duration-fast);
 	}
 
 	.social-link:hover {
-		background: rgba(229,233,240,0.6);
+		background: var(--color-line-60);
 	}
 
 	.social-link .material-icons { font-size: 1rem; }
 
 	/* Visit card */
 	.contact-visit {
-		background: rgba(229,233,240,0.4);
-		border-radius: 8px;
+		background: var(--color-line-40);
+		border-radius: var(--radius-lg);
 		padding: 1.25rem;
 	}
 
@@ -434,27 +441,33 @@ const parentLink  = `mailto:${SQUADRON_EMAIL}?subject=Parent%2FGuardian%20Enquir
 		align-items: center;
 		gap: 0.5rem;
 		font-size: 0.95rem;
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 		margin-bottom: 0.6rem;
 	}
 
 	.contact-visit h3 .material-icons {
-		color: var(--rafRed);
+		color: var(--color-raf-red);
 		font-size: 1.1rem;
 	}
 
 	.contact-visit p {
 		font-size: 0.88rem;
-		color: rgb(var(--gray-dark));
+		color: var(--color-body);
 		line-height: 1.55;
 		margin: 0;
 	}
 
 	/* Map – attach to info card bottom */
 	.contact-map {
-		border-radius: 0 0 8px 8px;
+		border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 		overflow: hidden;
-		box-shadow: var(--box-shadow);
-		margin-top: -1.25rem;
+		box-shadow: var(--shadow-card);
+		margin-top: calc(var(--space-card) * -1);
+	}
+
+	.contact-map iframe {
+		display: block;
+		border: 0;
+		width: 100%;
 	}
 </style>

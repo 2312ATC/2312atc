@@ -5,6 +5,7 @@ import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
+import { canonicalUrlFromPath, eventNode } from '../../lib/jsonLd';
 
 export async function getStaticPaths() {
 	const events = await getCollection('events');
@@ -25,12 +26,36 @@ const dateLabel = date.toLocaleDateString('en-GB', {
 });
 const timeLabel = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
+const siteURL = Astro.site ?? new URL(Astro.url.origin);
+const canonicalURL = canonicalUrlFromPath(Astro.url.pathname, siteURL);
+const imageUrl = heroImage ? new URL(heroImage.src, siteURL).href : undefined;
+const jsonLd = [
+	eventNode({
+		url: canonicalURL.href,
+		name: title,
+		description,
+		startDate: date,
+		endDate,
+		imageUrl,
+		siteOrigin: siteURL.origin,
+	}),
+];
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`${title} | Events | 2312 Squadron`} description={description} image={heroImage} />
+		<BaseHead
+			title={`${title} | Events | 2312 Squadron`}
+			description={description}
+			image={heroImage}
+			jsonLd={jsonLd}
+			breadcrumbs={[
+				{ name: 'Home', path: '/' },
+				{ name: 'Events', path: '/events' },
+				{ name: title, path: canonicalURL.pathname },
+			]}
+		/>
 	</head>
 	<body>
 		<a href="#main-content" class="skip-link">Skip to main content</a>
@@ -47,8 +72,8 @@ const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 						loading="eager"
 					/>
 					<div class="event-hero-overlay">
-						<div class="event-hero-content page-content" style="padding-top:0;padding-bottom:0;">
-							<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--light">
+						<div class="event-hero-content page-content page-content--flush">
+							<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--on-dark">
 								<a href="/">Home</a>
 								<span aria-hidden="true">›</span>
 								<a href="/events">Events</a>
@@ -61,11 +86,11 @@ const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 				</div>
 			) : (
 				<div class="hero-banner">
-					<nav aria-label="Breadcrumb" class="breadcrumb" style="justify-content:center; color:rgba(255,255,255,0.7); margin-bottom:0.5rem;">
-						<a href="/" style="color:rgba(255,255,255,0.8);">Home</a>
-						<span aria-hidden="true" style="margin:0 0.4rem;">›</span>
-						<a href="/events" style="color:rgba(255,255,255,0.8);">Events</a>
-						<span aria-hidden="true" style="margin:0 0.4rem;">›</span>
+					<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--on-dark">
+						<a href="/">Home</a>
+						<span aria-hidden="true">›</span>
+						<a href="/events">Events</a>
+						<span aria-hidden="true">›</span>
 						<span aria-current="page">{title}</span>
 					</nav>
 					<h1>{title}</h1>
@@ -106,19 +131,21 @@ const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 							<p class="event-signup-note"><strong>If you want to participate in this event, please sign up via the portal.</strong></p>
 						</dl>
 
-						<a href="/contact" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:1rem;">
-							Enquire about this event
-						</a>
-						<a href="/events" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.5rem;">
-							← Back to Events
-						</a>
+						<div class="btn-stack">
+							<a href="/contact" class="btn btn-primary">
+								Enquire about this event
+							</a>
+							<a href="/events" class="btn btn-outline">
+								← Back to Events
+							</a>
+						</div>
 					</div>
 				</aside>
 
 				<!-- Main body -->
 				<article class="event-body">
 					<p class="event-description-lede">{description}</p>
-					<hr style="border:none;border-top:2px solid rgb(var(--gray-light));margin:1.5rem 0;" />
+					<hr class="rule rule--tight" />
 					<div class="prose-content">
 						<Content />
 					</div>
@@ -149,27 +176,23 @@ const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 	.event-hero-overlay {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+		background: var(--gradient-scrim-deep);
 		display: flex;
 		align-items: flex-end;
 		padding-bottom: 2rem;
 	}
 
 	.event-hero-content {
-		color: #fff;
+		color: var(--color-white);
 		width: 100%;
 	}
 
 	.event-hero-title {
 		font-size: clamp(1.75rem, 4vw, 2.75rem);
-		color: #fff;
-		text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+		color: var(--color-white);
+		text-shadow: var(--shadow-text);
 		margin: 0.25rem 0 0;
 	}
-
-	.breadcrumb--light a { color: rgba(255,255,255,0.8); }
-	.breadcrumb--light a:hover { color: #fff; }
-	.breadcrumb--light { color: rgba(255,255,255,0.6); }
 
 	/* Two-column layout */
 	.event-page-layout {
@@ -197,19 +220,19 @@ const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 	}
 
 	.event-meta-block {
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: var(--box-shadow);
+		background: var(--color-white);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-card);
 		padding: 1.5rem;
-		border-top: 4px solid var(--rafRed);
+		border-top: 4px solid var(--color-raf-red);
 	}
 
 	.event-meta-title {
 		font-size: 1rem;
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 		margin-bottom: 1rem;
 		text-transform: uppercase;
-		letter-spacing: 0.06em;
+		letter-spacing: var(--tracking-label);
 		font-size: 0.85rem;
 	}
 
@@ -223,10 +246,10 @@ const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 
 	.event-meta-item dt {
 		font-size: 0.75rem;
-		font-weight: 700;
+		font-weight: var(--font-weight-bold);
 		text-transform: uppercase;
-		letter-spacing: 0.06em;
-		color: rgb(var(--gray));
+		letter-spacing: var(--tracking-label);
+		color: var(--color-muted);
 		display: flex;
 		align-items: center;
 		gap: 0.3rem;
@@ -235,25 +258,25 @@ const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 
 	.event-meta-item dt .material-icons {
 		font-size: 0.95em;
-		color: var(--rafRed);
+		color: var(--color-raf-red);
 	}
 
 	.event-meta-item dd {
 		margin: 0;
 		font-size: 0.95rem;
-		color: rgb(var(--gray-dark));
-		font-weight: 600;
+		color: var(--color-body);
+		font-weight: var(--font-weight-semibold);
 	}
 
 	.event-meta-time {
 		display: block;
-		font-weight: 400;
-		color: rgb(var(--gray));
+		font-weight: var(--font-weight-normal);
+		color: var(--color-muted);
 		font-size: 0.85rem;
 	}
 
 	.event-signup-note {
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 		margin: 0.5rem 0 0;
 	}
 
@@ -264,8 +287,8 @@ const showTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 
 	.event-description-lede {
 		font-size: 1.15rem;
-		color: rgb(var(--gray-dark));
+		color: var(--color-body);
 		line-height: 1.7;
-		font-weight: 400;
+		font-weight: var(--font-weight-normal);
 	}
 </style>

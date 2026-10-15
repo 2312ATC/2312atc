@@ -8,14 +8,14 @@ interface Props {
 }
 
 const { event } = Astro.props;
-const { title, date, endDate, location, description, heroImage } = event.data;
+const { title, date, endDate, description, heroImage } = event.data;
 
 const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 ---
 
 <article class="event-list-card" aria-label={title}>
 	{heroImage && (
-		<a href={`/events/${event.id}/`} tabindex="-1" aria-hidden="true" class="event-list-card__img-link">
+		<a href={`/events/${event.id}`} tabindex="-1" aria-hidden="true" class="event-list-card__img-link">
 			<Image
 				src={heroImage}
 				alt=""
@@ -35,7 +35,7 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 		</div>
 		<div class="event-list-card__content">
 			<h3 class="event-list-card__title">
-				<a href={`/events/${event.id}/`}>{title}</a>
+				<a href={`/events/${event.id}`}>{title}</a>
 			</h3>
 			<p class="event-list-card__meta">
 				<span class="material-icons" aria-hidden="true">location_on</span>
@@ -49,26 +49,26 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 				)}
 			</p>
 			<p class="event-list-card__desc">{description}</p>
-			<a href={`/events/${event.id}/`} class="btn btn-secondary event-list-card__cta">View details</a>
+			<a href={`/events/${event.id}`} class="btn btn-secondary event-list-card__cta">View details</a>
 		</div>
 	</div>
 </article>
 
 <style>
 	.event-list-card {
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: var(--box-shadow);
+		background: var(--color-white);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-card);
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		transition: transform 0.15s ease, box-shadow 0.15s ease;
+		transition: transform var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
 	}
 
 	.event-list-card:hover {
-		transform: translateY(-3px);
-		box-shadow: 0 8px 24px rgba(var(--gray), 40%);
+		transform: translateY(var(--lift));
+		box-shadow: var(--shadow-raised);
 	}
 
 	.event-list-card__img-link {
@@ -102,9 +102,9 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 		flex-direction: column;
 		align-items: center;
 		text-align: center;
-		background: var(--rafDarkBlue);
-		color: #fff;
-		border-radius: 6px;
+		background: var(--color-raf-navy);
+		color: var(--color-white);
+		border-radius: var(--radius-md);
 		padding: 0.5rem 0.65rem;
 		flex-shrink: 0;
 		height: fit-content;
@@ -113,15 +113,15 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 
 	.event-list-card__day {
 		font-size: 1.75rem;
-		font-weight: 800;
+		font-weight: var(--font-weight-extrabold);
 		line-height: 1;
 	}
 
 	.event-list-card__month-year {
 		font-size: 0.65rem;
-		font-weight: 600;
+		font-weight: var(--font-weight-semibold);
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
+		letter-spacing: var(--tracking-meta);
 		opacity: 0.85;
 		text-align: center;
 	}
@@ -135,7 +135,7 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 
 	.event-list-card__title {
 		font-size: 1.1rem;
-		color: var(--rafDarkBlue);
+		color: var(--color-raf-navy);
 		margin-bottom: 0.4rem;
 	}
 
@@ -145,13 +145,13 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 	}
 
 	.event-list-card__title a:hover {
-		color: var(--rafRed);
+		color: var(--color-raf-red);
 		text-decoration: underline;
 	}
 
 	.event-list-card__meta {
 		font-size: 0.82rem;
-		color: rgb(var(--gray));
+		color: var(--color-muted);
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
@@ -166,8 +166,8 @@ const dateLabel = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'nume
 
 	.event-list-card__desc {
 		font-size: 0.92rem;
-		color: rgb(var(--gray-dark));
-		line-height: 1.5;
+		color: var(--color-body);
+		line-height: var(--leading-copy);
 		margin: 0;
 	}
 

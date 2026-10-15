@@ -43,16 +43,16 @@ Astro.response.status = 404;
 	}
 
 	.not-found-code {
-		font-family: 'League Spartan', system-ui, sans-serif;
+		font-family: var(--font-sans);
 		font-size: clamp(4rem, 12vw, 7rem);
-		font-weight: 700;
+		font-weight: var(--font-weight-bold);
 		line-height: 1;
-		color: var(--rafLightBlue);
+		color: var(--color-raf-light);
 		margin: 0 0 1rem;
 	}
 
 	.not-found p {
-		color: rgb(var(--gray-dark));
+		color: var(--color-body);
 		font-size: 1.05rem;
 		line-height: 1.7;
 		margin-bottom: 2rem;

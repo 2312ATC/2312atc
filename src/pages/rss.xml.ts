@@ -12,7 +12,7 @@ export const GET = (async (context) => {
 		site: context.site ?? new URL('https://tavistock.air-cadets.org'),
 		items: posts.map((post) => ({
 			...post.data,
-			link: `/blog/${post.id}/`,
+			link: `/blog/${post.id}`,
 		})),
 	});
 
