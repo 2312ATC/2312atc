@@ -7,11 +7,14 @@ import Footer from '../../../components/Footer.astro';
 import FormattedDate from '../../../components/FormattedDate.astro';
 import Header from '../../../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../../../consts';
+import { blogPostGitDates } from '../../../lib/gitHistory';
 
 export const getStaticPaths = (async ({ paginate }) => {
-	const posts = (await getCollection('blog')).sort(
-		(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-	);
+	const posts = (await getCollection('blog')).sort((a, b) => {
+		const aPublished = blogPostGitDates(a.id).published?.valueOf() ?? 0;
+		const bPublished = blogPostGitDates(b.id).published?.valueOf() ?? 0;
+		return bPublished - aPublished;
+	});
 	return paginate(posts, { pageSize: 9 });
 }) satisfies GetStaticPaths;
 
@@ -52,6 +55,7 @@ const { page } = Astro.props;
 						<div class="blog-grid">
 							{page.data.map((post, i) => {
 								const isFeatured = i === 0 && page.currentPage === 1;
+								const published = blogPostGitDates(post.id).published;
 								const hero = post.data.heroImage;
 								const isPortrait = hero && hero.height > hero.width;
 								const media = hero && (
@@ -77,9 +81,11 @@ const { page } = Astro.props;
 								const content = (
 									<div class="blog-card-content">
 										<div class="card-body">
-											<p class="card-meta">
-												<FormattedDate date={post.data.pubDate} />
-											</p>
+											{published && (
+												<p class="card-meta">
+													<FormattedDate date={published} />
+												</p>
+											)}
 											<h2 class="card-title">
 												<a href={`/blog/${post.id}`}>{post.data.title}</a>
 											</h2>

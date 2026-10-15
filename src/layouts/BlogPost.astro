@@ -5,21 +5,24 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import { blogPostGitDates } from '../lib/gitHistory';
 import { blogPostingNode, canonicalUrlFromPath } from '../lib/jsonLd';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, heroImage } = Astro.props;
 const siteURL = Astro.site ?? new URL(Astro.url.origin);
 const canonicalURL = canonicalUrlFromPath(Astro.url.pathname, siteURL);
 const imageUrl = heroImage ? new URL(heroImage.src, siteURL).href : undefined;
+const { published, updated } = blogPostGitDates(canonicalURL.pathname.slice('/blog/'.length));
+const showUpdated = published && updated && updated.getTime() > published.getTime();
 const jsonLd = [
 	blogPostingNode({
 		url: canonicalURL.href,
 		headline: title,
 		description,
-		datePublished: pubDate,
-		dateModified: updatedDate,
+		datePublished: published,
+		dateModified: updated,
 		imageUrl,
 		siteOrigin: siteURL.origin,
 	}),
@@ -98,12 +101,10 @@ const jsonLd = [
 				<article class="blog-article" aria-label={title}>
 					<header class="blog-header">
 						<div class="blog-meta">
-							<time datetime={pubDate.toISOString()}>
-								<FormattedDate date={pubDate} />
-							</time>
-							{updatedDate && (
+							{published && <FormattedDate date={published} />}
+							{showUpdated && updated && (
 								<span class="blog-updated">
-									· Updated <FormattedDate date={updatedDate} />
+									· Updated <FormattedDate date={updated} />
 								</span>
 							)}
 						</div>

@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
+import { lastmodForSitemapUrl } from './src/lib/gitHistory.ts';
 
 const ngrokHost = 'star-ghost-terminally.ngrok-free.app'
 const excludePaths = ['/admin', '/blog', '/join'];
@@ -20,7 +21,12 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: (page) => !excludePaths.includes(new URL(page).pathname),
-    }),
+      serialize(item) {
+        const lastmod = lastmodForSitemapUrl(item.url);
+        if (lastmod) item.lastmod = lastmod;
+        return item;
+      },
+    })
   ],
 
   vite: {

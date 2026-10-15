@@ -3,6 +3,7 @@ import rss from '@astrojs/rss';
 import type { APIRoute } from 'astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import { noCacheHeaders } from '../lib/cacheHeaders';
+import { blogPostGitDates } from '../lib/gitHistory';
 
 export const GET = (async (context) => {
 	const posts = await getCollection('blog');
@@ -13,6 +14,7 @@ export const GET = (async (context) => {
 		items: posts.map((post) => ({
 			...post.data,
 			link: `/blog/${post.id}`,
+			pubDate: blogPostGitDates(post.id).published,
 		})),
 	});
 

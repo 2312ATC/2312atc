@@ -8,11 +8,13 @@ import LandingCarousel from '../components/LandingCarousel.astro';
 import NotificationBanner from '../components/NotificationBanner.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { blogPostGitDates } from '../lib/gitHistory';
 
 const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 
 const latestPosts = (await getCollection('blog'))
-	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.map((post) => ({ post, published: blogPostGitDates(post.id).published }))
+	.sort((a, b) => (b.published?.valueOf() ?? 0) - (a.published?.valueOf() ?? 0))
 	.slice(0, 3);
 ---
 
@@ -91,7 +93,7 @@ const latestPosts = (await getCollection('blog'))
 							<a href="/blog/page/1" class="section-view-all">All news →</a>
 						</div>
 						<div class="card-grid">
-							{latestPosts.map((post) => (
+							{latestPosts.map(({ post, published }) => (
 								<article class="card">
 									{post.data.heroImage && (
 										<a href={`/blog/${post.id}`} tabindex="-1">
@@ -106,9 +108,11 @@ const latestPosts = (await getCollection('blog'))
 										</a>
 									)}
 									<div class="card-body">
-										<p class="card-meta">
-											<FormattedDate date={post.data.pubDate} />
-										</p>
+										{published && (
+											<p class="card-meta">
+												<FormattedDate date={published} />
+											</p>
+										)}
 										<h3 class="card-title">
 											<a href={`/blog/${post.id}`}>{post.data.title}</a>
 										</h3>

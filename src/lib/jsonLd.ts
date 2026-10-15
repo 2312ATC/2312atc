@@ -86,6 +86,8 @@ export function webPageNode(options: {
 	type?: WebPageType;
 	siteOrigin: string;
 	mainEntityId?: string;
+	datePublished?: string;
+	dateModified?: string;
 }): JsonLdNode {
 	const node: JsonLdNode = {
 		'@type': options.type ?? 'WebPage',
@@ -98,6 +100,9 @@ export function webPageNode(options: {
 		inLanguage: 'en-GB',
 	};
 
+	if (options.datePublished) node.datePublished = options.datePublished;
+	if (options.dateModified) node.dateModified = options.dateModified;
+
 	if (options.mainEntityId) {
 		node.mainEntity = idRef(options.mainEntityId);
 	}
@@ -109,7 +114,7 @@ export function blogPostingNode(options: {
 	url: string;
 	headline: string;
 	description: string;
-	datePublished: Date;
+	datePublished?: Date;
 	dateModified?: Date;
 	imageUrl?: string;
 	siteOrigin: string;
@@ -120,13 +125,15 @@ export function blogPostingNode(options: {
 		'@id': articleId,
 		headline: options.headline,
 		description: options.description,
-		datePublished: options.datePublished.toISOString(),
-		dateModified: (options.dateModified ?? options.datePublished).toISOString(),
 		mainEntityOfPage: idRef(options.url),
 		author: idRef(organizationId(options.siteOrigin)),
 		publisher: idRef(organizationId(options.siteOrigin)),
 		inLanguage: 'en-GB',
 	};
+
+	const dateModified = options.dateModified ?? options.datePublished;
+	if (options.datePublished) node.datePublished = options.datePublished.toISOString();
+	if (dateModified) node.dateModified = dateModified.toISOString();
 
 	if (options.imageUrl) {
 		node.image = options.imageUrl;
@@ -207,6 +214,8 @@ export function buildJsonLdGraph(options: {
 	pageType?: WebPageType;
 	extra?: JsonLdNode[];
 	isHome?: boolean;
+	datePublished?: string;
+	dateModified?: string;
 }): { '@context': string; '@graph': JsonLdNode[] } {
 	const extra = options.extra ?? [];
 	const extraMainEntity = extra.find(
@@ -228,6 +237,8 @@ export function buildJsonLdGraph(options: {
 			type: options.pageType,
 			siteOrigin: options.siteOrigin,
 			mainEntityId,
+			datePublished: options.datePublished,
+			dateModified: options.dateModified,
 		}),
 		...extra,
 	];
