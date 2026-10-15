@@ -211,6 +211,8 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 </style>
 
 <script>
+	import type { CalEvent } from '../lib/calEvent';
+
 	const buildId =
 		document.getElementById('cal-wrapper')?.dataset.buildId ?? '';
 
@@ -218,16 +220,6 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 		'January','February','March','April','May','June',
 		'July','August','September','October','November','December'
 	];
-
-	interface CalEvent {
-		id: string;
-		title: string;
-		date: string;
-		endDate: string | null;
-		location: string;
-		description: string;
-		url: string;
-	}
 
 	const grid    = document.getElementById('cal-grid')!;
 	const heading = document.getElementById('cal-heading')!;

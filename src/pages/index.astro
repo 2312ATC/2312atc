@@ -351,15 +351,7 @@ const latestPosts = (await getCollection('blog'))
 </style>
 
 <script>
-	interface CalEvent {
-		id: string;
-		title: string;
-		date: string;
-		endDate: string | null;
-		location: string;
-		description: string;
-		url: string;
-	}
+	import type { CalEvent } from '../lib/calEvent';
 
 	const listEl = document.getElementById('home-events-list')!;
 	const sectionEl = listEl.closest<HTMLElement>('[data-build-id]')!;

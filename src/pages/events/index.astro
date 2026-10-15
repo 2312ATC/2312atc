@@ -142,19 +142,12 @@ import EventCalendar from '../../components/EventCalendar.astro';
 </style>
 
 <script>
+	import type { CalEvent } from '../../lib/calEvent';
+
 	const MONTH_NAMES = [
 		'January','February','March','April','May','June',
 		'July','August','September','October','November','December'
 	];
-
-	interface CalEvent {
-		id: string;
-		title: string;
-		date: string;
-		endDate: string | null;
-		description: string;
-		url: string;
-	}
 
 	const listEl  = document.getElementById('month-events-list')!;
 	const titleEl = document.querySelector<HTMLElement>('.month-events-title')!;
