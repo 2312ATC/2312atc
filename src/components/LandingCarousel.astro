@@ -1,6 +1,6 @@
 ---
 
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 
 import { getEntry } from 'astro:content';
 
@@ -14,7 +14,7 @@ const rawSlides = carouselEntry?.data.items ?? [];
 
 
 
-const slides = rawSlides.flatMap((slide) => {
+const slideEntries = rawSlides.flatMap((slide) => {
 
 	const image = resolveCmsImage(slide.image);
 
@@ -26,7 +26,7 @@ const slides = rawSlides.flatMap((slide) => {
 
 
 
-const tallestSlide = slides.reduce(
+const tallestSlide = slideEntries.reduce(
 
 	(best, slide) => {
 
@@ -42,6 +42,52 @@ const tallestSlide = slides.reduce(
 
 	{ ratio: 0, width: 4, height: 3 },
 
+);
+
+const carouselWidths = [480, 768, 1024, 1440];
+
+function carouselSizes(width: number, height: number) {
+	// object-fit: contain. Phones are width-constrained; wider screens are limited by carousel height.
+	const aspect = (width / height).toFixed(3);
+	return `(max-width: 768px) 100vw, min(100vw, calc((75vh - 4.5rem) * ${aspect}))`;
+}
+
+const slides = await Promise.all(
+	slideEntries.map(async (slide, index) => {
+		const sizes = carouselSizes(slide.image.width, slide.image.height);
+		const eager = index === 0;
+		const optimized = await getImage({
+			src: slide.image,
+			width: 1024,
+			widths: carouselWidths,
+			sizes,
+			priority: eager,
+		});
+		const shared = {
+			alt: slide.caption ?? '',
+			width: optimized.attributes.width,
+			height: optimized.attributes.height,
+			sizes,
+		};
+		return {
+			...slide,
+			img: eager
+				? {
+						...shared,
+						src: optimized.src,
+						srcset: optimized.srcSet.attribute,
+						loading: 'eager' as const,
+						fetchpriority: 'high' as const,
+						decoding: 'sync' as const,
+					}
+				: {
+						...shared,
+						'data-src': optimized.src,
+						'data-srcset': optimized.srcSet.attribute,
+						decoding: 'async' as const,
+					},
+		};
+	}),
 );
 
 ---
@@ -84,41 +130,13 @@ const tallestSlide = slides.reduce(
 
 						<a href={slide.link} tabindex={i !== 0 ? -1 : 0} aria-label={slide.caption ?? `Carousel slide ${i + 1}`}>
 
-							<Image
-
-								src={slide.image}
-
-								alt={slide.caption ?? ''}
-
-								class="carousel-img"
-
-								widths={[640, 1024, 1440]}
-
-								sizes="100vw"
-
-								loading="eager"
-
-							/>
+							<img class="carousel-img" {...slide.img} />
 
 						</a>
 
 					) : (
 
-						<Image
-
-							src={slide.image}
-
-							alt={slide.caption ?? ''}
-
-							class="carousel-img"
-
-							widths={[640, 1024, 1440]}
-
-							sizes="100vw"
-
-							loading="eager"
-
-						/>
+						<img class="carousel-img" {...slide.img} />
 
 					)}
 
@@ -606,11 +624,28 @@ const tallestSlide = slides.reduce(
 
 <script>
 
-	const carousel = document.querySelector<HTMLElement>('.carousel');
+	const carouselEl = document.querySelector<HTMLElement>('.carousel');
 
-	if (carousel) {
+	if (carouselEl) {
 
+	const carousel = carouselEl;
 
+	function loadDeferredSlides() {
+		carousel.querySelectorAll<HTMLImageElement>('img.carousel-img[data-src]').forEach((img) => {
+			if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+			if (img.dataset.src) img.src = img.dataset.src;
+			img.removeAttribute('data-src');
+			img.removeAttribute('data-srcset');
+		});
+	}
+
+	const scheduleDeferredSlides = () => {
+		const run = () => loadDeferredSlides();
+		const later = () => window.requestIdleCallback(run, { timeout: 2000 });
+		if (document.readyState === 'complete') later();
+		else window.addEventListener('load', later, { once: true });
+	};
+	scheduleDeferredSlides();
 
 	const items = Array.from(carousel.querySelectorAll<HTMLElement>('.carousel-item'));
 
@@ -647,6 +682,8 @@ const tallestSlide = slides.reduce(
 
 
 		function goTo(index: number) {
+
+			loadDeferredSlides();
 
 			items[current].classList.remove('active');
 

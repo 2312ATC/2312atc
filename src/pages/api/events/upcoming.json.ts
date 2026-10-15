@@ -14,7 +14,6 @@ export const GET = (async () => {
 			title: e.data.title,
 			date: e.data.date.toISOString(),
 			endDate: e.data.endDate?.toISOString() ?? null,
-			location: e.data.location,
 			description: e.data.description,
 			url: `/events/${e.id}`,
 		}));

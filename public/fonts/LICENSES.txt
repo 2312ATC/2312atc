@@ -1,0 +1,11 @@
+League Spartan
+Copyright 2020 The League Spartan Project Authors (https://github.com/theleagueof/league-spartan)
+Licensed under the SIL Open Font License, Version 1.1.
+https://openfontlicense.org
+
+Material Icons
+Copyright Google Inc.
+Licensed under the Apache License, Version 2.0.
+https://www.apache.org/licenses/LICENSE-2.0
+The icon font is a Material Symbols Outlined subset generated at build time
+by src/pages/fonts/material-icons.woff2.ts and is not stored in this folder.
