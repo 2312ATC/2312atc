@@ -24,6 +24,26 @@ const slides = rawSlides.flatMap((slide) => {
 
 });
 
+
+
+const tallestSlide = slides.reduce(
+
+	(best, slide) => {
+
+		const ratio = slide.image.height / slide.image.width;
+
+		return ratio > best.ratio
+
+			? { ratio, width: slide.image.width, height: slide.image.height }
+
+			: best;
+
+	},
+
+	{ ratio: 0, width: 4, height: 3 },
+
+);
+
 ---
 
 
@@ -33,6 +53,8 @@ const slides = rawSlides.flatMap((slide) => {
 	<section
 
 		class="carousel"
+
+		style={`--carousel-reserve-w: ${tallestSlide.width}; --carousel-reserve-h: ${tallestSlide.height}`}
 
 		aria-label="Squadron photo carousel"
 
@@ -187,13 +209,10 @@ const slides = rawSlides.flatMap((slide) => {
 	.carousel {
 		position: relative;
 		width: 100%;
-		height: calc(100vh - var(--header-height, var(--header-offset)));
+		height: calc(75vh - var(--header-height, var(--header-offset)));
 		max-height: 80vh;
 		min-height: 220px;
 		overflow: hidden;
-
-		/* background: linear-gradient(135deg,var(--color-raf-navy) 0%,var(--color-raf-red) 100%, var(--color-raf-navy) 200%);
-		animation: carousel-bg-shift 10s linear infinite; */
 
 		--d:5000px;
 		--angle:135deg;
@@ -512,6 +531,8 @@ const slides = rawSlides.flatMap((slide) => {
 
 			height: auto;
 
+			aspect-ratio: var(--carousel-reserve-w) / var(--carousel-reserve-h);
+
 			max-height: none;
 
 			min-height: 0;
@@ -524,31 +545,23 @@ const slides = rawSlides.flatMap((slide) => {
 
 		.carousel-track {
 
-			height: auto;
+			height: 100%;
 
 		}
 
 
 
-		.carousel-item {
-
-			position: absolute;
-
-			inset: auto;
-
-			top: 0;
-
-			left: 0;
-
-			width: 100%;
-
-		}
-
-
+		.carousel-item,
 
 		.carousel-item.active {
 
-			position: relative;
+			position: absolute;
+
+			inset: 0;
+
+			width: 100%;
+
+			height: 100%;
 
 		}
 
@@ -556,7 +569,7 @@ const slides = rawSlides.flatMap((slide) => {
 
 		.carousel-item a {
 
-			height: auto;
+			height: 100%;
 
 		}
 
@@ -566,11 +579,13 @@ const slides = rawSlides.flatMap((slide) => {
 
 			width: 100%;
 
-			height: auto;
+			height: 100%;
 
 			display: block;
 
-			object-fit: initial;
+			object-fit: contain;
+
+			object-position: center;
 
 		}
 
@@ -773,11 +788,31 @@ const slides = rawSlides.flatMap((slide) => {
 
 
 
+		function isPrimaryView(entry: IntersectionObserverEntry) {
+
+			const rootHeight = entry.rootBounds?.height ?? window.innerHeight;
+
+			const visibleHeight = entry.intersectionRect.height;
+
+			const targetHeight = entry.boundingClientRect.height;
+
+			const mostlyOnScreen = targetHeight > 0 && visibleHeight / targetHeight >= 0.6;
+
+			const dominatesViewport = rootHeight > 0 && visibleHeight / rootHeight >= 0.4;
+
+			return entry.isIntersecting && (mostlyOnScreen || dominatesViewport);
+
+		}
+
+
+
 		const viewportObserver = new IntersectionObserver(
 
 			(entries) => {
 
-				inViewport = entries[0]?.isIntersecting ?? false;
+				const entry = entries[0];
+
+				inViewport = entry ? isPrimaryView(entry) : false;
 
 				if (inViewport) {
 
@@ -791,7 +826,7 @@ const slides = rawSlides.flatMap((slide) => {
 
 			},
 
-			{ threshold: 0 },
+			{ threshold: [0, 0.25, 0.5, 0.75, 1] },
 
 		);
 
