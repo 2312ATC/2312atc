@@ -1,62 +1,96 @@
-# Astro Starter Kit: Blog
+# 2312 (Tavistock) Squadron Air Cadets
+
+Public website for [2312 Squadron](https://tavistock.air-cadets.org/), part of the Royal Air Force Air Cadets. It covers squadron information, events, news, and how to join.
+
+Built with [Astro](https://astro.build/) 6, Tailwind CSS 4, and [Decap CMS](https://decapcms.org/). Content is committed to this repository and the site is deployed to GitHub Pages.
+
+## Requirements
+
+- Node.js 22.12 or later
+- [pnpm](https://pnpm.io/) 9 (`packageManager` in `package.json` pins 9.15.4)
+
+## Local development
 
 ```sh
-pnpm create astro@latest -- --template blog
+pnpm install
+pnpm dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The dev server listens on all interfaces at [http://localhost:4321](http://localhost:4321).
 
-Features:
+| Command | Action |
+| :------ | :----- |
+| `pnpm dev` | Start the local server |
+| `pnpm build` | Build the production site into `./dist/` |
+| `pnpm preview` | Serve the production build locally |
+| `pnpm astro ...` | Run Astro CLI commands (`astro check`, `astro add`, and so on) |
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+## Editing content
 
-## 🚀 Project Structure
+Editors use Decap CMS at `/admin` (production: [https://tavistock.air-cadets.org/admin](https://tavistock.air-cadets.org/admin)). Sign-in goes through the GitHub backend configured in `public/admin/config.yml`, using [https://decap.tavistock.air-cadets.org](https://decap.tavistock.air-cadets.org). Saves are commits on `main` of `2312ATC/2312atc`, which triggers a deploy.
 
-Inside of your Astro project, you'll see the following folders and files:
+The same content can be edited as files:
+
+| Collection | Location | Used on |
+| :--------- | :------- | :------ |
+| News posts | `src/content/blog/` | Home, News, RSS |
+| Events | `src/content/events/` | Home, Events |
+| Notifications | `src/content/notifications/` | Banner and panel |
+| Home carousel | `src/content/landingCarousel.json` | Home |
+| Staff | `src/content/staff.json` | About |
+| What we offer | `src/content/offers.json` | About |
+| Activities | `src/content/activities.json` | What We Do |
+| Opportunities | `src/content/opportunities.json` | Cadets |
+| Useful links | `src/content/cadetLinks.json` | Cadets |
+| FAQs | `src/content/faq.json` | Join Us |
+
+Images uploaded through the CMS land in `src/assets/images`. News and event dates shown on the site come from git history, so a full clone (`git fetch --unshallow` if needed) matters for local builds that should match production.
+
+Squadron name, address, parade nights, and contact email live in `src/consts.ts`.
+
+## Pages
+
+| Path | Page |
+| :--- | :--- |
+| `/` | Home |
+| `/about` | About the squadron |
+| `/whatWeDo` | Activities |
+| `/cadets` | Cadet information and links |
+| `/events` | Event calendar and list |
+| `/blog/page/1` | News |
+| `/joinUs` | How to join (`/join` redirects here) |
+| `/contact` | Contact |
+| `/rss.xml` | News feed |
+| `/admin` | Decap CMS |
+
+JSON endpoints used by the home page and calendar (not cached, so they stay current between deploys):
+
+- `/api/notifications.json`
+- `/api/events/upcoming.json`
+- `/api/events/{year}/{month}.json`
+
+## Project structure
 
 ```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+public/admin/config.yml   Decap CMS collections
+src/consts.ts             Squadron details
+src/content/              Markdown and JSON content
+src/content.config.ts     Content collection schemas
+src/components/           Shared UI
+src/layouts/              Page and blog layouts
+src/lib/                  JSON-LD, notifications, git dates, cache headers
+src/pages/                Routes
+astro.config.mjs          Site URL, sitemap, Tailwind
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+`/admin` and `/blog` are omitted from the sitemap. Blog posts are still linked from the news index.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Deployment
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+Pushes to `main` run `.github/workflows/deploy.yml`. The workflow checks out full git history (for sitemap `lastmod` and published dates), builds with the official Astro GitHub Action, and deploys to GitHub Pages. The live site is [https://tavistock.air-cadets.org/](https://tavistock.air-cadets.org/).
 
-Any static assets, like images, can be placed in the `public/` directory.
+`PUBLIC_BUILD_ID` is set to the commit SHA during that build so the home page, calendar, and notifications can tell one deploy from the next.
 
-## 🧞 Commands
+## Preview gate
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+Set `PUBLIC_PREVIEW_GATE=true` when building a draft that should sit behind the password screen in `src/components/PreviewPasswordGate.astro`. The component is left out of the bundle when the flag is unset, which is how production is built.

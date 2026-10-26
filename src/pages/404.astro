@@ -8,14 +8,6 @@ Astro.response.status = 404;
 	title="Page Not Found | 2312 Squadron Air Cadets"
 	description="The page you requested could not be found on the 2312 Squadron Air Cadets website."
 >
-	<script is:inline>
-		(function () {
-			var path = location.pathname;
-			if (path.length > 1 && path.endsWith('/')) {
-				location.replace(path.replace(/\/+$/, '') + location.search + location.hash);
-			}
-		})();
-	</script>
 	<div class="hero-banner">
 		<h1>Page not found</h1>
 		<p>Sorry - we could not find the page you were looking for.</p>
