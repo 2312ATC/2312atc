@@ -101,11 +101,27 @@ function itemsOf(data: Record<string, unknown>): Item[] {
 	return Array.isArray(data.items) ? (data.items as Item[]) : [];
 }
 
+const revealed = new Set<string>();
+
+function settlePreview(host: Element, name: string, scroll: { x: number; y: number }) {
+	if (revealed.has(name)) {
+		window.scrollTo({ left: scroll.x, top: scroll.y, behavior: 'instant' });
+		return;
+	}
+	revealed.add(name);
+	window.scrollTo({
+		left: window.scrollX,
+		top: window.scrollY + host.getBoundingClientRect().top,
+		behavior: 'instant',
+	});
+}
+
 function renderList(name: string, data: Record<string, unknown>) {
 	const list = document.querySelector(`[data-cms-list="${name}"]`);
 	const template = document.querySelector<HTMLTemplateElement>(`template[data-cms-template="${name}"]`);
 	if (!list || !template) return;
 
+	const scroll = { x: window.scrollX, y: window.scrollY };
 	list.replaceChildren();
 	itemsOf(data).forEach((item, index) => {
 		const fragment = template.content.cloneNode(true) as DocumentFragment;
@@ -115,8 +131,7 @@ function renderList(name: string, data: Record<string, unknown>) {
 		});
 		list.appendChild(fragment);
 	});
-
-	list.scrollIntoView({ block: 'start' });
+	settlePreview(list, name, scroll);
 }
 
 function unwrapLink(link: HTMLAnchorElement) {
@@ -137,8 +152,10 @@ function applyCarousel(data: Record<string, unknown>) {
 	if (existing) destroyLandingCarousel(existing);
 
 	const slides = itemsOf(data);
+	const scroll = { x: window.scrollX, y: window.scrollY };
 	if (slides.length === 0) {
 		host.replaceChildren();
+		settlePreview(host, 'landingCarousel', scroll);
 		return;
 	}
 
@@ -218,7 +235,7 @@ function applyCarousel(data: Record<string, unknown>) {
 
 	host.replaceChildren(sectionFrag);
 	initLandingCarousel(carousel);
-	host.scrollIntoView({ block: 'start' });
+	settlePreview(host, 'landingCarousel', scroll);
 }
 
 function applyBlog(data: Record<string, unknown>) {
@@ -292,6 +309,9 @@ function loadFullIconFont() {
 			font-weight: 400;
 			font-display: block;
 			src: url("https://fonts.gstatic.com/s/materialicons/v142/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2") format("woff2");
+		}
+		html.cms-preview {
+			scroll-behavior: auto;
 		}
 		html.cms-preview [data-cms-list],
 		html.cms-preview [data-cms-root] {
