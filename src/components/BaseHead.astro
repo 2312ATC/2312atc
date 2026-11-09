@@ -7,13 +7,7 @@ import FallbackImage from '../assets/images/20260116_194339815_iOS.jpg';
 import orgLogo from '../assets/images/logo.jpg';
 import { SITE_TITLE } from '../consts';
 import { gitDatesForPathname } from '../lib/gitHistory';
-import {
-	breadcrumbJsonLd,
-	buildJsonLdGraph,
-	canonicalUrlFromPath,
-	type JsonLdNode,
-	type WebPageType,
-} from '../lib/jsonLd';
+import { buildJsonLdGraph, canonicalUrlFromPath, type JsonLdNode, type WebPageType } from '../lib/jsonLd';
 
 // Omitted from the build unless PUBLIC_PREVIEW_GATE=true. The dynamic import
 // sits in that branch so Vite can drop the component when the flag is off.
@@ -53,7 +47,7 @@ const isHome = canonicalURL.pathname === '/';
 
 const breadcrumbItems = breadcrumbs?.map((crumb) => ({
 	name: crumb.name,
-	url: new URL(crumb.path, siteURL).href,
+	url: canonicalUrlFromPath(crumb.path, siteURL).href,
 }));
 const pageDates = gitDatesForPathname(canonicalURL.pathname);
 const jsonLdGraph = buildJsonLdGraph({
@@ -64,14 +58,11 @@ const jsonLdGraph = buildJsonLdGraph({
 	logoUrl: logoURL.href,
 	pageType,
 	extra: jsonLd,
+	breadcrumbs: breadcrumbItems,
 	isHome,
 	datePublished: pageDates?.created,
 	dateModified: pageDates?.updated,
 });
-const breadcrumbGraph =
-	breadcrumbItems && breadcrumbItems.length > 0
-		? breadcrumbJsonLd(breadcrumbItems, canonicalURL.href)
-		: undefined;
 ---
 
 <!-- Global Metadata -->
@@ -116,9 +107,6 @@ const breadcrumbGraph =
 {robots && <meta name="robots" content={robots} />}
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLdGraph)} />
-{breadcrumbGraph && (
-	<script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbGraph)} />
-)}
 
 {PreviewPasswordGate && <PreviewPasswordGate />}
 

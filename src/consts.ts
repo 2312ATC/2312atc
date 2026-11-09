@@ -1,4 +1,4 @@
-export const SITE_TITLE = '2312 - Tavistock Squadron RAFAC';
+export const SITE_TITLE = '2312 (Tavistock) Squadron Air Cadets | RAFAC';
 export const SITE_DESCRIPTION =
 	'2312 (Tavistock) Squadron Air Cadets – part of the Royal Air Force Air Cadet organisation. Serving young people aged 12–20 in the Tavistock area.';
 export const SQUADRON_EMAIL = 'oc.2312@rafac.mod.gov.uk';
@@ -20,6 +20,8 @@ export const SQUADRON_GEO = {
 export const SQUADRON_OPENING_HOURS = ['Tu 18:45-21:30', 'Th 19:00-21:00'] as const;
 export const RAFAC_URL = 'https://www.raf.mod.uk/aircadets/';
 export const PARENT_ORGANIZATION_NAME = 'Royal Air Force Air Cadets';
+export const SQUADRON_FACEBOOK_URL = 'https://www.facebook.com/2312Sqn/';
+export const SQUADRON_ALTERNATE_NAMES = ['Tavistock Air Cadets', '2312 Squadron'] as const;
 
 /** Public GitHub repo that builds and deploys this site. */
 export const GITHUB_REPO = '2312ATC/2312atc';

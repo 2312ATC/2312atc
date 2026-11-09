@@ -28,6 +28,12 @@ export default defineConfig({
           && !path.startsWith('/cms-preview');
       },
       serialize(item) {
+        const loc = new URL(item.url);
+        // Keep the homepage loc aligned with the canonical (trailing slash).
+        // trailingSlash: 'never' otherwise emits https://host without one.
+        if (loc.pathname === '/' || loc.pathname === '') {
+          item.url = `${loc.origin}/`;
+        }
         const lastmod = lastmodForSitemapUrl(item.url);
         if (lastmod) item.lastmod = lastmod;
         return item;

@@ -5,6 +5,8 @@ import {
 	SITE_TITLE,
 	SQUADRON_ADDRESS_PARTS,
 	SQUADRON_EMAIL,
+	SQUADRON_ALTERNATE_NAMES,
+	SQUADRON_FACEBOOK_URL,
 	SQUADRON_GEO,
 	SQUADRON_LEGAL_NAME,
 	SQUADRON_OPENING_HOURS,
@@ -40,8 +42,10 @@ export function organizationNode(siteOrigin: string, logoUrl: string): JsonLdNod
 		'@type': 'EducationalOrganization',
 		'@id': organizationId(siteOrigin),
 		name: SITE_TITLE,
+		alternateName: [...SQUADRON_ALTERNATE_NAMES],
 		legalName: SQUADRON_LEGAL_NAME,
 		url: `${siteOrigin}/`,
+		sameAs: [SQUADRON_FACEBOOK_URL],
 		email: SQUADRON_EMAIL,
 		description: SITE_DESCRIPTION,
 		logo: {
@@ -86,6 +90,7 @@ export function webPageNode(options: {
 	type?: WebPageType;
 	siteOrigin: string;
 	mainEntityId?: string;
+	breadcrumbId?: string;
 	datePublished?: string;
 	dateModified?: string;
 }): JsonLdNode {
@@ -105,6 +110,10 @@ export function webPageNode(options: {
 
 	if (options.mainEntityId) {
 		node.mainEntity = idRef(options.mainEntityId);
+	}
+
+	if (options.breadcrumbId) {
+		node.breadcrumb = idRef(options.breadcrumbId);
 	}
 
 	return node;
@@ -184,24 +193,25 @@ export function eventNode(options: {
 	return node;
 }
 
+export function breadcrumbId(pageUrl: string): string {
+	return `${pageUrl}#breadcrumb`;
+}
+
 export function breadcrumbJsonLd(items: BreadcrumbItem[], pageUrl: string): JsonLdNode {
 	return {
-		'@context': 'https://schema.org',
 		'@type': 'BreadcrumbList',
-		'@id': `${pageUrl}#breadcrumb`,
-		name: items.map((item) => item.name).join(' › '),
-		itemListElement: items.map((item, index) => ({
-			'@type': 'ListItem',
-			'@id': `${pageUrl}#breadcrumb-${index + 1}`,
-			position: index + 1,
-			name: item.name,
-			item: {
-				'@type': 'WebPage',
-				'@id': item.url,
+		'@id': breadcrumbId(pageUrl),
+		itemListElement: items.map((item, index, all) => {
+			const listItem: JsonLdNode = {
+				'@type': 'ListItem',
+				position: index + 1,
 				name: item.name,
-				url: item.url,
-			},
-		})),
+			};
+			if (index < all.length - 1) {
+				listItem.item = item.url;
+			}
+			return listItem;
+		}),
 	};
 }
 
@@ -213,6 +223,7 @@ export function buildJsonLdGraph(options: {
 	logoUrl: string;
 	pageType?: WebPageType;
 	extra?: JsonLdNode[];
+	breadcrumbs?: BreadcrumbItem[];
 	isHome?: boolean;
 	datePublished?: string;
 	dateModified?: string;
@@ -227,6 +238,11 @@ export function buildJsonLdGraph(options: {
 			? (extraMainEntity['@id'] as string)
 			: undefined;
 
+	const crumbs =
+		options.breadcrumbs && options.breadcrumbs.length > 0
+			? breadcrumbJsonLd(options.breadcrumbs, options.canonicalUrl)
+			: undefined;
+
 	const graph: JsonLdNode[] = [
 		organizationNode(options.siteOrigin, options.logoUrl),
 		webSiteNode(options.siteOrigin),
@@ -237,11 +253,14 @@ export function buildJsonLdGraph(options: {
 			type: options.pageType,
 			siteOrigin: options.siteOrigin,
 			mainEntityId,
+			breadcrumbId: crumbs ? (crumbs['@id'] as string) : undefined,
 			datePublished: options.datePublished,
 			dateModified: options.dateModified,
 		}),
 		...extra,
 	];
+
+	if (crumbs) graph.push(crumbs);
 
 	return {
 		'@context': 'https://schema.org',
