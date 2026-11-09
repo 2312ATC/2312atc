@@ -20,16 +20,6 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 </div>
 
 <style>
-	.notification-strip {
-		width: 100%;
-		background: var(--gradient-surface);
-		border-bottom: 1px solid var(--color-line);
-	}
-
-	.notification-strip[hidden] {
-		display: none;
-	}
-
 	.notification-strip--overlay {
 		position: absolute;
 		top: 0;
@@ -43,23 +33,6 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 
 	.notification-strip--overlay .notification-list {
 		pointer-events: auto;
-	}
-
-	.notification-list {
-		display: flex;
-		flex-direction: column;
-		gap: 0.65rem;
-		width: 100%;
-		max-width: var(--content-wide);
-		margin: 0 auto;
-		padding: 0.85rem 1.25rem 1rem;
-	}
-
-	@media (max-width: var(--hero-copy)) {
-		.notification-list {
-			padding: 0.75rem 1rem 0.85rem;
-			gap: 0.5rem;
-		}
 	}
 </style>
 

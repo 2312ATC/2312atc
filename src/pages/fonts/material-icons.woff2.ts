@@ -30,6 +30,7 @@ const markupIcons = [
 	'person_add',
 	'play_arrow',
 	'schedule',
+	'sync',
 	'warning',
 ] as const;
 

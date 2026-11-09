@@ -20,3 +20,6 @@ export const SQUADRON_GEO = {
 export const SQUADRON_OPENING_HOURS = ['Tu 18:45-21:30', 'Th 19:00-21:00'] as const;
 export const RAFAC_URL = 'https://www.raf.mod.uk/aircadets/';
 export const PARENT_ORGANIZATION_NAME = 'Royal Air Force Air Cadets';
+
+/** Public GitHub repo that builds and deploys this site. */
+export const GITHUB_REPO = '2312ATC/2312atc';

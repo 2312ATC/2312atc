@@ -1,0 +1,53 @@
+---
+const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
+---
+
+<div
+	class="notification-strip"
+	hidden
+	aria-live="polite"
+	aria-label="Website update status"
+	role="region"
+	data-deploy-banner
+	data-build-id={buildId}
+>
+	<div class="notification-list" data-deploy-notice></div>
+</div>
+
+<script>
+	import { buildDeployNoticeHtml } from '../lib/notificationHtml';
+	import { startDeployNoticePolling, type DeployPhase } from '../lib/deployStatus';
+
+	const banner = document.querySelector<HTMLElement>('[data-deploy-banner]');
+	const list = banner?.querySelector<HTMLElement>('[data-deploy-notice]');
+
+	if (banner && list && !new URLSearchParams(location.search).has('cms-preview')) {
+		const pageBuildId = banner.dataset.buildId ?? '';
+
+		function render(phase: DeployPhase) {
+			if (phase === 'hidden') {
+				list!.innerHTML = '';
+				banner!.hidden = true;
+				return;
+			}
+			list!.innerHTML = buildDeployNoticeHtml(phase);
+			banner!.hidden = false;
+		}
+
+		list.addEventListener('click', (event) => {
+			const link = (event.target as HTMLElement).closest('[data-deploy-refresh]');
+			if (!link) return;
+			event.preventDefault();
+			location.reload();
+		});
+
+		const preview = import.meta.env.DEV
+			? new URLSearchParams(location.search).get('deploy-notice')
+			: null;
+		if (preview === 'updating' || preview === 'ready') {
+			render(preview);
+		} else {
+			startDeployNoticePolling({ pageBuildId, onPhase: render });
+		}
+	}
+</script>
