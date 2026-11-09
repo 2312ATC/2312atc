@@ -201,6 +201,7 @@ export function breadcrumbJsonLd(items: BreadcrumbItem[], pageUrl: string): Json
 	return {
 		'@type': 'BreadcrumbList',
 		'@id': breadcrumbId(pageUrl),
+		name: items.map((item) => item.name).join(' › '),
 		itemListElement: items.map((item, index, all) => {
 			const listItem: JsonLdNode = {
 				'@type': 'ListItem',
