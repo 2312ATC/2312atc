@@ -18,11 +18,12 @@ interface CheckSuite {
 
 const IN_FLIGHT = new Set(['queued', 'in_progress', 'pending', 'requested', 'waiting']);
 const TRACKER_KEY = 'atc2312-deploy-tracker';
+const SNAPSHOT_KEY = 'atc2312-deploy-github-snapshot';
 const IDLE_POLL_MS = 120_000;
-const ACTIVE_POLL_MS = 30_000;
+const ACTIVE_POLL_MS = 60_000;
 const PUBLISH_POLL_MS = 5_000;
 const PUBLISH_TIMEOUT_MS = 90_000;
-const RATE_LIMIT_BACKOFF_MS = 120_000;
+const DEFAULT_RATE_LIMIT_BACKOFF_MS = 15 * 60 * 1000;
 const GITHUB_HEADERS = {
 	Accept: 'application/vnd.github+json',
 	'X-GitHub-Api-Version': '2022-11-28',
@@ -36,6 +37,24 @@ function checkSuitesUrl(sha: string): string {
 
 interface StoredTracker extends DeployTracker {
 	pageBuildId: string;
+}
+
+interface GithubSnapshot {
+	fetchedAt: number;
+	sha: string | null;
+	suites: CheckSuite[];
+	rateLimitedUntil: number | null;
+}
+
+class GithubError extends Error {
+	constructor(
+		message: string,
+		readonly rateLimited: boolean,
+		readonly resetMs: number | null,
+	) {
+		super(message);
+		this.name = 'GithubError';
+	}
 }
 
 export function emptyTracker(): DeployTracker {
@@ -55,11 +74,27 @@ function readTracker(pageBuildId: string): DeployTracker {
 		if (parsed.phase === 'ready' && parsed.expectedSha && parsed.expectedSha === pageBuildId) {
 			return emptyTracker();
 		}
-		if (parsed.phase === 'hidden' || parsed.phase === 'updating' || parsed.phase === 'ready') {
+		if (parsed.phase === 'ready') {
 			return {
-				phase: parsed.phase,
+				phase: 'ready',
 				expectedSha: parsed.expectedSha ?? null,
 				publishWaitStarted: parsed.publishWaitStarted ?? null,
+				skipSuitesForSha: parsed.skipSuitesForSha ?? null,
+			};
+		}
+		if (parsed.phase === 'updating' && parsed.publishWaitStarted) {
+			return {
+				phase: 'updating',
+				expectedSha: parsed.expectedSha ?? null,
+				publishWaitStarted: parsed.publishWaitStarted,
+				skipSuitesForSha: null,
+			};
+		}
+		if (parsed.phase === 'hidden' || parsed.phase === 'updating') {
+			return {
+				phase: 'hidden',
+				expectedSha: null,
+				publishWaitStarted: null,
 				skipSuitesForSha: parsed.skipSuitesForSha ?? null,
 			};
 		}
@@ -78,20 +113,67 @@ function writeTracker(pageBuildId: string, tracker: DeployTracker): void {
 	}
 }
 
-async function fetchGithub(url: string): Promise<{ status: number; json: unknown }> {
+function readSnapshot(): GithubSnapshot | null {
+	try {
+		const raw = localStorage.getItem(SNAPSHOT_KEY);
+		if (!raw) return null;
+		const parsed = JSON.parse(raw) as GithubSnapshot;
+		if (!parsed || typeof parsed.fetchedAt !== 'number') return null;
+		return {
+			fetchedAt: parsed.fetchedAt,
+			sha: typeof parsed.sha === 'string' ? parsed.sha : null,
+			suites: Array.isArray(parsed.suites) ? parsed.suites : [],
+			rateLimitedUntil: typeof parsed.rateLimitedUntil === 'number' ? parsed.rateLimitedUntil : null,
+		};
+	} catch {
+		return null;
+	}
+}
+
+function writeSnapshot(snapshot: GithubSnapshot): void {
+	try {
+		localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(snapshot));
+	} catch {
+		/* private browsing */
+	}
+}
+
+function snapshotAgeMs(snapshot: GithubSnapshot | null): number {
+	if (!snapshot) return Number.POSITIVE_INFINITY;
+	return Date.now() - snapshot.fetchedAt;
+}
+
+function rateLimitFrom(res: Response): { remaining: number | null; resetMs: number | null } {
+	const remaining = Number(res.headers.get('X-RateLimit-Remaining'));
+	const reset = Number(res.headers.get('X-RateLimit-Reset'));
+	return {
+		remaining: Number.isFinite(remaining) ? remaining : null,
+		resetMs: Number.isFinite(reset) ? Math.max(60_000, reset * 1000 - Date.now()) : null,
+	};
+}
+
+async function fetchGithub(url: string): Promise<{
+	status: number;
+	json: unknown;
+	remaining: number | null;
+	resetMs: number | null;
+}> {
 	const res = await fetch(url, {
 		cache: 'no-cache',
 		credentials: 'omit',
 		headers: GITHUB_HEADERS,
 	});
+	const limit = rateLimitFrom(res);
 	if (res.status === 403 || res.status === 429) {
-		throw new Error(`github-rate-limit:${res.status}`);
+		throw new GithubError(`github-rate-limit:${res.status}`, true, limit.resetMs);
 	}
-	if (res.status === 304) {
-		return { status: 304, json: null };
-	}
-	if (!res.ok) throw new Error(`github:${res.status}`);
-	return { status: res.status, json: await res.json() };
+	if (!res.ok) throw new GithubError(`github:${res.status}`, false, null);
+	return {
+		status: res.status,
+		json: await res.json(),
+		remaining: limit.remaining,
+		resetMs: limit.resetMs,
+	};
 }
 
 function shaFromRef(json: unknown): string | null {
@@ -170,58 +252,105 @@ async function confirmPublish(tracker: DeployTracker, pageBuildId: string): Prom
 	return tracker;
 }
 
-async function pollGithub(
+function trackerFromSuites(
 	current: DeployTracker,
 	pageBuildId: string,
-	cached: { sha: string | null; suites: CheckSuite[] },
-): Promise<{ tracker: DeployTracker; sha: string | null; suites: CheckSuite[] }> {
-	const ref = await fetchGithub(REF_URL);
-	const sha = ref.status === 304 ? cached.sha : shaFromRef(ref.json);
-	if (!sha) throw new Error('github-ref:missing-sha');
-
+	sha: string,
+	suites: CheckSuite[],
+): DeployTracker {
 	if (sha === pageBuildId) {
-		return { tracker: { ...emptyTracker(), skipSuitesForSha: sha }, sha, suites: cached.suites };
+		return { ...emptyTracker(), skipSuitesForSha: sha };
 	}
 
-	if (sha === current.skipSuitesForSha && current.phase !== 'updating') {
-		return { tracker: { ...emptyTracker(), skipSuitesForSha: sha }, sha, suites: cached.suites };
-	}
-
-	const payload = await fetchGithub(checkSuitesUrl(sha));
-	const suites = payload.status === 304 ? cached.suites : suitesFromPayload(payload.json);
 	const state = rollup(suites);
-
-	if (state === 'in_flight' || state === 'unknown') {
+	if (state === 'in_flight') {
 		return {
-			sha,
-			suites,
-			tracker: {
-				phase: 'updating',
-				expectedSha: sha,
-				publishWaitStarted: null,
-				skipSuitesForSha: null,
-			},
+			phase: 'updating',
+			expectedSha: sha,
+			publishWaitStarted: null,
+			skipSuitesForSha: null,
 		};
 	}
 
 	if (state === 'success' && (current.phase === 'updating' || current.expectedSha === sha)) {
 		return {
-			sha,
-			suites,
-			tracker: {
-				phase: 'updating',
-				expectedSha: sha,
-				publishWaitStarted: current.publishWaitStarted ?? Date.now(),
-				skipSuitesForSha: null,
-			},
+			phase: 'updating',
+			expectedSha: sha,
+			publishWaitStarted: current.publishWaitStarted ?? Date.now(),
+			skipSuitesForSha: null,
 		};
 	}
 
-	return { sha, suites, tracker: { ...emptyTracker(), skipSuitesForSha: sha } };
+	return { ...emptyTracker(), skipSuitesForSha: sha };
 }
 
-function nextInterval(tracker: DeployTracker, rateLimited: boolean): number {
-	if (rateLimited) return RATE_LIMIT_BACKOFF_MS;
+async function refreshGithub(
+	current: DeployTracker,
+	pageBuildId: string,
+	snapshot: GithubSnapshot | null,
+	maxAgeMs: number,
+): Promise<{ tracker: DeployTracker; snapshot: GithubSnapshot }> {
+	if (snapshot?.rateLimitedUntil && snapshot.rateLimitedUntil > Date.now()) {
+		throw new GithubError('github-rate-limit:cached', true, snapshot.rateLimitedUntil - Date.now());
+	}
+
+	const fresh = snapshotAgeMs(snapshot) <= maxAgeMs ? snapshot : null;
+	if (fresh?.sha) {
+		return {
+			snapshot: fresh,
+			tracker: trackerFromSuites(current, pageBuildId, fresh.sha, fresh.suites),
+		};
+	}
+
+	const watching = current.phase === 'updating' && current.expectedSha;
+	if (watching) {
+		const payload = await fetchGithub(checkSuitesUrl(current.expectedSha!));
+		const suites = suitesFromPayload(payload.json);
+		const nextSnapshot: GithubSnapshot = {
+			fetchedAt: Date.now(),
+			sha: current.expectedSha,
+			suites,
+			rateLimitedUntil: null,
+		};
+		writeSnapshot(nextSnapshot);
+		return {
+			snapshot: nextSnapshot,
+			tracker: trackerFromSuites(current, pageBuildId, current.expectedSha!, suites),
+		};
+	}
+
+	const ref = await fetchGithub(REF_URL);
+	const sha = shaFromRef(ref.json);
+	if (!sha) throw new GithubError('github-ref:missing-sha', false, null);
+
+	if (sha === pageBuildId || (sha === current.skipSuitesForSha && current.phase !== 'updating')) {
+		const nextSnapshot: GithubSnapshot = {
+			fetchedAt: Date.now(),
+			sha,
+			suites: snapshot?.sha === sha ? snapshot.suites : [],
+			rateLimitedUntil: null,
+		};
+		writeSnapshot(nextSnapshot);
+		return { snapshot: nextSnapshot, tracker: { ...emptyTracker(), skipSuitesForSha: sha } };
+	}
+
+	if (ref.remaining !== null && ref.remaining < 2) {
+		throw new GithubError('github-rate-limit:low', true, ref.resetMs);
+	}
+
+	const payload = await fetchGithub(checkSuitesUrl(sha));
+	const suites = suitesFromPayload(payload.json);
+	const nextSnapshot: GithubSnapshot = {
+		fetchedAt: Date.now(),
+		sha,
+		suites,
+		rateLimitedUntil: null,
+	};
+	writeSnapshot(nextSnapshot);
+	return { snapshot: nextSnapshot, tracker: trackerFromSuites(current, pageBuildId, sha, suites) };
+}
+
+function nextInterval(tracker: DeployTracker): number {
 	if (tracker.phase === 'updating') {
 		return tracker.publishWaitStarted ? PUBLISH_POLL_MS : ACTIVE_POLL_MS;
 	}
@@ -236,8 +365,7 @@ export function startDeployNoticePolling(opts: {
 	let stopped = false;
 	let tracker = readTracker(opts.pageBuildId);
 	let lastPhase: DeployPhase | null = null;
-	let lastSha: string | null = tracker.expectedSha ?? tracker.skipSuitesForSha;
-	let lastSuites: CheckSuite[] = [];
+	let snapshot = readSnapshot();
 
 	function emit(next: DeployTracker) {
 		tracker = next;
@@ -246,6 +374,11 @@ export function startDeployNoticePolling(opts: {
 			lastPhase = tracker.phase;
 			opts.onPhase(tracker.phase);
 		}
+	}
+
+	function hideUntilRetry(waitMs: number) {
+		emit(emptyTracker());
+		schedule(waitMs);
 	}
 
 	emit(tracker);
@@ -260,15 +393,13 @@ export function startDeployNoticePolling(opts: {
 
 		if (tracker.phase === 'ready') return;
 
-		let rateLimited = false;
 		try {
 			let next = tracker;
 			if (tracker.publishWaitStarted) {
 				next = await confirmPublish(tracker, opts.pageBuildId);
 			} else {
-				const result = await pollGithub(tracker, opts.pageBuildId, { sha: lastSha, suites: lastSuites });
-				lastSha = result.sha;
-				lastSuites = result.suites;
+				const result = await refreshGithub(tracker, opts.pageBuildId, snapshot, nextInterval(tracker));
+				snapshot = result.snapshot;
 				next = result.tracker;
 				if (next.publishWaitStarted) {
 					next = await confirmPublish(next, opts.pageBuildId);
@@ -276,10 +407,22 @@ export function startDeployNoticePolling(opts: {
 			}
 			emit(next);
 			if (next.phase === 'ready') return;
-			schedule(nextInterval(next, false));
+			schedule(nextInterval(next));
 		} catch (error) {
-			rateLimited = error instanceof Error && error.message.startsWith('github-rate-limit:');
-			schedule(nextInterval(tracker, rateLimited));
+			const retryMs =
+				error instanceof GithubError && error.rateLimited
+					? (error.resetMs ?? DEFAULT_RATE_LIMIT_BACKOFF_MS)
+					: IDLE_POLL_MS;
+			if (error instanceof GithubError && error.rateLimited) {
+				snapshot = {
+					fetchedAt: Date.now(),
+					sha: snapshot?.sha ?? null,
+					suites: snapshot?.suites ?? [],
+					rateLimitedUntil: Date.now() + retryMs,
+				};
+				writeSnapshot(snapshot);
+			}
+			hideUntilRetry(retryMs);
 		}
 	}
 
