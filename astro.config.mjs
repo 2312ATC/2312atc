@@ -5,10 +5,10 @@ import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
+import { cmsImageDevPlugin, cmsImageFallback } from './src/lib/cmsImageFallback.ts';
 import { lastmodForSitemapUrl } from './src/lib/gitHistory.ts';
 
 const ngrokHost = 'star-ghost-terminally.ngrok-free.app'
-const excludePaths = ['/admin', '/blog', '/join'];
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,9 +18,15 @@ export default defineConfig({
     format: 'file',
   },
   integrations: [
+    cmsImageFallback(),
     mdx(),
     sitemap({
-      filter: (page) => !excludePaths.includes(new URL(page).pathname),
+      filter: (page) => {
+        const path = new URL(page).pathname;
+        return !['/admin', '/blog', '/join'].includes(path)
+          && !path.startsWith('/admin/')
+          && !path.startsWith('/cms-preview');
+      },
       serialize(item) {
         const lastmod = lastmodForSitemapUrl(item.url);
         if (lastmod) item.lastmod = lastmod;
@@ -30,7 +36,7 @@ export default defineConfig({
   ],
 
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), cmsImageDevPlugin()],
     server: {
       allowedHosts: [ngrokHost],
       hmr: {

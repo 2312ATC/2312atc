@@ -30,6 +30,7 @@ interface Props {
 	ogType?: 'website' | 'article';
 	breadcrumbs?: { name: string; path: string }[];
 	jsonLd?: JsonLdNode[];
+	robots?: string;
 }
 
 const siteURL = Astro.site ?? new URL(Astro.url.origin);
@@ -44,6 +45,7 @@ const {
 	ogType = 'website',
 	breadcrumbs,
 	jsonLd,
+	robots,
 } = Astro.props;
 const ogImageURL = new URL(image.src, siteURL);
 const logoURL = new URL(orgLogo.src, siteURL);
@@ -111,6 +113,7 @@ const breadcrumbGraph =
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={ogImageURL} />
 <meta name="google-site-verification" content="CkGNTghKEK0NnTVIiqbcJU-BycxpbJAq2JInQ3hD2xk" />
+{robots && <meta name="robots" content={robots} />}
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLdGraph)} />
 {breadcrumbGraph && (
@@ -118,3 +121,9 @@ const breadcrumbGraph =
 )}
 
 {PreviewPasswordGate && <PreviewPasswordGate />}
+
+<script>
+	if (new URLSearchParams(location.search).has('cms-preview')) {
+		void import('../lib/cmsPreview').then((mod) => mod.bootCmsPreview());
+	}
+</script>

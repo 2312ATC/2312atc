@@ -131,7 +131,7 @@ const faqItems = faqEntry?.data.items ?? [];
 		<!-- FAQs -->
 		<section aria-labelledby="join-faq" class="join-section">
 			<h2 id="join-faq" class="section-heading">Frequently Asked Questions</h2>
-			<div class="faq-list">
+			<div class="faq-list" data-cms-list="faq">
 				{faqItems.map((item) => (
 					<details class="faq-item">
 						<summary>{item.question}</summary>
@@ -148,6 +148,13 @@ const faqItems = faqEntry?.data.items ?? [];
 			<a href="/contact" class="btn btn-primary btn-lg">Enquire about joining</a>
 		</div>
 	</div>
+
+	<template data-cms-template="faq">
+		<details class="faq-item">
+			<summary data-cms-text="question"></summary>
+			<div class="faq-answer faq-prose" data-cms-html="body"></div>
+		</details>
+	</template>
 </Page>
 
 <style>

@@ -12,6 +12,7 @@ interface Props {
 	image?: ImageMetadata;
 	pageType?: WebPageType;
 	breadcrumbs?: { name: string; path: string }[];
+	robots?: string;
 }
 
 const {
@@ -20,6 +21,7 @@ const {
 	image,
 	pageType,
 	breadcrumbs,
+	robots,
 } = Astro.props;
 ---
 
@@ -31,6 +33,7 @@ const {
 			image={image}
 			pageType={pageType}
 			breadcrumbs={breadcrumbs}
+			robots={robots}
 		/>
 	</head>
 

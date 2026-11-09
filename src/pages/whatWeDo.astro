@@ -35,7 +35,7 @@ const renderedActivities = activities.map((activity, i) => ({
 		</p>
 
 		<!-- Activity sections (CMS-driven) -->
-		<div class="wwd-sections">
+		<div class="wwd-sections" data-cms-list="activities">
 			{renderedActivities.map(({ activity, isAlt }, i) => (
 				<section
 					aria-labelledby={`wwd-${i}`}
@@ -62,6 +62,18 @@ const renderedActivities = activities.map((activity, i) => ({
 			</div>
 		</div>
 	</div>
+
+	<template data-cms-template="activities">
+		<section class="wwd-block" data-cms-alt-class="wwd-block--alt" data-cms-labelledby="wwd">
+			<div class="wwd-block-icon">
+				<span class="material-icons" aria-hidden="true" data-cms-icon="icon"></span>
+			</div>
+			<div class="wwd-block-content">
+				<h2 class="wwd-block-title" data-cms-id="wwd" data-cms-text="title"></h2>
+				<div class="wwd-block-prose" data-cms-html="body"></div>
+			</div>
+		</section>
+	</template>
 </Page>
 
 <style>

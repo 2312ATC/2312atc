@@ -1,0 +1,331 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { canonicalUrlFromPath, eventNode } from '../lib/jsonLd';
+
+interface Props {
+	title: string;
+	description: string;
+	date?: Date;
+	endDate?: Date;
+	heroImage?: ImageMetadata;
+	previewShell?: boolean;
+}
+
+const { title, description, date, endDate, heroImage, previewShell = false } = Astro.props;
+const cms = (name: string) => (previewShell ? name : undefined);
+
+const dateLabel = date
+	? date.toLocaleDateString('en-GB', {
+			weekday: 'long',
+			day: 'numeric',
+			month: 'long',
+			year: 'numeric',
+		})
+	: 'Date to be confirmed';
+const timeLabel = date ? date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
+const showTime = Boolean(date && (date.getHours() !== 0 || date.getMinutes() !== 0));
+
+const siteURL = Astro.site ?? new URL(Astro.url.origin);
+const canonicalURL = canonicalUrlFromPath(Astro.url.pathname, siteURL);
+const imageUrl = heroImage ? new URL(heroImage.src, siteURL).href : undefined;
+const jsonLd =
+	previewShell || !date
+		? []
+		: [
+				eventNode({
+					url: canonicalURL.href,
+					name: title,
+					description,
+					startDate: date,
+					endDate,
+					imageUrl,
+					siteOrigin: siteURL.origin,
+				}),
+			];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={previewShell ? 'Event preview | 2312 Squadron' : `${title} | Events | 2312 Squadron`}
+			description={previewShell ? 'Decap CMS preview of an event.' : description}
+			image={heroImage}
+			jsonLd={jsonLd}
+			robots={previewShell ? 'noindex, nofollow' : undefined}
+			breadcrumbs={[
+				{ name: 'Home', path: '/' },
+				{ name: 'Events', path: '/events' },
+				{ name: title, path: canonicalURL.pathname },
+			]}
+		/>
+	</head>
+	<body>
+		<a href="#main-content" class="skip-link">Skip to main content</a>
+		<Header />
+		<main id="main-content">
+			{previewShell ? (
+				<>
+					<div class="event-hero" data-cms-show="heroImageSrc" hidden>
+						<img class="event-hero-img" alt="" data-cms-src="heroImageSrc" />
+						<div class="event-hero-overlay">
+							<div class="event-hero-content page-content page-content--flush">
+								<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--on-dark">
+									<a href="/">Home</a>
+									<span aria-hidden="true">›</span>
+									<a href="/events">Events</a>
+									<span aria-hidden="true">›</span>
+									<span aria-current="page" data-cms-text="title">{title}</span>
+								</nav>
+								<h1 class="event-hero-title" data-cms-text="title">{title}</h1>
+							</div>
+						</div>
+					</div>
+					<div class="hero-banner" data-cms-hide="heroImageSrc">
+						<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--on-dark">
+							<a href="/">Home</a>
+							<span aria-hidden="true">›</span>
+							<a href="/events">Events</a>
+							<span aria-hidden="true">›</span>
+							<span aria-current="page" data-cms-text="title">{title}</span>
+						</nav>
+						<h1 data-cms-text="title">{title}</h1>
+					</div>
+				</>
+			) : heroImage ? (
+				<div class="event-hero" role="img" aria-label={title}>
+					<Image
+						src={heroImage}
+						alt=""
+						class="event-hero-img"
+						width={1400}
+						height={500}
+						loading="eager"
+					/>
+					<div class="event-hero-overlay">
+						<div class="event-hero-content page-content page-content--flush">
+							<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--on-dark">
+								<a href="/">Home</a>
+								<span aria-hidden="true">›</span>
+								<a href="/events">Events</a>
+								<span aria-hidden="true">›</span>
+								<span aria-current="page">{title}</span>
+							</nav>
+							<h1 class="event-hero-title">{title}</h1>
+						</div>
+					</div>
+				</div>
+			) : (
+				<div class="hero-banner">
+					<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--on-dark">
+						<a href="/">Home</a>
+						<span aria-hidden="true">›</span>
+						<a href="/events">Events</a>
+						<span aria-hidden="true">›</span>
+						<span aria-current="page">{title}</span>
+					</nav>
+					<h1>{title}</h1>
+				</div>
+			)}
+
+			<div class="page-content event-page-layout">
+				<aside class="event-meta-panel" aria-label="Event details">
+					<div class="event-meta-block">
+						<h2 class="event-meta-title">Event Details</h2>
+						<dl class="event-meta-list">
+							<div class="event-meta-item">
+								<dt>
+									<span class="material-icons" aria-hidden="true">event</span>
+									Date
+								</dt>
+								<dd>
+									<time datetime={date?.toISOString()} data-cms-text={cms('dateLabel')}>{dateLabel}</time>
+									{previewShell ? (
+										<span class="event-meta-time" data-cms-text="timeLabel" data-cms-if="showTime"></span>
+									) : (
+										showTime && <span class="event-meta-time">{timeLabel}</span>
+									)}
+								</dd>
+							</div>
+
+							{(previewShell || endDate) && (
+								<div class="event-meta-item" data-cms-if={cms('endDate')}>
+									<dt>
+										<span class="material-icons" aria-hidden="true">event_available</span>
+										Ends
+									</dt>
+									<dd>
+										{previewShell ? (
+											<time data-cms-text="endDateLabel"></time>
+										) : (
+											endDate && (
+												<time datetime={endDate.toISOString()}>
+													<FormattedDate date={endDate} />
+												</time>
+											)
+										)}
+									</dd>
+								</div>
+							)}
+
+							<p class="event-signup-note">
+								<strong>If you want to participate in this event, please sign up via the portal.</strong>
+							</p>
+						</dl>
+
+						<div class="btn-stack">
+							<a href="/contact" class="btn btn-primary">Enquire about this event</a>
+							<a href="/events" class="btn btn-outline">← Back to Events</a>
+						</div>
+					</div>
+				</aside>
+
+				<article class="event-body">
+					<p class="event-description-lede" data-cms-text={cms('description')}>{description}</p>
+					<hr class="rule rule--tight" />
+					<div class="prose-content" data-cms-html={cms('body')}>
+						<slot />
+					</div>
+				</article>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.event-hero {
+		position: relative;
+		width: 100%;
+		max-height: 420px;
+		overflow: hidden;
+	}
+
+	.event-hero-img {
+		width: 100%;
+		height: 420px;
+		object-fit: cover;
+		object-position: center;
+		display: block;
+	}
+
+	.event-hero-overlay {
+		position: absolute;
+		inset: 0;
+		background: var(--gradient-scrim-deep);
+		display: flex;
+		align-items: flex-end;
+		padding-bottom: 2rem;
+	}
+
+	.event-hero-content {
+		color: var(--color-white);
+		width: 100%;
+	}
+
+	.event-hero-title {
+		font-size: clamp(1.75rem, 4vw, 2.75rem);
+		color: var(--color-white);
+		text-shadow: var(--shadow-text);
+		margin: 0.25rem 0 0;
+	}
+
+	.event-page-layout {
+		display: grid;
+		grid-template-columns: 1fr 300px;
+		gap: 2.5rem;
+		align-items: start;
+		padding-top: 2rem;
+		padding-bottom: 3rem;
+	}
+
+	@media (max-width: 768px) {
+		.event-page-layout {
+			grid-template-columns: 1fr;
+		}
+		.event-meta-panel {
+			position: initial !important;
+		}
+	}
+
+	.event-meta-panel {
+		position: sticky;
+		top: 1rem;
+	}
+
+	.event-meta-block {
+		background: var(--color-white);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-card);
+		padding: 1.5rem;
+		border-top: 4px solid var(--color-raf-red);
+	}
+
+	.event-meta-title {
+		color: var(--color-raf-navy);
+		margin-bottom: 1rem;
+		text-transform: uppercase;
+		letter-spacing: var(--tracking-label);
+		font-size: 0.85rem;
+	}
+
+	.event-meta-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+		margin: 0;
+		padding: 0;
+	}
+
+	.event-meta-item dt {
+		font-size: 0.75rem;
+		font-weight: var(--font-weight-bold);
+		text-transform: uppercase;
+		letter-spacing: var(--tracking-label);
+		color: var(--color-muted);
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-bottom: 0.15rem;
+	}
+
+	.event-meta-item dt .material-icons {
+		font-size: 0.95em;
+		color: var(--color-raf-red);
+	}
+
+	.event-meta-item dd {
+		margin: 0;
+		font-size: 0.95rem;
+		color: var(--color-body);
+		font-weight: var(--font-weight-semibold);
+	}
+
+	.event-meta-time {
+		display: block;
+		font-weight: var(--font-weight-normal);
+		color: var(--color-muted);
+		font-size: 0.85rem;
+	}
+
+	.event-signup-note {
+		color: var(--color-raf-navy);
+		margin: 0.5rem 0 0;
+	}
+
+	.event-body {
+		min-width: 0;
+	}
+
+	.event-description-lede {
+		font-size: 1.15rem;
+		color: var(--color-body);
+		line-height: 1.7;
+		font-weight: var(--font-weight-normal);
+	}
+</style>

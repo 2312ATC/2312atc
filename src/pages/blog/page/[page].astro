@@ -99,7 +99,7 @@ const { page } = Astro.props;
 									</div>
 								);
 								return (
-									<article class:list={['card', 'blog-card', { 'blog-card--featured': isFeatured }]}>
+									<article class:list={['card', 'blog-card', { 'blog-card--featured': isFeatured, 'blog-card--no-hero': !hero }]}>
 										{isFeatured ? (
 											<>
 												{content}
@@ -310,6 +310,15 @@ const { page } = Astro.props;
 		.blog-grid {
 			grid-template-columns: 1fr;
 		}
+	}
+
+	.blog-card--featured.blog-card--no-hero {
+		grid-template-columns: 1fr;
+	}
+
+	.blog-card--featured.blog-card--no-hero .blog-card-content {
+		grid-column: 1;
+		grid-row: 1;
 	}
 
 	/* Pagination */

@@ -75,7 +75,7 @@ const buildId = import.meta.env.PUBLIC_BUILD_ID ?? '';
 	const strip = document.querySelector<HTMLElement>('[data-notification-banner]');
 	const list = strip?.querySelector<HTMLElement>('.notification-list');
 
-	if (strip && list) {
+	if (strip && list && !new URLSearchParams(location.search).has('cms-preview')) {
 		const buildId = strip.dataset.buildId ?? '';
 
 		list.addEventListener('click', (e) => {

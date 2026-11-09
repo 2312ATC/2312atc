@@ -56,7 +56,7 @@ const offers = offersEntry?.data.items ?? [];
 		<!-- What we offer -->
 		<section aria-labelledby="about-activities-heading" class="about-section">
 			<h2 id="about-activities-heading" class="section-heading">What We Offer</h2>
-			<div class="activities-grid">
+			<div class="activities-grid" data-cms-list="offers">
 				{offers.map((offer) => (
 					<div class="activity-card">
 						<span class="material-icons activity-icon" aria-hidden="true">{offer.icon}</span>
@@ -93,7 +93,7 @@ const offers = offersEntry?.data.items ?? [];
 			<p style="color:var(--color-body); margin-bottom:1.5rem;">
 				Our squadron is run by a team of dedicated volunteers: Civilian Instructors and uniformed Cadet Force Adult Volunteers.
 			</p>
-			<div class="staff-grid">
+			<div class="staff-grid" data-cms-list="staff">
 				{staffMembers.map((member) => (
 					<div class="staff-card">
 						<div class="staff-card-rank">{member.role}</div>
@@ -107,6 +107,21 @@ const offers = offersEntry?.data.items ?? [];
 			</p>
 		</section>
 	</div>
+
+	<template data-cms-template="offers">
+		<div class="activity-card">
+			<span class="material-icons activity-icon" aria-hidden="true" data-cms-icon="icon"></span>
+			<h3 data-cms-text="title"></h3>
+			<p data-cms-text="description"></p>
+		</div>
+	</template>
+	<template data-cms-template="staff">
+		<div class="staff-card">
+			<div class="staff-card-rank" data-cms-text="role"></div>
+			<div class="staff-card-name" data-cms-text="name"></div>
+			<p class="staff-card-bio" data-cms-text="bio" data-cms-if="bio"></p>
+		</div>
+	</template>
 </Page>
 
 <style>

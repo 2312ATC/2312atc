@@ -1,4 +1,4 @@
----
+﻿---
 
 import { getImage } from 'astro:assets';
 
@@ -94,6 +94,7 @@ const slides = await Promise.all(
 
 
 
+<div data-cms-root="landingCarousel">
 {slides.length > 0 && (
 
 	<section
@@ -219,8 +220,41 @@ const slides = await Promise.all(
 	</section>
 
 )}
+</div>
 
-
+<template data-cms-template="landingCarousel">
+	<section
+		class="carousel"
+		style="--carousel-reserve-w: 4; --carousel-reserve-h: 3"
+		aria-label="Squadron photo carousel"
+		aria-roledescription="carousel"
+	>
+		<div class="carousel-track" role="list" data-cms-carousel-track></div>
+		<button class="carousel-btn carousel-btn--prev" aria-label="Previous slide" type="button" data-cms-if-multiple>
+			<span class="material-icons" aria-hidden="true">chevron_left</span>
+		</button>
+		<button class="carousel-btn carousel-btn--next" aria-label="Next slide" type="button" data-cms-if-multiple>
+			<span class="material-icons" aria-hidden="true">chevron_right</span>
+		</button>
+		<div class="carousel-dots" role="tablist" aria-label="Carousel slides" data-cms-if-multiple data-cms-carousel-dots></div>
+		<div class="carousel-pause-wrapper" data-cms-if-multiple>
+			<button class="carousel-pause" aria-label="Pause carousel" type="button" aria-pressed="false">
+				<span class="material-icons" aria-hidden="true">pause</span>
+			</button>
+		</div>
+	</section>
+</template>
+<template data-cms-template="landingCarousel-slide">
+	<div class="carousel-item" role="listitem" aria-roledescription="slide">
+		<a>
+			<img class="carousel-img" alt="" />
+		</a>
+		<div class="carousel-caption" aria-hidden="true"></div>
+	</div>
+</template>
+<template data-cms-template="landingCarousel-dot">
+	<button class="carousel-dot" role="tab" type="button"></button>
+</template>
 
 <style>
 
@@ -623,260 +657,8 @@ const slides = await Promise.all(
 
 
 <script>
+	import { initLandingCarousel } from '../lib/landingCarousel';
 
 	const carouselEl = document.querySelector<HTMLElement>('.carousel');
-
-	if (carouselEl) {
-
-	const carousel = carouselEl;
-
-	function loadDeferredSlides() {
-		carousel.querySelectorAll<HTMLImageElement>('img.carousel-img[data-src]').forEach((img) => {
-			if (img.dataset.srcset) img.srcset = img.dataset.srcset;
-			if (img.dataset.src) img.src = img.dataset.src;
-			img.removeAttribute('data-src');
-			img.removeAttribute('data-srcset');
-		});
-	}
-
-	const scheduleDeferredSlides = () => {
-		const run = () => loadDeferredSlides();
-		const later = () => window.requestIdleCallback(run, { timeout: 2000 });
-		if (document.readyState === 'complete') later();
-		else window.addEventListener('load', later, { once: true });
-	};
-	scheduleDeferredSlides();
-
-	const items = Array.from(carousel.querySelectorAll<HTMLElement>('.carousel-item'));
-
-	const dots = Array.from(carousel.querySelectorAll<HTMLButtonElement>('.carousel-dot'));
-
-	const prevBtn = carousel.querySelector<HTMLButtonElement>('.carousel-btn--prev');
-
-	const nextBtn = carousel.querySelector<HTMLButtonElement>('.carousel-btn--next');
-
-	const pauseBtn = carousel.querySelector<HTMLButtonElement>('.carousel-pause');
-
-	const pauseIcon = pauseBtn?.querySelector<HTMLElement>('.material-icons');
-
-
-
-	if (items.length <= 1) {
-
-		// Single slide – nothing to do
-
-	} else {
-
-		let current = 0;
-
-		let intervalId: ReturnType<typeof setInterval> | null = null;
-
-		let userPaused = false;
-
-		let inViewport = true;
-
-		const INTERVAL_MS = 4000;
-
-		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-
-
-		function goTo(index: number) {
-
-			loadDeferredSlides();
-
-			items[current].classList.remove('active');
-
-			items[current].setAttribute('aria-hidden', 'true');
-
-			dots[current]?.classList.remove('active');
-
-			dots[current]?.setAttribute('aria-selected', 'false');
-
-
-
-			current = (index + items.length) % items.length;
-
-
-
-			items[current].classList.add('active');
-
-			items[current].removeAttribute('aria-hidden');
-
-			dots[current]?.classList.add('active');
-
-			dots[current]?.setAttribute('aria-selected', 'true');
-
-		}
-
-
-
-		function clearAuto() {
-
-			if (intervalId) {
-
-				clearInterval(intervalId);
-
-				intervalId = null;
-
-			}
-
-		}
-
-
-
-		function updatePauseButton(paused: boolean) {
-
-			if (!pauseBtn) return;
-
-			pauseBtn.setAttribute('aria-pressed', paused ? 'true' : 'false');
-
-			if (pauseIcon) pauseIcon.textContent = paused ? 'play_arrow' : 'pause';
-
-			pauseBtn.setAttribute('aria-label', paused ? 'Play carousel' : 'Pause carousel');
-
-		}
-
-
-
-		function startAuto() {
-
-			if (reduceMotion || userPaused || !inViewport) return;
-
-			clearAuto();
-
-			intervalId = setInterval(() => goTo(current + 1), INTERVAL_MS);
-
-			updatePauseButton(false);
-
-		}
-
-
-
-		function stopAuto() {
-
-			userPaused = true;
-
-			clearAuto();
-
-			updatePauseButton(true);
-
-		}
-
-
-
-		prevBtn?.addEventListener('click', () => { stopAuto(); goTo(current - 1); });
-
-		nextBtn?.addEventListener('click', () => { stopAuto(); goTo(current + 1); });
-
-
-
-		dots.forEach((dot, i) => {
-
-			dot.addEventListener('click', () => { stopAuto(); goTo(i); });
-
-		});
-
-
-
-		pauseBtn?.addEventListener('click', () => {
-
-			if (userPaused) {
-
-				userPaused = false;
-
-				startAuto();
-
-			} else {
-
-				stopAuto();
-
-			}
-
-		});
-
-
-
-		// Keyboard navigation
-
-		carousel.addEventListener('keydown', (e: KeyboardEvent) => {
-
-			if (e.key === 'ArrowLeft') { stopAuto(); goTo(current - 1); }
-
-			if (e.key === 'ArrowRight') { stopAuto(); goTo(current + 1); }
-
-		});
-
-
-
-		// Pause on hover/focus
-
-		carousel.addEventListener('mouseenter', clearAuto);
-
-		carousel.addEventListener('focusin', clearAuto);
-
-		carousel.addEventListener('mouseleave', startAuto);
-
-		carousel.addEventListener('focusout', (e: FocusEvent) => {
-
-			if (!carousel.contains(e.relatedTarget as Node)) startAuto();
-
-		});
-
-
-
-		function isPrimaryView(entry: IntersectionObserverEntry) {
-
-			const rootHeight = entry.rootBounds?.height ?? window.innerHeight;
-
-			const visibleHeight = entry.intersectionRect.height;
-
-			const targetHeight = entry.boundingClientRect.height;
-
-			const mostlyOnScreen = targetHeight > 0 && visibleHeight / targetHeight >= 0.6;
-
-			const dominatesViewport = rootHeight > 0 && visibleHeight / rootHeight >= 0.4;
-
-			return entry.isIntersecting && (mostlyOnScreen || dominatesViewport);
-
-		}
-
-
-
-		const viewportObserver = new IntersectionObserver(
-
-			(entries) => {
-
-				const entry = entries[0];
-
-				inViewport = entry ? isPrimaryView(entry) : false;
-
-				if (inViewport) {
-
-					startAuto();
-
-				} else {
-
-					clearAuto();
-
-				}
-
-			},
-
-			{ threshold: [0, 0.25, 0.5, 0.75, 1] },
-
-		);
-
-		viewportObserver.observe(carousel);
-
-
-
-		if (!reduceMotion) startAuto();
-
-	}
-
-	}
-
+	if (carouselEl) initLandingCarousel(carouselEl);
 </script>
-
-

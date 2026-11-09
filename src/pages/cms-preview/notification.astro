@@ -1,0 +1,70 @@
+---
+import Page from '../../layouts/Page.astro';
+---
+
+<Page
+	title="Notification preview | 2312 Squadron"
+	description="Decap CMS preview of a site notification."
+	robots="noindex, nofollow"
+>
+	<div class="hero-banner">
+		<h1>Notification preview</h1>
+		<p>This is how the notice will appear on the home banner and in the header panel.</p>
+	</div>
+
+	<div class="page-content">
+		<section class="preview-section">
+			<h2 class="section-heading">Home banner</h2>
+			<div class="notification-strip">
+				<div class="notification-list" data-cms-notification-banner></div>
+			</div>
+		</section>
+
+		<section class="preview-section">
+			<h2 class="section-heading">Header panel</h2>
+			<ul class="notif-list" data-cms-notification-panel></ul>
+		</section>
+
+		<section class="preview-section preview-meta">
+			<p><strong>Status:</strong> <span data-cms-text="activeLabel">Active</span></p>
+			<p><strong>Type:</strong> <span data-cms-text="typeLabel">info</span></p>
+			<p><strong>Icon:</strong> <span class="material-icons" data-cms-text="iconLabel" aria-hidden="true">info</span></p>
+			<p><strong>Show from:</strong> <span data-cms-text="notBeforeLabel"></span></p>
+			<p><strong>Hide after:</strong> <span data-cms-text="notAfterLabel"></span></p>
+		</section>
+	</div>
+</Page>
+
+<style>
+	.preview-section {
+		margin-bottom: 2rem;
+	}
+
+	.preview-meta p {
+		margin: 0.35rem 0;
+		color: var(--color-body);
+	}
+
+	.notification-strip {
+		width: 100%;
+		background: var(--gradient-surface);
+		border: 1px solid var(--color-line);
+		border-radius: var(--radius-lg);
+	}
+
+	.notification-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.65rem;
+		padding: 0.85rem 1.25rem 1rem;
+	}
+
+	.notif-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+</style>

@@ -64,7 +64,7 @@ const usefulLinks = linksEntry?.data.items ?? [];
 		<!-- Opportunities -->
 		<section aria-labelledby="cadets-opportunities" class="cadets-section">
 			<h2 id="cadets-opportunities" class="section-heading">Opportunities</h2>
-			<ul class="opportunities-list">
+			<ul class="opportunities-list" data-cms-list="opportunities">
 				{opportunitiesList.map((opp) => (
 					<li>
 						<span class="material-icons" aria-hidden="true">{opp.icon}</span>
@@ -81,7 +81,7 @@ const usefulLinks = linksEntry?.data.items ?? [];
 		<!-- Useful links -->
 		<section aria-labelledby="cadets-links" class="cadets-section">
 			<h2 id="cadets-links" class="section-heading">Useful Links</h2>
-			<div class="links-grid">
+			<div class="links-grid" data-cms-list="cadetLinks">
 				{usefulLinks.map((link) => (
 					<a
 						href={link.url}
@@ -95,6 +95,22 @@ const usefulLinks = linksEntry?.data.items ?? [];
 			</div>
 		</section>
 	</div>
+
+	<template data-cms-template="opportunities">
+		<li>
+			<span class="material-icons" aria-hidden="true" data-cms-icon="icon"></span>
+			<div>
+				<strong data-cms-text="title"></strong>
+				<span data-cms-text="description"></span>
+			</div>
+		</li>
+	</template>
+	<template data-cms-template="cadetLinks">
+		<a class="link-card" data-cms-href="url" data-cms-newtab="external">
+			<span class="material-icons" aria-hidden="true" data-cms-icon="icon"></span>
+			<span data-cms-text="label"></span>
+		</a>
+	</template>
 </Page>
 
 <style>

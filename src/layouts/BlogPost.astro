@@ -8,25 +8,29 @@ import Header from '../components/Header.astro';
 import { blogPostGitDates } from '../lib/gitHistory';
 import { blogPostingNode, canonicalUrlFromPath } from '../lib/jsonLd';
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<'blog'>['data'] & { previewShell?: boolean };
 
-const { title, description, heroImage } = Astro.props;
+const { title, description, heroImage, previewShell = false } = Astro.props;
 const siteURL = Astro.site ?? new URL(Astro.url.origin);
 const canonicalURL = canonicalUrlFromPath(Astro.url.pathname, siteURL);
 const imageUrl = heroImage ? new URL(heroImage.src, siteURL).href : undefined;
-const { published, updated } = blogPostGitDates(canonicalURL.pathname.slice('/blog/'.length));
-const showUpdated = published && updated && updated.getTime() > published.getTime();
-const jsonLd = [
-	blogPostingNode({
-		url: canonicalURL.href,
-		headline: title,
-		description,
-		datePublished: published,
-		dateModified: updated,
-		imageUrl,
-		siteOrigin: siteURL.origin,
-	}),
-];
+const { published, updated } = previewShell
+	? { published: undefined as Date | undefined, updated: undefined as Date | undefined }
+	: blogPostGitDates(canonicalURL.pathname.slice('/blog/'.length));
+const showUpdated = Boolean(published && updated && updated.getTime() > published.getTime());
+const jsonLd = previewShell
+	? []
+	: [
+			blogPostingNode({
+				url: canonicalURL.href,
+				headline: title,
+				description,
+				datePublished: published,
+				dateModified: updated,
+				imageUrl,
+				siteOrigin: siteURL.origin,
+			}),
+		];
 
 
 // Approximate reading time
@@ -41,6 +45,7 @@ const jsonLd = [
 			image={heroImage}
 			ogType="article"
 			jsonLd={jsonLd}
+			robots={previewShell ? 'noindex, nofollow' : undefined}
 			breadcrumbs={[
 				{ name: 'Home', path: '/' },
 				{ name: 'Blog', path: '/blog/page/1' },
@@ -53,7 +58,33 @@ const jsonLd = [
 		<a href="#main-content" class="skip-link">Skip to main content</a>
 		<Header />
 		<main id="main-content">
-			{heroImage ? (
+			{previewShell ? (
+				<>
+					<div class="blog-hero" data-cms-show="heroImageSrc" hidden>
+						<img class="blog-hero-img" alt="" data-cms-src="heroImageSrc" />
+						<div class="blog-hero-overlay">
+							<div class="blog-hero-content">
+								<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--on-dark">
+									<a href="/">Home</a>
+									<span aria-hidden="true">›</span>
+									<a href="/blog/page/1">Blog</a>
+									<span aria-hidden="true">›</span>
+									<span aria-current="page" data-cms-text="title">{title}</span>
+								</nav>
+							</div>
+						</div>
+					</div>
+					<div class="hero-banner" data-cms-hide="heroImageSrc">
+						<nav aria-label="Breadcrumb" class="breadcrumb breadcrumb--on-dark">
+							<a href="/">Home</a>
+							<span aria-hidden="true">›</span>
+							<a href="/blog/page/1">Blog</a>
+							<span aria-hidden="true">›</span>
+							<span aria-current="page" data-cms-text="title">{title}</span>
+						</nav>
+					</div>
+				</>
+			) : heroImage ? (
 				<div class="blog-hero">
 					<Image
 						src={heroImage}
@@ -89,12 +120,12 @@ const jsonLd = [
 
 			<div class="page-content">
 				{!heroImage && (
-					<nav aria-label="Breadcrumb" class="breadcrumb">
+					<nav aria-label="Breadcrumb" class="breadcrumb" data-cms-hide="heroImageSrc">
 						<a href="/">Home</a>
 						<span aria-hidden="true">›</span>
 						<a href="/blog/page/1">Blog</a>
 						<span aria-hidden="true">›</span>
-						<span aria-current="page">{title}</span>
+						<span aria-current="page" data-cms-text={previewShell ? 'title' : undefined}>{title}</span>
 					</nav>
 				)}
 
@@ -107,12 +138,13 @@ const jsonLd = [
 									· Updated <FormattedDate date={updated} />
 								</span>
 							)}
+							{previewShell && <span>Draft preview</span>}
 						</div>
-						<h1 class="blog-title">{title}</h1>
-						<p class="blog-description">{description}</p>
+						<h1 class="blog-title" data-cms-text={previewShell ? 'title' : undefined}>{title}</h1>
+						<p class="blog-description" data-cms-text={previewShell ? 'description' : undefined}>{description}</p>
 					</header>
 
-					<div class="prose-content blog-prose">
+					<div class="prose-content blog-prose" data-cms-html={previewShell ? 'body' : undefined}>
 						<slot />
 					</div>
 
