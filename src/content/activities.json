@@ -38,12 +38,17 @@
     {
       "title": "Space and Cyber",
       "icon": "rocket_launch",
-      "body": "Currently being updated"
+      "body": "The Space program features a multi-tiered syllabus (from Blue upwards) developed with academic and industry partners including The Open University.\n\nCadets learn about satellite technology, rocketry, the solar system, space exploration, and how space infrastructure impacts everyday which can lead to a **Level 2 BTEC** in **Space Studies** (a GCSE-equivalent qualification)"
     },
     {
       "title": "Radio and Communications",
       "icon": "satellite_alt",
-      "body": "Currently being updated"
+      "body": "Radio and communications span progressive training syllabus badges from **Badge (Basic Radio Operator & Cyber Awareness):** introducing basic radio operation for administrative duties, simple voice procedures, and a cyber security awareness module\n\n**Bronze and Silver Badges:** Progresses into structured voice operations, message handling, network management, and specialized modules such as the Amateur Radio Foundation Licence."
+    },
+    {
+      "title": "Duke of Edinburgh Award Scheme",
+      "icon": "landscape",
+      "body": "Undertake your **DofE** awards with your friends across P&C Wing, Region or the Corps!  Try it out with your Blue DofE award and then progress to your **Bronze, Silver and Gold** awards."
     }
   ]
 }
