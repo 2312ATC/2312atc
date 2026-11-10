@@ -319,12 +319,6 @@ const latestPosts = (await getCollection('blog'))
 
 	:global(.event-card-title a:hover) { color: var(--color-raf-red); text-decoration: underline; }
 
-	:global(.event-card-location) {
-		font-size: 0.82rem;
-		color: var(--color-muted);
-		margin-bottom: 0.3rem;
-	}
-
 	:global(.event-card-desc) {
 		font-size: 0.9rem;
 		color: var(--color-body);
@@ -379,10 +373,6 @@ const latestPosts = (await getCollection('blog'))
 				<h3 class="event-card-title">
 					<a href="${e.url}">${e.title}</a>
 				</h3>
-				<p class="event-card-location">
-					<span class="material-icons" aria-hidden="true" style="font-size:0.9em;vertical-align:middle;">location_on</span>
-					${e.location}
-				</p>
 				<p class="event-card-desc">${e.description}</p>
 			</div>
 		`;

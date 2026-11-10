@@ -3,7 +3,6 @@ export interface CalEvent {
 	title: string;
 	date: string;
 	endDate: string | null;
-	location: string;
 	description: string;
 	url: string;
 }
