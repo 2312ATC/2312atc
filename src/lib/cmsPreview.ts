@@ -248,6 +248,7 @@ function applyBlog(data: Record<string, unknown>) {
 }
 
 function applyEvent(data: Record<string, unknown>) {
+	data.showSignupPrompt = data.showSignupPrompt !== false;
 	bind(document, data, 0);
 	const title = textOf(data, 'title');
 	if (title) document.title = `${title} | Events | 2312 Squadron`;

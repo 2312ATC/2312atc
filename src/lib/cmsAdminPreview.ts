@@ -225,7 +225,7 @@ function formatTimeLabel(value: unknown) {
 	return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }
 
-function serializeEntry(props: PreviewProps) {
+function serializeEntry(props: PreviewProps, collection: CollectionName) {
 	const data = props.entry?.get?.('data');
 	const raw = data?.toJS?.() ?? {};
 	const plain: Record<string, unknown> = isRecord(raw) ? { ...raw } : {};
@@ -242,6 +242,7 @@ function serializeEntry(props: PreviewProps) {
 	}
 
 	if (plain.heroImage) plain.heroImageSrc = resolveImage(getAsset, plain.heroImage);
+	if (collection === 'events') plain.showSignupPrompt = plain.showSignupPrompt !== false;
 	if (typeof plain.body === 'string' && plain.body) plain.bodyHtml = markdownToHtml(plain.body);
 
 	if (plain.date) {
@@ -283,7 +284,7 @@ function makePreview(h: Hyperscript, createClass: CreateClass, collection: Colle
 				{
 					type: CMS_PREVIEW_MESSAGE,
 					collection,
-					data: serializeEntry(this.props),
+					data: serializeEntry(this.props, collection),
 				},
 				window.location.origin,
 			);

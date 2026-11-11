@@ -13,10 +13,19 @@ interface Props {
 	date?: Date;
 	endDate?: Date;
 	heroImage?: ImageMetadata;
+	showSignupPrompt?: boolean;
 	previewShell?: boolean;
 }
 
-const { title, description, date, endDate, heroImage, previewShell = false } = Astro.props;
+const {
+	title,
+	description,
+	date,
+	endDate,
+	heroImage,
+	showSignupPrompt = true,
+	previewShell = false,
+} = Astro.props;
 const cms = (name: string) => (previewShell ? name : undefined);
 
 const dateLabel = date
@@ -173,13 +182,19 @@ const jsonLd =
 								</div>
 							)}
 
-							<p class="event-signup-note">
-								<strong>If you want to participate in this event, please sign up via the portal.</strong>
-							</p>
+							{(previewShell || showSignupPrompt) && (
+								<p class="event-signup-note" data-cms-if={cms('showSignupPrompt')}>
+									<strong>If you want to participate in this event, please sign up via the portal.</strong>
+								</p>
+							)}
 						</dl>
 
 						<div class="btn-stack">
-							<a href="/contact" class="btn btn-primary">Enquire about this event</a>
+							{(previewShell || showSignupPrompt) && (
+								<a href="/contact" class="btn btn-primary" data-cms-if={cms('showSignupPrompt')}>
+									Enquire about this event
+								</a>
+							)}
 							<a href="/events" class="btn btn-outline">← Back to Events</a>
 						</div>
 					</div>
@@ -316,6 +331,11 @@ const jsonLd =
 	.event-signup-note {
 		color: var(--color-raf-navy);
 		margin: 0.5rem 0 0;
+	}
+
+	.event-signup-note[hidden],
+	.btn-stack .btn[hidden] {
+		display: none;
 	}
 
 	.event-body {

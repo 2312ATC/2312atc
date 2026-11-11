@@ -14,9 +14,16 @@ type Props = CollectionEntry<'events'>;
 
 const event = Astro.props;
 const { Content } = await render(event);
-const { title, date, endDate, description, heroImage } = event.data;
+const { title, date, endDate, description, heroImage, showSignupPrompt } = event.data;
 ---
 
-<Event title={title} date={date} endDate={endDate} description={description} heroImage={heroImage}>
+<Event
+	title={title}
+	date={date}
+	endDate={endDate}
+	description={description}
+	heroImage={heroImage}
+	showSignupPrompt={showSignupPrompt}
+>
 	<Content />
 </Event>

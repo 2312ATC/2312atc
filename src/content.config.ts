@@ -36,6 +36,7 @@ const events = defineCollection({
 			endDate: z.coerce.date().optional(),
 			description: z.string(),
 			heroImage: z.optional(image()),
+			showSignupPrompt: z.boolean().default(true),
 		}),
 });
 
